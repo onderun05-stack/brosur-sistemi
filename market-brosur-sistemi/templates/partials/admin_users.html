@@ -1,0 +1,147 @@
+<div class="users-section">
+    <h2>Kullanıcı Yönetimi</h2>
+    
+    <div class="search-filters" style="display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+        <input type="text" id="user-search" placeholder="Kullanıcı ara (isim, email)..." 
+               style="flex: 1; min-width: 200px; padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1); color: #fff;">
+        <select id="role-filter" style="padding: 0.75rem 1.5rem; border-radius: 8px; background: rgba(102,126,234,0.3); border: 1px solid rgba(255,255,255,0.2); color: #fff; cursor: pointer;">
+            <option value="">Tüm Roller</option>
+            <option value="admin">Admin</option>
+            <option value="customer">Müşteri</option>
+        </select>
+        <button id="add-user-btn" style="padding: 0.75rem 1.5rem; border-radius: 8px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; color: #fff; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
+            <span>➕</span> Yeni Kullanıcı
+        </button>
+    </div>
+    
+    <div class="table-container" style="background: rgba(255,255,255,0.05); border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
+        <table id="users-table" style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background: rgba(102,126,234,0.3);">
+                    <th style="padding: 1rem; text-align: left; color: #fff; font-weight: 600;">ID</th>
+                    <th style="padding: 1rem; text-align: left; color: #fff; font-weight: 600;">Ad Soyad</th>
+                    <th style="padding: 1rem; text-align: left; color: #fff; font-weight: 600;">E-posta</th>
+                    <th style="padding: 1rem; text-align: left; color: #fff; font-weight: 600;">Rol</th>
+                    <th style="padding: 1rem; text-align: left; color: #fff; font-weight: 600;">Sektör</th>
+                    <th style="padding: 1rem; text-align: center; color: #fff; font-weight: 600;">Kredi</th>
+                    <th style="padding: 1rem; text-align: center; color: #fff; font-weight: 600;">Kayıt Tarihi</th>
+                    <th style="padding: 1rem; text-align: center; color: #fff; font-weight: 600;">İşlemler</th>
+                </tr>
+            </thead>
+            <tbody id="users-tbody">
+                <tr>
+                    <td colspan="8" style="padding: 3rem; text-align: center; color: rgba(255,255,255,0.5);">
+                        <div class="loading-spinner" style="display: inline-block; width: 30px; height: 30px; border: 3px solid rgba(255,255,255,0.1); border-top-color: #667eea; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                        <p style="margin-top: 1rem;">Kullanıcılar yükleniyor...</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="pagination" style="display: flex; justify-content: center; align-items: center; gap: 1rem; margin-top: 1.5rem;">
+        <button id="prev-page" style="padding: 0.5rem 1rem; border-radius: 6px; background: rgba(102,126,234,0.3); border: 1px solid rgba(255,255,255,0.2); color: #fff; cursor: pointer;" disabled>← Önceki</button>
+        <span id="page-info" style="color: rgba(255,255,255,0.7);">Sayfa 1</span>
+        <button id="next-page" style="padding: 0.5rem 1rem; border-radius: 6px; background: rgba(102,126,234,0.3); border: 1px solid rgba(255,255,255,0.2); color: #fff; cursor: pointer;">Sonraki →</button>
+    </div>
+</div>
+
+<div id="user-modal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;">
+    <div class="modal-content" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 2rem; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto; border: 1px solid rgba(255,255,255,0.1);">
+        <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3 id="modal-title" style="color: #fff; margin: 0;">Kullanıcı Düzenle</h3>
+            <button id="close-modal" style="background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer;">×</button>
+        </div>
+        <form id="user-form">
+            <input type="hidden" id="user-id">
+            <div class="form-group" style="margin-bottom: 1rem;">
+                <label style="display: block; color: rgba(255,255,255,0.7); margin-bottom: 0.5rem;">Ad Soyad</label>
+                <input type="text" id="user-name" required style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1); color: #fff;">
+            </div>
+            <div class="form-group" style="margin-bottom: 1rem;">
+                <label style="display: block; color: rgba(255,255,255,0.7); margin-bottom: 0.5rem;">E-posta</label>
+                <input type="email" id="user-email" required style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1); color: #fff;">
+            </div>
+            <div class="form-group" style="margin-bottom: 1rem;">
+                <label style="display: block; color: rgba(255,255,255,0.7); margin-bottom: 0.5rem;">Şifre (boş bırakılırsa değişmez)</label>
+                <input type="password" id="user-password" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1); color: #fff;">
+            </div>
+            <div class="form-group" style="margin-bottom: 1rem;">
+                <label style="display: block; color: rgba(255,255,255,0.7); margin-bottom: 0.5rem;">Rol</label>
+                <select id="user-role" required style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1); color: #fff;">
+                    <option value="customer">Müşteri</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+            <div class="form-group" style="margin-bottom: 1rem;">
+                <label style="display: block; color: rgba(255,255,255,0.7); margin-bottom: 0.5rem;">Sektör</label>
+                <select id="user-sector" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1); color: #fff;">
+                    <option value="supermarket">Süpermarket</option>
+                    <option value="giyim">Giyim</option>
+                    <option value="teknoloji">Teknoloji & Elektronik</option>
+                    <option value="kozmetik">Kozmetik & Bakım</option>
+                    <option value="evyasam">Ev & Yaşam</option>
+                    <option value="elsanatlari">El Yapımı & El Sanatları</option>
+                    <option value="restoran">Restoran & Kafe</option>
+                    <option value="diger">Diğer</option>
+                </select>
+            </div>
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label style="display: block; color: rgba(255,255,255,0.7); margin-bottom: 0.5rem;">Kredi</label>
+                <input type="number" id="user-credits" min="0" value="0" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1); color: #fff;">
+            </div>
+            <div class="form-actions" style="display: flex; gap: 1rem;">
+                <button type="button" id="cancel-btn" style="flex: 1; padding: 0.75rem; border-radius: 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; cursor: pointer;">İptal</button>
+                <button type="submit" style="flex: 1; padding: 0.75rem; border-radius: 8px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; color: #fff; cursor: pointer; font-weight: 600;">Kaydet</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+#users-tbody tr:hover {
+    background: rgba(102,126,234,0.1);
+}
+#users-tbody td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: rgba(255,255,255,0.9);
+}
+.action-btn {
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    margin: 0 0.2rem;
+    font-size: 0.85rem;
+}
+.edit-btn {
+    background: rgba(102,126,234,0.3);
+    color: #fff;
+}
+.credit-btn {
+    background: rgba(76,175,80,0.3);
+    color: #4caf50;
+}
+.delete-btn {
+    background: rgba(244,67,54,0.3);
+    color: #f44336;
+}
+.role-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+.role-admin {
+    background: rgba(156,39,176,0.3);
+    color: #ce93d8;
+}
+.role-customer {
+    background: rgba(33,150,243,0.3);
+    color: #64b5f6;
+}
+</style>

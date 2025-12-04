@@ -1,0 +1,104 @@
+<div class="content-section" id="products-section">
+    <div class="toolbar">
+        <span class="toolbar-title" id="current-view-title">Tum Urunler</span>
+        <input type="text" class="toolbar-search" id="search-input" placeholder="Barkod veya urun adi ara...">
+        <button class="toolbar-btn" onclick="loadProducts()">
+            <span>&#8635;</span> Yenile
+        </button>
+        <button class="toolbar-btn" onclick="clearAllFilters()">
+            <span>&#10006;</span> Filtreleri Temizle
+        </button>
+        <button class="toolbar-btn primary" onclick="openAddProductModal()">
+            <span>+</span> Urun Ekle
+        </button>
+    </div>
+    
+    <div class="table-container" id="table-container">
+        <table class="product-table excel-style" id="product-table">
+            <thead>
+                <!-- Column Headers - Excel Style with Resizable Columns -->
+                <tr class="header-row">
+                    <th class="col-quality" style="position:relative; width:30px;">
+                        <span title="Resim Kalitesi">●</span>
+                    </th>
+                    <th class="col-thumb" style="position:relative; width:60px;">
+                        Resim
+                        <div class="resizer" onmousedown="initResize(event, this)" ondblclick="autoFitColumn(event, this)" title="Sürükle: Genişlik ayarla | Çift tıkla: Otomatik sığdır"></div>
+                    </th>
+                    <th class="col-barcode" style="position:relative; width:130px;">
+                        Barkod
+                        <div class="resizer" onmousedown="initResize(event, this)" ondblclick="autoFitColumn(event, this)" title="Sürükle: Genişlik ayarla | Çift tıkla: Otomatik sığdır"></div>
+                    </th>
+                    <th class="col-name" style="position:relative; min-width:200px;">
+                        Ürün Adı
+                        <div class="resizer" onmousedown="initResize(event, this)" ondblclick="autoFitColumn(event, this)" title="Sürükle: Genişlik ayarla | Çift tıkla: Otomatik sığdır"></div>
+                    </th>
+                    <th class="col-group" style="position:relative; width:100px;">
+                        Grup
+                        <div class="resizer" onmousedown="initResize(event, this)" ondblclick="autoFitColumn(event, this)" title="Sürükle: Genişlik ayarla | Çift tıkla: Otomatik sığdır"></div>
+                    </th>
+                    <th class="col-source" style="position:relative; width:100px;">
+                        Kaynak
+                        <div class="resizer" onmousedown="initResize(event, this)" ondblclick="autoFitColumn(event, this)" title="Sürükle: Genişlik ayarla | Çift tıkla: Otomatik sığdır"></div>
+                    </th>
+                    <th class="col-price" style="position:relative; width:100px;">
+                        Piyasa Fiyatı
+                        <div class="resizer" onmousedown="initResize(event, this)" ondblclick="autoFitColumn(event, this)" title="CAMGOZ API'den gelen piyasa fiyatı (sadece admin görür)"></div>
+                    </th>
+                    <th class="col-actions" style="width:80px;">İşlem</th>
+                </tr>
+                <!-- Excel-style Filter Row -->
+                <tr class="filter-row">
+                    <th class="col-quality"></th>
+                    <th class="col-thumb"></th>
+                    <th class="col-barcode">
+                        <input type="text" class="column-filter" id="filter-barcode" placeholder="&#128269;" oninput="applyColumnFilters()">
+                    </th>
+                    <th class="col-name">
+                        <input type="text" class="column-filter" id="filter-name" placeholder="&#128269;" oninput="applyColumnFilters()">
+                    </th>
+                    <th class="col-group">
+                        <select class="column-filter" id="filter-group" onchange="applyColumnFilters()">
+                            <option value="">Tumu</option>
+                            <option value="Genel">Genel</option>
+                            <option value="Gida">Gida</option>
+                            <option value="Icecek">Icecek</option>
+                            <option value="Temizlik">Temizlik</option>
+                            <option value="Kozmetik">Kozmetik</option>
+                            <option value="Bebek">Bebek</option>
+                        </select>
+                    </th>
+                    <th class="col-source">
+                        <select class="column-filter" id="filter-source" onchange="applyColumnFilters()">
+                            <option value="">Tumu</option>
+                            <option value="customer">Musteri</option>
+                            <option value="admin">Admin</option>
+                            <option value="google_search">Google</option>
+                            <option value="camgoz">CAMGOZ</option>
+                            <option value="n11">N11</option>
+                        </select>
+                    </th>
+                    <th class="col-price">
+                        <input type="text" class="column-filter" id="filter-price" placeholder="&#128269;" oninput="applyColumnFilters()">
+                    </th>
+                    <th class="col-actions"></th>
+                </tr>
+            </thead>
+            <tbody id="products-tbody">
+                <tr>
+                    <td colspan="8">
+                        <div class="loading">
+                            <div class="loading-spinner"></div>
+                            <span>Urunler yukleniyor...</span>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="status-bar">
+        <span id="status-left">Hazir</span>
+        <span id="status-right">0 urun</span>
+    </div>
+</div>

@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ürün Bilgileri Formu - AEU Yazılım</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="/static/css/glassmorphism.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .header h1 {
+            color: #667eea;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .header .company-info {
+            color: #6b7280;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        
+        .form-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #374151;
+            font-weight: 600;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .barcode-search {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+        }
+        
+        tbody tr {
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        tbody tr:hover {
+            background: #f9fafb;
+        }
+        
+        .quality-indicator {
+            font-size: 20px;
+        }
+        
+        .submit-section {
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        .stat-card .value {
+            font-size: 36px;
+            font-weight: bold;
+        }
+        
+        .stat-card .label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 16px 24px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .notification.show {
+            display: flex;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .barcode-search {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Product Search Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .modal-overlay.show {
+            display: flex;
+            animation: fadeIn 0.2s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .modal-header h3 {
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .modal-close {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.2s;
+        }
+        
+        .modal-close:hover {
+            background: rgba(255,255,255,0.3);
+            transform: rotate(90deg);
+        }
+        
+        .modal-body {
+            padding: 24px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+        
+        .modal-body .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .modal-body .search-input-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .modal-body .search-input-group input {
+            flex: 1;
+        }
+        
+        .modal-body .search-input-group button {
+            white-space: nowrap;
+        }
+        
+        .image-results {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .image-option {
+            border: 3px solid #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #f9fafb;
+        }
+        
+        .image-option:hover {
+            border-color: #667eea;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        
+        .image-option.selected {
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3);
+        }
+        
+        .image-option img {
+            width: 100%;
+            height: 120px;
+            object-fit: contain;
+            background: white;
+            padding: 8px;
+        }
+        
+        .image-option .image-info {
+            padding: 8px;
+            font-size: 11px;
+            color: #6b7280;
+            background: #f3f4f6;
+            text-align: center;
+        }
+        
+        .image-option .image-info .source {
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        .image-option .quality-badge {
+            display: inline-block;
+            font-size: 14px;
+        }
+        
+        .modal-footer {
+            padding: 16px 24px;
+            background: #f9fafb;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+        
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+        
+        .search-loading {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+        }
+        
+        .search-loading i {
+            font-size: 32px;
+            color: #667eea;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #9ca3af;
+        }
+        
+        .no-results i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: #d1d5db;
+        }
+        
+        .barcode-badge {
+            background: #f3f4f6;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #6b7280;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🏢 AEU YAZILIM - Ürün Bilgileri Formu</h1>
+            <div class="company-info">
+                <p><strong id="customer-name">Yükleniyor...</strong></p>
+                <p id="customer-email"></p>
+            </div>
+        </div>
+        
+        <!-- İstatistikler -->
+        <div class="stats">
+            <div class="stat-card">
+                <div class="value" id="stat-products">0</div>
+                <div class="label">Eklenen Ürün</div>
+            </div>
+            <div class="stat-card">
+                <div class="value" id="stat-auto">0</div>
+                <div class="label">Otomatik Dolduruldu</div>
+            </div>
+            <div class="stat-card">
+                <div class="value" id="stat-manual">0</div>
+                <div class="label">Manuel Eklendi</div>
+            </div>
+        </div>
+        
+        <!-- Ürün Ekleme Formu -->
+        <div class="form-card">
+            <h2>📦 Yeni Ürün Ekle</h2>
+            
+            <div class="form-group">
+                <label for="barcode-input">🔍 Barkod (Enter ile otomatik ara)</label>
+                <div class="barcode-search">
+                    <input type="text" id="barcode-input" placeholder="Barkod okutun veya girin..." autocomplete="off">
+                    <button class="btn btn-primary" id="search-btn">
+                        <i class="fas fa-search"></i> Ara
+                    </button>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="product-name">📝 Ürün Adı *</label>
+                <input type="text" id="product-name" placeholder="Örn: Coca Cola 1 Litre" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="product-group">🏷️ Ürün Grubu *</label>
+                <select id="product-group" required>
+                    <option value="">Seçin...</option>
+                    <optgroup label="Süpermarket">
+                        <option value="Gıda">Gıda</option>
+                        <option value="İçecek">İçecek</option>
+                        <option value="Et & Tavuk">Et & Tavuk</option>
+                        <option value="Meyve & Sebze">Meyve & Sebze</option>
+                        <option value="Temizlik">Temizlik</option>
+                        <option value="Kişisel Bakım">Kişisel Bakım</option>
+                        <option value="Atıştırmalık">Atıştırmalık</option>
+                        <option value="Dondurulmuş">Dondurulmuş</option>
+                        <option value="Şarküteri">Şarküteri</option>
+                    </optgroup>
+                    <optgroup label="Giyim">
+                        <option value="Giyim">Giyim</option>
+                        <option value="Ayakkabı">Ayakkabı</option>
+                        <option value="Aksesuar">Aksesuar</option>
+                    </optgroup>
+                    <optgroup label="Teknoloji">
+                        <option value="Telefon">Telefon</option>
+                        <option value="Bilgisayar & Tablet">Bilgisayar & Tablet</option>
+                        <option value="TV & Ses">TV & Ses</option>
+                        <option value="Beyaz Eşya">Beyaz Eşya</option>
+                        <option value="Küçük Ev Aletleri">Küçük Ev Aletleri</option>
+                        <option value="Oyun">Oyun</option>
+                    </optgroup>
+                    <optgroup label="Kozmetik">
+                        <option value="Parfüm">Parfüm</option>
+                        <option value="Kişisel Bakım">Kişisel Bakım</option>
+                    </optgroup>
+                    <optgroup label="Ev & Yaşam">
+                        <option value="Mobilya">Mobilya</option>
+                        <option value="Dekorasyon">Dekorasyon</option>
+                        <option value="Bahçe">Bahçe</option>
+                    </optgroup>
+                    <optgroup label="El Sanatları">
+                        <option value="Takı">Takı</option>
+                        <option value="Tekstil">Tekstil</option>
+                        <option value="Seramik">Seramik</option>
+                        <option value="Ahşap">Ahşap</option>
+                    </optgroup>
+                    <optgroup label="Restoran">
+                        <option value="Yemek">Yemek</option>
+                        <option value="İçecek">İçecek</option>
+                        <option value="Tatlı">Tatlı</option>
+                        <option value="Aperatif">Aperatif</option>
+                    </optgroup>
+                    <option value="Genel">Genel</option>
+                </select>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="form-group">
+                    <label for="normal-price">💰 Normal Fiyat (TL)</label>
+                    <input type="number" id="normal-price" step="0.01" min="0" placeholder="0.00">
+                </div>
+                
+                <div class="form-group">
+                    <label for="discount-price">🎯 İndirimli Fiyat (TL)</label>
+                    <input type="number" id="discount-price" step="0.01" min="0" placeholder="0.00">
+                </div>
+            </div>
+            
+            <button class="btn btn-success" id="add-product-btn" style="width: 100%; margin-top: 10px;">
+                <i class="fas fa-plus"></i> Ürünü Ekle
+            </button>
+        </div>
+        
+        <!-- Ürün Listesi -->
+        <div class="form-card">
+            <h2>📋 Eklenen Ürünler (<span id="product-count">0</span>)</h2>
+            
+            <div class="table-container">
+                <table id="products-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Barkod</th>
+                            <th>Ürün Adı</th>
+                            <th>Grup</th>
+                            <th>Normal Fiyat</th>
+                            <th>İndirim</th>
+                            <th>Kalite</th>
+                            <th>İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody id="products-tbody">
+                        <tr>
+                            <td colspan="8" style="text-align: center; padding: 40px; color: #9ca3af;">
+                                Henüz ürün eklenmedi. Yukarıdaki formdan ürün ekleyebilirsiniz.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="submit-section">
+                <button class="btn btn-success" id="submit-all-btn" style="font-size: 18px; padding: 16px 40px;" disabled>
+                    <i class="fas fa-paper-plane"></i> Tüm Ürünleri Gönder
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle" style="color: #10b981; font-size: 24px;"></i>
+        <span id="notification-text"></span>
+    </div>
+    
+    <!-- Product Search Modal (Fallback when CAMGOZ fails) -->
+    <div class="modal-overlay" id="product-search-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-search"></i> Ürün Bulunamadı - Manuel Arama</h3>
+                <button class="modal-close" onclick="closeSearchModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="barcode-badge" id="modal-barcode-badge">
+                    <i class="fas fa-barcode"></i> <span id="modal-barcode-display"></span>
+                </div>
+                
+                <p style="margin-bottom: 15px; color: #6b7280;">
+                    Bu barkod veritabanımızda bulunamadı. Ürün adını yazarak web'de arayabilirsiniz.
+                </p>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-tag"></i> Ürün Adı</label>
+                    <div class="search-input-group">
+                        <input type="text" id="modal-product-name" placeholder="Örn: Alo Deterjan 4.5kg">
+                        <button class="btn btn-primary" onclick="searchProductByName()">
+                            <i class="fas fa-search"></i> Ara
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="image-results-container">
+                    <!-- Results will be loaded here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeSearchModal()">
+                    <i class="fas fa-times"></i> İptal
+                </button>
+                <button class="btn btn-success" id="select-image-btn" onclick="selectImageAndClose()" disabled>
+                    <i class="fas fa-check"></i> Seçimi Uygula
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let products = [];
+        let autoFillCount = 0;
+        let manualCount = 0;
+        let customerInfo = null;
+        
+        // Get token from URL
+        const token = window.location.pathname.split('/').pop();
+        
+        // Load customer info
+        async function loadCustomerInfo() {
+            try {
+                const response = await fetch(`/api/musteri-form/${token}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    customerInfo = data.customer;
+                    document.getElementById('customer-name').textContent = customerInfo.name || 'Müşteri';
+                    document.getElementById('customer-email').textContent = customerInfo.email || '';
+                } else {
+                    alert('❌ Geçersiz form linki!');
+                    window.location.href = '/';
+                }
+            } catch (error) {
+                console.error('Error loading customer info:', error);
+                alert('❌ Bağlantı hatası!');
+            }
+        }
+        
+        // Show notification
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            document.getElementById('notification-text').textContent = message;
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Update stats
+        function updateStats() {
+            document.getElementById('stat-products').textContent = products.length;
+            document.getElementById('stat-auto').textContent = autoFillCount;
+            document.getElementById('stat-manual').textContent = manualCount;
+            document.getElementById('product-count').textContent = products.length;
+            document.getElementById('submit-all-btn').disabled = products.length === 0;
+        }
+        
+        // Search barcode via CAMGOZ
+        let currentSearchBarcode = '';
+        let selectedImageUrl = '';
+        let selectedProductName = '';
+        
+        async function searchBarcode(barcode) {
+            if (!barcode || barcode.length < 8) return;
+            
+            try {
+                const response = await fetch('/api/barkod-sorgula', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ barcode: barcode })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success && data.found && data.product) {
+                        // Auto-fill form
+                        document.getElementById('product-name').value = data.product.name || '';
+                        document.getElementById('product-group').value = data.product.product_group || data.product.category || '';
+                        document.getElementById('normal-price').value = data.product.market_price || '';
+                        document.getElementById('discount-price').value = data.product.market_price_tax || '';
+                        
+                        showNotification('✅ Ürün bilgileri otomatik dolduruldu!');
+                        autoFillCount++;
+                        updateStats();
+                    } else {
+                        // CAMGOZ'da bulunamadı - Modal aç
+                        openSearchModal(barcode);
+                    }
+                }
+            } catch (error) {
+                console.error('Barcode search error:', error);
+                // Hata olursa da modal aç
+                openSearchModal(barcode);
+            }
+        }
+        
+        // ============= PRODUCT SEARCH MODAL FUNCTIONS =============
+        
+        function openSearchModal(barcode) {
+            currentSearchBarcode = barcode;
+            selectedImageUrl = '';
+            selectedProductName = '';
+            
+            document.getElementById('modal-barcode-display').textContent = barcode;
+            document.getElementById('modal-product-name').value = '';
+            document.getElementById('image-results-container').innerHTML = `
+                <div class="no-results">
+                    <i class="fas fa-search"></i>
+                    <p>Ürün adını yazıp "Ara" butonuna tıklayın</p>
+                </div>
+            `;
+            document.getElementById('select-image-btn').disabled = true;
+            
+            document.getElementById('product-search-modal').classList.add('show');
+            document.getElementById('modal-product-name').focus();
+            
+            showNotification('⚠️ Ürün bulunamadı - Manuel arama yapın');
+            manualCount++;
+            updateStats();
+        }
+        
+        function closeSearchModal() {
+            document.getElementById('product-search-modal').classList.remove('show');
+            currentSearchBarcode = '';
+        }
+        
+        async function searchProductByName() {
+            const productName = document.getElementById('modal-product-name').value.trim();
+            
+            if (!productName || productName.length < 3) {
+                alert('⚠️ Ürün adı en az 3 karakter olmalı!');
+                return;
+            }
+            
+            const container = document.getElementById('image-results-container');
+            container.innerHTML = `
+                <div class="search-loading">
+                    <i class="fas fa-spinner"></i>
+                    <p>Web'de aranıyor...</p>
+                </div>
+            `;
+            
+            try {
+                const response = await fetch('/api/search-product-by-name', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        product_name: productName,
+                        barcode: currentSearchBarcode
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success && data.results && data.results.length > 0) {
+                    renderImageResults(data.results, productName);
+                } else {
+                    container.innerHTML = `
+                        <div class="no-results">
+                            <i class="fas fa-image"></i>
+                            <p>Görsel bulunamadı</p>
+                            <p style="font-size: 12px; margin-top: 8px;">Farklı bir ürün adı deneyin</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Search error:', error);
+                container.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i>
+                        <p>Arama hatası oluştu</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function renderImageResults(results, productName) {
+            const container = document.getElementById('image-results-container');
+            
+            container.innerHTML = `
+                <p style="color: #10b981; margin-bottom: 15px; font-weight: 600;">
+                    <i class="fas fa-check-circle"></i> ${results.length} görsel bulundu - Birini seçin:
+                </p>
+                <div class="image-results">
+                    ${results.map((img, idx) => `
+                        <div class="image-option" data-url="${img.image_url}" data-name="${productName}" onclick="selectImage(this, '${img.image_url}', '${productName.replace(/'/g, "\\'")}')">
+                            <img src="${img.thumbnail_url || img.image_url}" alt="${img.title}" onerror="this.src='/static/uploads/placeholder.png'">
+                            <div class="image-info">
+                                <span class="quality-badge">${img.quality_indicator}</span>
+                                <span class="source">${img.source}</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+        
+        function selectImage(element, imageUrl, productName) {
+            // Remove previous selection
+            document.querySelectorAll('.image-option').forEach(el => el.classList.remove('selected'));
+            
+            // Add selection to clicked element
+            element.classList.add('selected');
+            
+            selectedImageUrl = imageUrl;
+            selectedProductName = productName;
+            
+            document.getElementById('select-image-btn').disabled = false;
+        }
+        
+        function selectImageAndClose() {
+            if (selectedProductName) {
+                document.getElementById('product-name').value = selectedProductName;
+            }
+            
+            // Store image URL for later use (when adding product)
+            if (selectedImageUrl) {
+                document.getElementById('barcode-input').dataset.imageUrl = selectedImageUrl;
+                showNotification('✅ Görsel seçildi!');
+            }
+            
+            closeSearchModal();
+        }
+        
+        // Handle Enter key in modal
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && document.getElementById('product-search-modal').classList.contains('show')) {
+                const modalInput = document.getElementById('modal-product-name');
+                if (document.activeElement === modalInput) {
+                    searchProductByName();
+                }
+            }
+            
+            // ESC to close modal
+            if (e.key === 'Escape') {
+                closeSearchModal();
+            }
+        });
+        
+        // Add product to list
+        function addProduct() {
+            const barcode = document.getElementById('barcode-input').value.trim();
+            const name = document.getElementById('product-name').value.trim();
+            const group = document.getElementById('product-group').value;
+            const normalPrice = parseFloat(document.getElementById('normal-price').value) || 0;
+            const discountPrice = parseFloat(document.getElementById('discount-price').value) || 0;
+            
+            if (!barcode || !name || !group) {
+                alert('⚠️ Barkod, Ürün Adı ve Grup alanları zorunludur!');
+                return;
+            }
+            
+            const product = {
+                barcode,
+                name,
+                product_group: group,
+                normal_price: normalPrice,
+                discount_price: discountPrice,
+                quality_indicator: '⚪'
+            };
+            
+            products.push(product);
+            renderTable();
+            clearForm();
+            updateStats();
+            showNotification(`✅ ${name} eklendi!`);
+        }
+        
+        // Render products table
+        function renderTable() {
+            const tbody = document.getElementById('products-tbody');
+            
+            if (products.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 40px; color: #9ca3af;">
+                            Henüz ürün eklenmedi. Yukarıdaki formdan ürün ekleyebilirsiniz.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = products.map((p, idx) => `
+                <tr>
+                    <td>${idx + 1}</td>
+                    <td>${p.barcode}</td>
+                    <td>${p.name}</td>
+                    <td>${p.product_group}</td>
+                    <td>${p.normal_price.toFixed(2)} ₺</td>
+                    <td>${p.discount_price.toFixed(2)} ₺</td>
+                    <td class="quality-indicator">${p.quality_indicator}</td>
+                    <td>
+                        <button class="btn btn-danger" onclick="deleteProduct(${idx})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        // Delete product
+        function deleteProduct(index) {
+            if (confirm('Bu ürünü silmek istediğinizden emin misiniz?')) {
+                products.splice(index, 1);
+                renderTable();
+                updateStats();
+                showNotification('🗑️ Ürün silindi');
+            }
+        }
+        
+        // Clear form
+        function clearForm() {
+            document.getElementById('barcode-input').value = '';
+            document.getElementById('product-name').value = '';
+            document.getElementById('product-group').value = '';
+            document.getElementById('normal-price').value = '';
+            document.getElementById('discount-price').value = '';
+            document.getElementById('barcode-input').focus();
+        }
+        
+        // Submit all products
+        async function submitAll() {
+            if (products.length === 0) {
+                alert('⚠️ En az bir ürün ekleyin!');
+                return;
+            }
+            
+            if (!confirm(`${products.length} ürünü göndermek istediğinizden emin misiniz?`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/musteri-form/${token}/submit`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        products: products
+                    })
+                });
+                
+                if (response.ok) {
+                    alert('✅ Ürünler başarıyla gönderildi! Teşekkür ederiz.');
+                    products = [];
+                    renderTable();
+                    updateStats();
+                } else {
+                    alert('❌ Gönderim hatası!');
+                }
+            } catch (error) {
+                console.error('Submit error:', error);
+                alert('❌ Bağlantı hatası!');
+            }
+        }
+        
+        // Event listeners
+        document.getElementById('barcode-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                searchBarcode(this.value.trim());
+            }
+        });
+        
+        document.getElementById('search-btn').addEventListener('click', function() {
+            const barcode = document.getElementById('barcode-input').value.trim();
+            searchBarcode(barcode);
+        });
+        
+        document.getElementById('add-product-btn').addEventListener('click', addProduct);
+        document.getElementById('submit-all-btn').addEventListener('click', submitAll);
+        
+        // Initialize
+        loadCustomerInfo();
+        updateStats();
+    </script>
+    
+    <!-- Ghost Assistant -->
+    <script src="/static/js/ghost.js"></script>
+</body>
+</html>

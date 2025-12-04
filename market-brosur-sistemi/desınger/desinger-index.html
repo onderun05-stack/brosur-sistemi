@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Akıllı Broşür Tasarımı</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav class="container-fluid">
+    <ul><li><strong>Firma Broşür Stüdyosu</strong></li></ul>
+    <ul>
+      <li><a href="#">Yardım</a></li>
+      <li><a href="#">Destek</a></li>
+      <li><a href="#" role="button">Çıkış</a></li>
+    </ul>
+  </nav>
+
+  <main class="container">
+    <h2>Broşür Oluştur</h2>
+    <p>Ürünleri sol panelden sürükleyin, tasarımı canlı olarak düzenleyin. OpenAI ile arka plan, yazı tipi ve fiyat düzen önerileri alın.</p>
+    <div class="studio">
+      <aside id="product-list">
+        <h4>Ürünler</h4>
+        <div class="product" draggable="true" data-name="Çaykur Tiryaki" data-price="22,95" data-img="caykur.jpg">Çaykur Tiryaki</div>
+        <div class="product" draggable="true" data-name="Torku Banada" data-price="13,95" data-img="banada.jpg">Torku Banada</div>
+        <div class="product" draggable="true" data-name="Cappy Şeftali" data-price="2,95" data-img="cappy.jpg">Cappy Şeftali</div>
+      </aside>
+      <section id="canvas-area">
+        <canvas id="brochure-canvas" width="800" height="600"></canvas>
+        <div class="actions">
+          <button id="ai-layout">🧠 OpenAI: Ürünleri Yerleştir</button>
+          <button id="ai-style">🎨 Yazı + Arka Plan Öner</button>
+          <button id="save-template">📌 Şablon Kaydet</button>
+          <button id="export">📥 PDF Olarak Kaydet</button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="container">
+    <small><a href="#">Gizlilik</a> • <a href="#">Şartlar</a></small>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

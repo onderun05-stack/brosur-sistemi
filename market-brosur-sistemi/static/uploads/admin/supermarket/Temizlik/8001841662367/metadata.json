@@ -1,0 +1,11 @@
+{
+  "user_id": 2,
+  "sector": "supermarket",
+  "group": "Temizlik",
+  "barcode": "8001841662367",
+  "uploaded_at": "2025-12-03T19:52:24.077603",
+  "status": "admin_depot",
+  "original_filename": "product.png",
+  "original_user_id": 2,
+  "approved_at": "2025-12-03T23:47:00.169512"
+}

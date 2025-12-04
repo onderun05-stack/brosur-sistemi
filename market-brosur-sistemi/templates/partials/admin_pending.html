@@ -1,0 +1,38 @@
+<div class="content-section" id="pending-section">
+    <div class="toolbar">
+        <span class="toolbar-title">Onay Bekleyenler</span>
+        <button class="toolbar-btn" onclick="loadPendingProducts()">
+            <span>&#8635;</span> Yenile
+        </button>
+    </div>
+    
+    <div class="table-container">
+        <table class="product-table">
+            <thead>
+                <tr>
+                    <th class="col-quality">&#9679;</th>
+                    <th class="col-thumb">Resim</th>
+                    <th class="col-barcode">Barkod</th>
+                    <th class="col-name">Urun Adi</th>
+                    <th class="col-group">Sektor</th>
+                    <th class="col-actions" style="width:150px;">Islem</th>
+                </tr>
+            </thead>
+            <tbody id="pending-tbody">
+                <tr>
+                    <td colspan="6">
+                        <div class="loading">
+                            <div class="loading-spinner"></div>
+                            <span>Yukleniyor...</span>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="status-bar">
+        <span id="pending-status">Hazir</span>
+        <span id="pending-count">0 bekleyen</span>
+    </div>
+</div>

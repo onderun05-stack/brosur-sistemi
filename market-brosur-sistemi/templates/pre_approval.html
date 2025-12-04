@@ -1,0 +1,3737 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ürün Ön Onay - Market Broşürü</title>
+    <link rel="icon" href="/static/favicon.ico">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <link href="/static/css/glassmorphism.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --border: rgba(255, 255, 255, 0.2);
+            --text: #ffffff;
+        }
+        
+        /* GLASSMORPHISM BACKGROUND */
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%);
+            min-height: 100vh;
+            color: #ffffff;
+            position: relative;
+        }
+        
+        /* Geometrik şekiller */
+        body::before {
+            content: '';
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, #fbbf24 0%, #f59e0b 30%, transparent 70%);
+            bottom: -150px;
+            right: -100px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        body::after {
+            content: '';
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 60%);
+            top: -100px;
+            left: -100px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 20px 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header h1 {
+            color: #ffffff;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .header-stats {
+            display: flex;
+            gap: 20px;
+            font-size: 14px;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .stat-item .value {
+            font-weight: bold;
+            color: var(--dark);
+        }
+        
+        .action-bar {
+            background: white;
+            padding: 15px 30px;
+            margin-top: 1px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            min-width: 160px;
+            color: white;
+        }
+        
+        /* Excel Yükle - Altın Gradyan */
+        .btn-excel {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+        
+        .btn-excel:hover {
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(245, 158, 11, 0.4);
+        }
+        
+        /* Form Aç - Mavi Gradyan */
+        .btn-open-form {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        }
+        
+        .btn-open-form:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+        }
+        
+        /* Tümünü Seç - Gri Gradyan */
+        .btn-select {
+            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+        }
+        
+        .btn-select:hover {
+            background: linear-gradient(135deg, #475569 0%, #334155 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(100, 116, 139, 0.4);
+        }
+        
+        /* Seçileni Sayfaya Ata - Krem Gradyan */
+        .btn-page {
+            background: linear-gradient(135deg, #f5deb3 0%, #daa520 100%);
+            color: #333;
+        }
+        
+        .btn-page:hover {
+            background: linear-gradient(135deg, #daa520 0%, #b8860b 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(218, 165, 32, 0.4);
+        }
+        
+        /* AI Dağıt - Gökkuşağı Gradyan */
+        .btn-ai {
+            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 50%, #3b82f6 100%);
+        }
+        
+        .btn-ai:hover {
+            background: linear-gradient(135deg, #7c3aed 0%, #db2777 50%, #2563eb 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(139, 92, 246, 0.5);
+        }
+        
+        /* Broşüre Aktar - Yeşil Gradyan */
+        .btn-approve {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+        
+        .btn-approve:hover {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+        }
+        
+        .invalid-row {
+            background: rgba(239, 68, 68, 0.08);
+        }
+        
+        /* Yanıp sönen satır - resim/isim eksik */
+        .blink-row {
+            animation: blinkRed 0.8s ease-in-out 5;
+        }
+        
+        @keyframes blinkRed {
+            0%, 100% { background: rgba(239, 68, 68, 0.1); }
+            50% { background: rgba(239, 68, 68, 0.4); }
+        }
+        
+        .validation-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            background: rgba(239, 68, 68, 0.18);
+            color: #b91c1c;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+        
+        /* İptal Et - Kırmızı Gradyan */
+        .btn-cancel {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+        
+        .btn-cancel:hover {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
+        }
+        
+        /* ========== DOWNLOAD MODAL ========== */
+        .download-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 10000;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .download-modal-overlay.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .download-modal {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            animation: slideUp 0.4s ease;
+        }
+        
+        .download-modal-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .download-modal-logo {
+            width: 120px;
+            height: auto;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 4px 12px rgba(102, 126, 234, 0.3));
+        }
+        
+        .download-modal-header h2 {
+            color: #667eea;
+            font-size: 28px;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .download-modal-header p {
+            color: #64748b;
+            font-size: 16px;
+        }
+        
+        .download-modal-content {
+            margin-bottom: 30px;
+        }
+        
+        .download-modal-feature {
+            display: flex;
+            align-items: start;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .download-modal-feature-icon {
+            font-size: 24px;
+            min-width: 30px;
+        }
+        
+        .download-modal-feature-text h3 {
+            color: #334155;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        
+        .download-modal-feature-text p {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .download-modal-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        .download-modal-btn {
+            padding: 14px 32px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .download-modal-btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .download-modal-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+        
+        .download-modal-btn-secondary {
+            background: rgba(100, 116, 139, 0.1);
+            color: #64748b;
+            border: 2px solid rgba(100, 116, 139, 0.2);
+        }
+        
+        .download-modal-btn-secondary:hover {
+            background: rgba(100, 116, 139, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Dropdown için daha geniş */
+        /* page-selector artık kullanılmıyor - Kaydet butonu ile değiştirildi */
+        .page-selector-unused {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 200px;
+        }
+        
+        .page-selector select {
+            padding: 8px 12px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        /* Arama Container */
+        .search-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-right: 15px;
+        }
+        
+        .search-input {
+            padding: 10px 15px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            width: 280px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        /* Ara Butonu - Mavi Gradyan */
+        .btn-search {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            min-width: 120px;
+        }
+        
+        .btn-search:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+        }
+        
+        .table-container {
+            background: white;
+            margin: 20px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+        
+        th {
+            background: var(--light);
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--dark);
+            border-bottom: 2px solid var(--border);
+            font-size: 14px;
+            position: relative;
+            user-select: none;
+        }
+        
+        /* Sürüklenebilir sütun kenarları */
+        th .resizer {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 5px;
+            height: 100%;
+            cursor: col-resize;
+            background: transparent;
+            transition: background 0.2s;
+        }
+        
+        th .resizer:hover,
+        th .resizer.resizing {
+            background: var(--primary);
+        }
+        
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+        
+        /* Satır renklendirme - hafif fark */
+        tr:nth-child(odd) {
+            background: rgba(255, 255, 255, 0.95);
+        }
+        
+        tr:nth-child(even) {
+            background: rgba(224, 231, 243, 0.95);
+        }
+        
+        tr:hover {
+            background: rgba(226, 232, 240, 0.95) !important;
+            outline: 2px solid rgba(251, 191, 36, 0.6);
+            outline-offset: -2px;
+        }
+        
+        .checkbox-cell {
+            width: 40px;
+            text-align: center;
+        }
+        
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        .product-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid var(--border);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .product-image:hover {
+            transform: scale(1.1);
+            border-color: var(--primary);
+        }
+        
+        .no-image {
+            width: 60px;
+            height: 60px;
+            background: var(--light);
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+            color: var(--text);
+            text-align: center;
+            padding: 5px;
+        }
+        
+        .no-image:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .image-cell {
+            width: 120px;
+        }
+        
+        .image-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .no-image-placeholder {
+            width: 60px;
+            height: 50px;
+            background: var(--light);
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: var(--text);
+        }
+        
+        .image-buttons {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .btn-image {
+            padding: 4px 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            min-width: 55px;
+            min-height: 26px;
+        }
+        
+        .btn-image.btn-disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        
+        .btn-ai {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+        }
+        
+        .btn-ai:hover {
+            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+            transform: scale(1.05);
+        }
+        
+        .btn-pc {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+        }
+        
+        .btn-pc:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        }
+        
+        .btn-search {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+        
+        .btn-search:hover {
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+            transform: scale(1.05);
+        }
+        
+        /* AI Image Modal */
+        .ai-modal-content {
+            max-width: 800px;
+            width: 90%;
+        }
+        
+        .ai-image-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin: 20px 0;
+        }
+        
+        .ai-image-option {
+            border: 3px solid var(--border);
+            border-radius: 10px;
+            padding: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            background: white;
+        }
+        
+        .ai-image-option:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+        
+        .ai-image-option.selected {
+            border-color: var(--success);
+            background: #f0fdf4;
+        }
+        
+        .ai-image-option img {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        
+        .ai-image-option .option-label {
+            margin-top: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        .ai-loading {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .ai-loading .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--light);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .ai-modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        /* CSS Hover Zoom Preview - Ekranın ortasında */
+        .hover-zoom-container {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .hover-zoom-preview {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            width: 380px;
+            height: 380px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            display: none;
+            overflow: hidden;
+            border: 4px solid var(--primary);
+            pointer-events: none;
+        }
+        
+        .hover-zoom-preview.active {
+            display: block;
+            animation: zoomInCenter 0.2s ease-out forwards;
+        }
+        
+        @keyframes zoomInCenter {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+        
+        .hover-zoom-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 10px;
+        }
+        
+        .hover-zoom-preview .zoom-select-btn {
+            display: none;
+        }
+        
+        .product-image-hover {
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .product-image-hover:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+        
+        /* AI Modal - Main Image & Thumbnail Gallery */
+        .ai-main-image {
+            text-align: center;
+            margin: 15px 0;
+        }
+        
+        .ai-main-image img {
+            max-width: 280px;
+            max-height: 280px;
+            border-radius: 12px;
+            border: 3px solid var(--primary);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+        }
+        
+        .ai-thumbnail-gallery {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 10px;
+            background: var(--light);
+            border-radius: 8px;
+            min-height: 80px;
+        }
+        
+        .ai-thumbnail {
+            width: 70px;
+            height: 70px;
+            border-radius: 8px;
+            border: 2px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s;
+            object-fit: cover;
+            position: relative;
+        }
+        
+        .ai-thumbnail:hover {
+            border-color: var(--primary);
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+        
+        .ai-thumbnail.selected {
+            border-color: var(--success);
+            border-width: 3px;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3);
+        }
+        
+        .ai-thumbnail-wrapper {
+            position: relative;
+        }
+        
+        .ai-thumbnail-wrapper .thumb-select-btn {
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.2s;
+            z-index: 10;
+        }
+        
+        .ai-thumbnail-wrapper:hover .thumb-select-btn {
+            opacity: 1;
+            pointer-events: auto;
+            bottom: 5px;
+        }
+        
+        .ai-thumbnail-wrapper .thumb-select-btn:hover {
+            transform: translateX(-50%) scale(1.1);
+        }
+        
+        .ai-thumbnail-wrapper-old {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .ai-thumbnail-wrapper .thumb-number {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--primary);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .image-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+        }
+        
+        .status-exists {
+            color: var(--success);
+        }
+        
+        .status-missing {
+            color: var(--danger);
+        }
+        
+        .price-input {
+            width: 80px;
+            padding: 6px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 14px;
+            text-align: right;
+        }
+        
+        .price-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        .page-tag {
+            display: inline-block;
+            padding: 4px 8px;
+            background: var(--primary);
+            color: white;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .page-tag.unassigned {
+            background: var(--text);
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-header h2 {
+            color: var(--dark);
+            font-size: 20px;
+        }
+        
+        .close-btn {
+            width: 30px;
+            height: 30px;
+            border: none;
+            background: var(--light);
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            color: var(--text);
+        }
+        
+        .close-btn:hover {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .image-preview-modal img {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 8px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 14px;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        .file-upload-area {
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .file-upload-area:hover {
+            border-color: var(--primary);
+            background: var(--light);
+        }
+        
+        .file-upload-area.dragover {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+        
+        .assigned-row {
+            opacity: 0.7;
+            background: #f0f9ff;
+        }
+        
+        .assigned-row input[type="checkbox"] {
+            pointer-events: none;
+        }
+        
+        .floating-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            z-index: 500;
+        }
+        
+        .panel-title {
+            font-weight: bold;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+        
+        .page-distribution {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            font-size: 14px;
+        }
+        
+        .page-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 10px;
+            background: var(--light);
+            border-radius: 4px;
+        }
+        
+        /* ========== PRODUCT FORM MODAL ========== */
+        .product-form-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .product-form-modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+        
+        .product-form-modal {
+            width: 90%;
+            max-width: 1400px;
+            height: 85vh;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 16px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        
+        .product-form-modal-overlay.active .product-form-modal {
+            transform: scale(1);
+        }
+        
+        .product-form-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .product-form-modal-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .product-form-modal-close {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .product-form-modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+        
+        .product-form-modal-body {
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .product-form-modal-body iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        /* Modal loading state */
+        .product-form-modal-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #667eea;
+        }
+        
+        .product-form-modal-loading .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid #e0e0e0;
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* ========== SORGU ANİMASYONU ========== */
+        /* Sorgulanan satır - sarı yanıp söner */
+        tr.querying {
+            background: linear-gradient(90deg, #fef3c7, #fde68a, #fef3c7) !important;
+            animation: pulse-query 1.2s ease-in-out infinite;
+            position: relative;
+        }
+        
+        tr.querying td {
+            background: transparent !important;
+        }
+        
+        tr.querying::before {
+            content: '🔍';
+            position: absolute;
+            left: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            animation: bounce-search 0.6s ease-in-out infinite;
+        }
+        
+        @keyframes pulse-query {
+            0%, 100% { 
+                background: linear-gradient(90deg, #fef3c7, #fde68a, #fef3c7) !important;
+                box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.4);
+            }
+            50% { 
+                background: linear-gradient(90deg, #fde68a, #fbbf24, #fde68a) !important;
+                box-shadow: 0 0 20px 5px rgba(251, 191, 36, 0.3);
+            }
+        }
+        
+        @keyframes bounce-search {
+            0%, 100% { transform: translateY(-50%) scale(1); }
+            50% { transform: translateY(-50%) scale(1.2); }
+        }
+        
+        /* Başarılı sorgu - yeşil */
+        tr.query-success {
+            background: linear-gradient(90deg, #d1fae5, #a7f3d0) !important;
+            transition: all 0.5s ease;
+        }
+        
+        tr.query-success td {
+            background: transparent !important;
+        }
+        
+        /* Başarısız sorgu - kırmızı */
+        tr.query-failed {
+            background: linear-gradient(90deg, #fee2e2, #fecaca) !important;
+            transition: all 0.5s ease;
+        }
+        
+        tr.query-failed td {
+            background: transparent !important;
+        }
+        
+        /* Sorgu ilerleme çubuğu */
+        .query-progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #fbbf24, #f59e0b);
+            z-index: 9999;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📋 Ürün Ön Onay Ekranı</h1>
+        <div class="header-stats">
+            <div class="stat-item">
+                <span>Toplam Ürün:</span>
+                <span class="value" id="total-products">0</span>
+            </div>
+            <div class="stat-item">
+                <span>Seçili:</span>
+                <span class="value" id="selected-count">0</span>
+            </div>
+            <div class="stat-item">
+                <span>Resimli:</span>
+                <span class="value" id="with-image">0</span>
+            </div>
+            <div class="stat-item">
+                <span>Resimsiz:</span>
+                <span class="value" id="without-image">0</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="action-bar">
+        <div class="search-container">
+            <input type="text" 
+                   id="search-input" 
+                   class="search-input" 
+                   placeholder="Barkod, ürün adı veya grup ara..."
+                   onkeydown="if(event.key === 'Enter') filterTable()">
+            <button class="btn btn-search" onclick="filterTable()">
+                <span>🔍</span> Ara
+            </button>
+        </div>
+        <div class="action-buttons">
+            <button class="btn btn-open-form" onclick="openProductFormModal()">
+                <span>📝</span> Form Aç
+            </button>
+            <button class="btn btn-excel" id="excel-upload-btn" onclick="document.getElementById('excel-file-input').click()">
+                <span>📊</span> Excel Yükle
+            </button>
+            <button class="btn btn-select" id="select-all-btn">
+                <span>☑️</span> Tümünü Seç
+            </button>
+            <button class="btn btn-page" id="save-btn">
+                <span>💾</span> Kaydet
+            </button>
+            <button class="btn btn-ai" id="ai-distribute-btn">
+                <span>🤖</span> AI Dağıt
+            </button>
+            <button class="btn btn-approve" id="transfer-canvas-btn">
+                <span>🎨</span> Broşüre Aktar
+            </button>
+            <button class="btn btn-cancel" id="cancel-btn" onclick="cancelAndGoBack()">
+                <span>❌</span> İptal Et
+            </button>
+        </div>
+    </div>
+    
+    <!-- Hidden Excel File Input -->
+    <input type="file" id="excel-file-input" accept=".xlsx,.xls" style="display: none;">
+
+    <div class="table-container">
+        <table id="products-table">
+            <thead>
+                <tr>
+                    <th class="checkbox-cell">
+                        <input type="checkbox" id="select-all-checkbox">
+                    </th>
+                    <th>Resim</th>
+                    <th>Barkod</th>
+                    <th>Ürün Adı</th>
+                    <th>Ürün Grubu</th>
+                    <th>İndirimli Fiyat</th>
+                    <th>Normal Fiyat</th>
+                    <th>Resim Durumu</th>
+                    <th>Sayfa</th>
+                </tr>
+            </thead>
+            <tbody id="products-tbody">
+                <!-- Products will be loaded here -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Floating Panel for Page Distribution -->
+    <div class="floating-panel" id="page-panel" style="display: none;">
+        <div class="panel-title">📊 Sayfa Dağılımı</div>
+        <div class="page-distribution" id="page-distribution">
+            <!-- Page distribution will be shown here -->
+        </div>
+    </div>
+
+    <!-- Image Preview Modal -->
+    <div class="modal" id="image-preview-modal">
+        <div class="modal-content image-preview-modal">
+            <div class="modal-header">
+                <h2>Resim Önizleme</h2>
+                <button class="close-btn" onclick="closeImageModal()">&times;</button>
+            </div>
+            <img id="preview-image" src="" alt="Product Image">
+            <div style="margin-top: 15px;">
+                <button class="btn btn-primary" onclick="closeImageModal()">Kapat</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Image Generation Modal - Resim Ekleme Ekranı -->
+    <div class="modal" id="ai-image-modal">
+        <div class="modal-content ai-modal-content">
+            <div class="modal-header">
+                <h2>🤖 Resim Ekleme Ekranı</h2>
+                <button class="close-btn" onclick="closeAIModal()">&times;</button>
+            </div>
+            <div class="ai-product-info">
+                <p><strong>Ürün:</strong> <span id="ai-product-name"></span></p>
+            </div>
+            
+            <!-- Ana Resim Görünümü -->
+            <div id="ai-main-image-container" style="display: none;">
+                <div class="ai-main-image">
+                    <img id="ai-main-image" src="" alt="Seçili Resim">
+                </div>
+            </div>
+            
+            <!-- Loading -->
+            <div id="ai-loading" class="ai-loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>AI resim oluşturuluyor... (~10 saniye)</p>
+            </div>
+            
+            <!-- Thumbnail Galeri -->
+            <div id="ai-gallery-container" style="display: none;">
+                <p style="text-align: center; margin: 15px 0 10px; color: var(--text); font-size: 13px;">
+                    Oluşturulan Resimler (hover ile önizleme):
+                </p>
+                <div class="ai-thumbnail-gallery" id="ai-thumbnail-gallery">
+                    <!-- Thumbnails will be added here -->
+                </div>
+            </div>
+            
+            <!-- Error -->
+            <div id="ai-error" style="display: none; text-align: center; color: var(--danger); padding: 20px;">
+                <p>⚠️ AI resim oluşturulamadı. Lütfen tekrar deneyin.</p>
+            </div>
+            
+            <!-- Initial State -->
+            <div id="ai-initial-state" style="text-align: center; padding: 30px;">
+                <p style="color: var(--text); margin-bottom: 15px;">AI ile profesyonel ürün fotoğrafı oluşturun</p>
+                <p style="color: #888; font-size: 12px;">Beyaz stüdyo arka planı, profesyonel aydınlatma</p>
+            </div>
+            
+            <div class="ai-modal-actions">
+                <button class="btn btn-secondary" onclick="closeAIModal()">İptal</button>
+                <button class="btn btn-primary" id="ai-generate-btn" onclick="generateSingleAIImage()">
+                    <span>🤖</span> Resim Oluştur
+                </button>
+                <button class="btn btn-warning" id="ai-another-btn" onclick="generateSingleAIImage()" style="display: none;">
+                    <span>🔄</span> Başka Öner
+                </button>
+                <button class="btn btn-success" id="ai-select-btn" onclick="selectAIImage()" style="display: none;">
+                    <span>✅</span> Seçili Kullan
+                </button>
+            </div>
+            
+            <p style="text-align: center; color: #888; font-size: 11px; margin-top: 10px;">
+                Küçük resim üzerine gelin ve "Seç" butonuna tıklayın
+            </p>
+        </div>
+    </div>
+
+    <!-- Add Product Modal -->
+    <div class="modal" id="add-product-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Yeni Ürün Ekle</h2>
+                <button class="close-btn" onclick="closeAddModal()">&times;</button>
+            </div>
+            <form id="add-product-form">
+                <div class="form-group">
+                    <label for="barcode">Barkod</label>
+                    <input type="text" id="barcode" name="barcode" required>
+                </div>
+                <div class="form-group">
+                    <label for="product-name">Ürün Adı</label>
+                    <input type="text" id="product-name" name="product_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="product-group">Ürün Grubu</label>
+                    <select id="product-group" name="product_group">
+                        <option value="">Seçiniz</option>
+                        <option value="Gıda">Gıda</option>
+                        <option value="Temizlik">Temizlik</option>
+                        <option value="Elektronik">Elektronik</option>
+                        <option value="Tekstil">Tekstil</option>
+                        <option value="Kozmetik">Kozmetik</option>
+                        <option value="Diğer">Diğer</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="discount-price">İndirimli Fiyat</label>
+                    <input type="number" id="discount-price" name="discount_price" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="normal-price">Normal Fiyat</label>
+                    <input type="number" id="normal-price" name="normal_price" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="product-image">Ürün Resmi</label>
+                    <div class="file-upload-area" id="file-upload-area">
+                        <p>Resim yüklemek için tıklayın veya sürükleyin</p>
+                        <input type="file" id="product-image" name="product_image" accept="image/*" style="display: none;">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Ürün Ekle</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const STAGE_TWO_ENABLED = false;
+        const STAGE_ONE_PAGE_CAPACITY = 12;
+        
+        let products = [];
+        let pageAssignments = {};
+        let selectedProducts = new Set();
+        let existingBarcodes = new Set(); // Mükerrer barkod kontrolü için
+        let invalidProductMap = new Map();
+
+        function getSafeImageUrl(url) {
+            if (!url) return '';
+            if (url.startsWith('/') || url.startsWith('data:')) return url;
+            if (url.startsWith(window.location.origin)) return url;
+            try {
+                const parsed = new URL(url, window.location.origin);
+                if (parsed.origin === window.location.origin) {
+                    return parsed.href;
+                }
+            } catch (error) {
+                // ignore parse errors
+            }
+            return `/proxy-image?url=${encodeURIComponent(url)}`;
+        }
+
+        function normalizeProduct(product) {
+            if (!product) return product;
+            if (!product.id) {
+                product.id = generateTempId();
+            }
+            product.source_type = product.source_type === 'depo' ? 'depo' : 'external';
+            if (product.image_url) {
+                product.image_url = getSafeImageUrl(product.image_url);
+            }
+            return product;
+        }
+
+        function generateTempId() {
+            return 'temp_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+        }
+
+        function getRowKey(product, fallbackIndex = 0) {
+            if (product && product.id) {
+                return product.id.toString();
+            }
+            return fallbackIndex.toString();
+        }
+
+        function clearRowValidation(product, index) {
+            const rowKey = getRowKey(product, index);
+            if (invalidProductMap.delete(rowKey)) {
+                const row = document.querySelector(`tr[data-row-key="${rowKey}"]`);
+                if (row) {
+                    row.classList.remove('invalid-row');
+                }
+            }
+        }
+
+        function markInvalidProducts(invalidList = []) {
+            invalidProductMap = new Map();
+            invalidList.forEach(item => {
+                if (!item) return;
+                const key = (item.id || item.barcode || '').toString();
+                if (key) {
+                    invalidProductMap.set(key, item);
+                }
+            });
+            renderTable();
+            showNotification('⚠️ Eksik bilgileri tamamlayın. Vurgulanan satırları kontrol edin.', 'warning');
+        }
+
+        function warnStageTwoDisabled(featureName = 'Bu özellik') {
+            showNotification(`${featureName} sadece 2. aşamada kullanılabilir.`, 'warning');
+        }
+
+        function prepareProductsForSubmission() {
+            const prepared = [];
+            const errors = [];
+            const activeIds = new Set();
+
+            products.forEach((product, index) => {
+                const normalized = normalizeProduct({ ...product });
+                if (!normalized.barcode && !normalized.name) {
+                    return;
+                }
+                prepared.push(normalized);
+                activeIds.add(getRowKey(normalized, index));
+            });
+
+            prepared.forEach((product, index) => {
+                const missing = [];
+                if (!product.barcode) {
+                    missing.push('Barkod');
+                }
+                if (product.source_type === 'external') {
+                    if (!product.name) missing.push('Ürün adı');
+                    if (!product.image_url) missing.push('Resim');
+                }
+                if (!product.discount_price || product.discount_price <= 0) {
+                    missing.push('İndirimli fiyat');
+                }
+                if (missing.length > 0) {
+                    errors.push({
+                        id: product.id || getRowKey(product, index),
+                        barcode: product.barcode,
+                        missing
+                    });
+                }
+            });
+
+            const relevantAssignments = Object.entries(pageAssignments).filter(([key]) => activeIds.has(key));
+            const partialAssigned = relevantAssignments.length > 0 && relevantAssignments.length < prepared.length;
+
+            return {
+                products: prepared,
+                errors,
+                valid: errors.length === 0,
+                partialAssigned,
+                activeIds
+            };
+        }
+
+        function initializeEmptyList() {
+            products = [createEmptyProduct(), createEmptyProduct()];
+            pageAssignments = {};
+            selectedProducts.clear();
+             invalidProductMap.clear();
+            sessionStorage.setItem('preApprovalProducts', JSON.stringify(products));
+            renderTable();
+            updateStats();
+        }
+
+        window.onProductFormIframeLoad = function() {
+            console.log('Product form iframe loaded');
+        };
+
+        function renderTable() {
+            const tbody = document.getElementById('products-tbody');
+            if (!tbody) {
+                console.error('❌ products-tbody not found!');
+                return;
+            }
+            
+            console.log('🎨 renderTable called with', products.length, 'products');
+            tbody.innerHTML = '';
+            products = products.map(prod => normalizeProduct(prod));
+            
+            products.forEach((product, index) => {
+                const row = document.createElement('tr');
+                const isAssigned = pageAssignments[product.id] !== undefined;
+                const isEmpty = !product.barcode && !product.name;
+                const rowKey = getRowKey(product, index);
+                const validationIssue = invalidProductMap.get(rowKey);
+                
+                row.dataset.rowKey = rowKey;
+                if (isAssigned) {
+                    row.classList.add('assigned-row');
+                }
+                if (validationIssue) {
+                    row.classList.add('invalid-row');
+                }
+                
+                row.innerHTML = `
+                    <td class="checkbox-cell" style="display: flex; align-items: center; gap: 5px;">
+                        <button class="btn-delete-row" onclick="removeProductFromList(${index})" title="Listeden Kaldır" style="
+                            background: #ef4444; color: white; border: none; border-radius: 4px;
+                            width: 20px; height: 20px; font-size: 12px; cursor: pointer;
+                            display: flex; align-items: center; justify-content: center;
+                            transition: background 0.2s;">✕</button>
+                        <input type="checkbox" class="product-checkbox" data-id="${product.id || index}" ${isAssigned ? 'disabled checked' : ''}>
+                    </td>
+                    <td class="image-cell">
+                        <div class="image-container" style="position: relative;">
+                            ${product.image_url ? 
+                                `<img src="${product.image_url}" 
+                                      class="product-image product-image-hover" 
+                                      data-image-url="${product.image_url}"
+                                      data-product-id="${product.id || index}"
+                                      alt="Product">
+                                 ${product.quality_indicator ? 
+                                    `<div class="quality-badge" style="position: absolute; top: 2px; right: 2px; background: rgba(255,255,255,0.95); 
+                                         border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; 
+                                         font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);" title="Görsel Kalitesi">
+                                         ${product.quality_indicator}
+                                     </div>` : ''}` :
+                                `<div class="no-image-placeholder">Resim Yok</div>`
+                            }
+                            <div class="image-buttons">
+                                <button class="btn-image btn-search ${product.image_url ? 'btn-disabled' : ''}" 
+                                        onclick="openGoogleImageSearch(${index}, '${(product.barcode || '').replace(/'/g, "\\'")}', '${(product.name || '').replace(/'/g, "\\'")}')" 
+                                        title="${product.image_url ? 'Resim mevcut' : 'CAMGOZ + Google\'da Ara'}"
+                                        ${product.image_url ? 'disabled' : ''}>
+                                    🔍 Al
+                                </button>
+                                <button class="btn-image btn-pc" onclick="uploadImageForProduct('${product.id || index}')" title="Bilgisayardan Yükle">
+                                    📁 PC
+                                </button>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <input type="text" class="barcode-input cell-input" data-index="${index}" data-col="0"
+                               value="${product.barcode || ''}" 
+                               placeholder="Barkod girin..."
+                               style="width: 100%; padding: 6px 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;">
+                    </td>
+                    <td>
+                        <input type="text" class="name-input cell-input" data-index="${index}" data-col="1"
+                               value="${product.name || ''}" 
+                               placeholder="Ürün adı"
+                               style="width: 100%; padding: 6px 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;">
+                    </td>
+                    <td>
+                        <input type="text" class="group-input cell-input" data-index="${index}" data-col="2"
+                               value="${product.product_group || ''}" 
+                               placeholder="Grup"
+                               style="width: 100%; padding: 6px 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;">
+                    </td>
+                    <td>
+                        <input type="number" class="discount-price-input cell-input" data-index="${index}" data-col="3"
+                               value="${product.discount_price || ''}"
+                               placeholder="0,00 ₺"
+                               step="0.01"
+                               style="width: 100%; padding: 6px 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;">
+                    </td>
+                    <td>
+                        <input type="number" class="normal-price-input cell-input" data-index="${index}" data-col="4"
+                               value="${product.normal_price || ''}"
+                               placeholder="0,00 ₺"
+                               step="0.01"
+                               style="width: 100%; padding: 6px 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;">
+                    </td>
+                    <td>
+                        <div class="image-status ${product.image_url ? 'status-exists' : 'status-missing'}">
+                            ${product.image_url ? '✅ Mevcut' : '❌ Yok'}
+                        </div>
+                    </td>
+                    <td>
+                        ${isAssigned ? 
+                            `<span class="page-tag">Sayfa ${pageAssignments[product.id]}</span>` :
+                            `<span class="page-tag unassigned">Atanmamış</span>`
+                        }
+                        ${validationIssue ? `<div class="validation-chip">Eksik: ${validationIssue.missing.join(', ')}</div>` : ''}
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+                
+                if (!STAGE_TWO_ENABLED) {
+                    row.querySelectorAll('.btn-ai').forEach(btn => {
+                        btn.setAttribute('disabled', 'disabled');
+                        btn.title = 'AI özellikleri Stage 2\'de aktif olacak';
+                    });
+                }
+            });
+            
+            // Add event listeners to barcode inputs
+            addBarcodeInputListeners();
+        }
+        
+        function addBarcodeInputListeners() {
+            document.querySelectorAll('.barcode-input').forEach(input => {
+                input.addEventListener('keydown', async function(e) {
+                    // Sadece ENTER ile barkod sorgusu tetikle (Tab ile değil!)
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const index = parseInt(this.dataset.index);
+                        const barcode = this.value.trim();
+                        
+                        // Ensure product exists at index
+                        if (!products[index]) {
+                            products[index] = normalizeProduct({
+                                id: null,
+                                barcode: '',
+                                name: '',
+                                product_group: '',
+                                normal_price: 0,
+                                discount_price: 0,
+                                image_url: ''
+                            });
+                        }
+                        
+                        // Barkod varsa VE (yeni/değişmiş barkod VEYA isim boş) ise ara
+                        const existingBarcode = products[index].barcode || '';
+                        const existingName = products[index].name || '';
+                        const shouldSearch = barcode && (barcode !== existingBarcode || !existingName);
+                        if (shouldSearch) {
+                            await searchAndFillProduct(index, barcode);
+                        }
+                        
+                        // If on last row, add new empty row
+                        if (index === products.length - 1) {
+                            addEmptyRow();
+                        }
+                        
+                        // Move focus to next barcode input
+                        setTimeout(() => {
+                            const nextInput = document.querySelector(`.barcode-input[data-index="${index + 1}"]`);
+                            if (nextInput) nextInput.focus();
+                        }, 100);
+                    }
+                });
+                
+                // Also save changes on blur
+                input.addEventListener('blur', function() {
+                    const index = parseInt(this.dataset.index);
+                    if (products[index]) {
+                        products[index].barcode = this.value.trim();
+                        sessionStorage.setItem('preApprovalProducts', JSON.stringify(products));
+                        clearRowValidation(products[index], index);
+                    }
+                });
+            });
+            
+            // Name and group input listeners
+            document.querySelectorAll('.name-input').forEach(input => {
+                input.addEventListener('blur', function() {
+                    const index = parseInt(this.dataset.index);
+                    if (products[index]) {
+                        products[index].name = this.value.trim();
+                        sessionStorage.setItem('preApprovalProducts', JSON.stringify(products));
+                        clearRowValidation(products[index], index);
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.group-input').forEach(input => {
+                input.addEventListener('blur', function() {
+                    const index = parseInt(this.dataset.index);
+                    if (products[index]) {
+                        products[index].product_group = this.value.trim();
+                        sessionStorage.setItem('preApprovalProducts', JSON.stringify(products));
+                        clearRowValidation(products[index], index);
+                    }
+                });
+            });
+            
+            // Price input listeners
+            document.querySelectorAll('.normal-price-input').forEach(input => {
+                input.addEventListener('blur', function() {
+                    const index = parseInt(this.dataset.index);
+                    if (products[index]) {
+                        products[index].normal_price = parseFloat(this.value) || 0;
+                        sessionStorage.setItem('preApprovalProducts', JSON.stringify(products));
+                        clearRowValidation(products[index], index);
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.discount-price-input').forEach(input => {
+                input.addEventListener('blur', function() {
+                    const index = parseInt(this.dataset.index);
+                    if (products[index]) {
+                        products[index].discount_price = parseFloat(this.value) || 0;
+                        sessionStorage.setItem('preApprovalProducts', JSON.stringify(products));
+                        clearRowValidation(products[index], index);
+                    }
+                });
+            });
+            
+            // Arrow key navigation for all cell inputs (Excel-like)
+            addArrowKeyNavigation();
+        }
+        
+        function addArrowKeyNavigation() {
+            const colClasses = ['barcode-input', 'name-input', 'group-input', 'normal-price-input', 'discount-price-input'];
+            
+            document.querySelectorAll('.cell-input').forEach(input => {
+                input.addEventListener('keydown', function(e) {
+                    if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+                        return;
+                    }
+                    
+                    const currentRow = parseInt(this.dataset.index);
+                    const currentCol = parseInt(this.dataset.col);
+                    
+                    let targetRow = currentRow;
+                    let targetCol = currentCol;
+                    let needsNewRow = false;
+                    
+                    switch(e.key) {
+                        case 'ArrowUp':
+                            if (currentRow > 0) {
+                                targetRow = currentRow - 1;
+                            }
+                            break;
+                        case 'ArrowDown':
+                            if (currentRow < products.length - 1) {
+                                targetRow = currentRow + 1;
+                            } else if (currentRow === products.length - 1) {
+                                needsNewRow = true;
+                                targetRow = currentRow + 1;
+                            }
+                            break;
+                        case 'ArrowLeft':
+                            if (currentCol > 0) {
+                                targetCol = currentCol - 1;
+                            }
+                            break;
+                        case 'ArrowRight':
+                            if (currentCol < colClasses.length - 1) {
+                                targetCol = currentCol + 1;
+                            }
+                            break;
+                    }
+                    
+                    // Only proceed if navigation is happening
+                    if (targetRow !== currentRow || targetCol !== currentCol) {
+                        e.preventDefault();
+                        
+                        // Save current input value before navigation
+                        saveCurrentInputValue(this);
+                        
+                        if (needsNewRow) {
+                            // Add empty row and focus after render
+                            addEmptyRowAndFocus(targetRow, targetCol, colClasses);
+                        } else {
+                            // Focus target cell directly
+                            focusCell(targetRow, targetCol, colClasses);
+                        }
+                    }
+                });
+            });
+        }
+        
+        function saveCurrentInputValue(input) {
+            const index = parseInt(input.dataset.index);
+            const col = parseInt(input.dataset.col);
+            
+            switch(col) {
+                case 0: products[index].barcode = input.value.trim(); break;
+                case 1: products[index].name = input.value.trim(); break;
+                case 2: products[index].product_group = input.value.trim(); break;
+                case 3: products[index].normal_price = parseFloat(input.value) || 0; break;
+                case 4: products[index].discount_price = parseFloat(input.value) || 0; break;
+            }
+            sessionStorage.setItem('preApprovalProducts', JSON.stringify(products));
+        }
+        
+        function focusCell(row, col, colClasses) {
+            const targetInput = document.querySelector(`.${colClasses[col]}[data-index="${row}"]`);
+            if (targetInput) {
+                targetInput.focus();
+                targetInput.select();
+            }
+        }
+        
+        function addEmptyRowAndFocus(targetRow, targetCol, colClasses) {
+            products.push(createEmptyProduct());
+            sessionStorage.setItem('preApprovalProducts', JSON.stringify(products));
+            renderTable();
+            updateStats();
+            
+            setTimeout(() => {
+                focusCell(targetRow, targetCol, colClasses);
+            }, 50);
+        }
+        
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 25px;
+                border-radius: 10px;
+                font-weight: 600;
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+                ${type === 'success' ? 'background: linear-gradient(135deg, #10b981, #059669); color: white;' : 
+                  type === 'error' ? 'background: linear-gradient(135deg, #ef4444, #dc2626); color: white;' :
+                  type === 'warning' ? 'background: linear-gradient(135deg, #f59e0b, #d97706); color: white;' :
+                  'background: linear-gradient(135deg, #6366f1, #4f46e5); color: white;'}
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+        
+        function getRowSafely(index, expectedBarcode) {
+            if (!products[index]) return null;
+            if (expectedBarcode && products[index].barcode && products[index].barcode !== expectedBarcode) {
+                return null;
+            }
+            return products[index];
+        }
+        
+        // ========== SATIR RENKLENDIRME (Sorgu Takibi) ==========
+        function highlightRow(index, status) {
+            const row = document.querySelector(`tr[data-index="${index}"]`);
+            if (!row) return;
+            
+            // Önceki durumu temizle
+            row.classList.remove('querying', 'query-success', 'query-failed');
+            
+            if (status === 'querying') {
+                row.classList.add('querying');
+                // Satırı görünür alana kaydır
+                row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else if (status === 'success') {
+                row.classList.add('query-success');
+                // 3 saniye sonra yeşil rengi kaldır
+                setTimeout(() => row.classList.remove('query-success'), 3000);
+            } else if (status === 'failed') {
+                row.classList.add('query-failed');
+                // 5 saniye sonra kırmızı rengi kaldır
+                setTimeout(() => row.classList.remove('query-failed'), 5000);
+            } else if (status === 'clear') {
+                // Tüm renkleri temizle
+            }
+        }
+        
+        // İlerleme çubuğu göster/gizle
+        function showQueryProgress(current, total) {
+            let bar = document.querySelector('.query-progress-bar');
+            if (!bar) {
+                bar = document.createElement('div');
+                bar.className = 'query-progress-bar';
+                document.body.appendChild(bar);
+            }
+            
+            if (current >= total) {
+                bar.style.width = '100%';
+                setTimeout(() => bar.remove(), 500);
+            } else {
+                const percent = (current / total) * 100;
+                bar.style.width = `${percent}%`;
+            }
+        }
+        
+        async function searchAndFillProduct(index, barcode) {
+            try {
+                // Ensure product exists at index
+                if (!products[index]) {
+                    products[index] = normalizeProduct({
+                        id: null,
+                        barcode: '',
+                        name: '',
+                        product_group: '',
+                        normal_price: 0,
+                        discount_price: 0,
+                        image_url: ''
+                    });
+                }
+                
+                // Smart Depot System: Customer → Admin → CAMGOZ API → Manual
+                showNotification('🔍 Akıllı arama başlatıldı...', 'info');
+                
+                const response = await fetch('/api/barkod-sorgula', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ barcode: barcode })
+                });
+                
+                // Check HTTP status before parsing JSON
+                if (!response.ok) {
+                    showNotification(`⚠️ Sunucu hatası (${response.status}). Lütfen tekrar deneyin.`, 'warning');
+                    
+                    // Safely update barcode if row still exists
+                    const row = getRowSafely(index, null);
+                    if (row && (!row.barcode || row.barcode === '')) {
+                        row.barcode = barcode;
+                        row.id = Date.now();
+                        sessionStorage.setItem('preApprovalProducts', JSON.stringify(products));
+                        renderTable();
+                        updateStats();
+                    }
+                    return;
+                }
+                
+                const data = await response.json();
+                console.log('🔍 Barcode Search Response:', data);
+                
+                // Re-check that row still exists and matches barcode after async operation
+                const rowAfterFetch = getRowSafely(index, barcode);
+                if (!rowAfterFetch) {
+                    console.warn(`Row ${index} disappeared or barcode changed during fetch, aborting update`);
+                    return;
+                }
+                
+                if (data.success && data.found && data.product) {
+                    const product = data.product;
+                    const sourceEmojis = {
+                        'customer_depot': '👤',
+                        'admin_depot': '🏢',
+                        'camgoz': '🌐'
+                    };
+                    const sourceNames = {
+                        'customer_depot': 'Müşteri Deposu',
+                        'admin_depot': 'Admin Deposu',
+                        'camgoz': 'CAMGOZ API'
+                    };
+                    
+                    const sourceEmoji = sourceEmojis[data.source] || '📦';
+                    const sourceName = sourceNames[data.source] || data.source;
+                    const resolvedSourceType = ['customer_depot', 'admin_depot'].includes(data.source) ? 'depo' : 'external';
+                    
+                    // Final safety check before updating
+                    const rowBeforeUpdate = getRowSafely(index, barcode);
+                    if (rowBeforeUpdate) {
+                        // Mevcut fiyatları koru (Excel'den gelen değerler silinmesin)
+                        const existingNormalPrice = products[index].normal_price || 0;
+                        const existingDiscountPrice = products[index].discount_price || 0;
+                        
+                        products[index] = normalizeProduct({
+                            id: Date.now(),
+                            barcode: barcode,
+                            name: product.name || '',
+                            product_group: product.product_group || '',
+                            normal_price: existingNormalPrice,
+                            discount_price: existingDiscountPrice,
+                            image_url: product.image_url || '',
+                            quality_indicator: product.quality_indicator || '⚪',
+                            market_price: product.market_price || 0,
+                            market_price_tax: product.market_price_tax || 0,
+                            brand: product.brand || '',
+                            source_type: resolvedSourceType
+                        });
+                        clearRowValidation(products[index], index);
+                        
+                        let message = `✅ "${product.name}" - ${sourceName}`;
+                        if (product.quality_indicator) {
+                            message += ` ${product.quality_indicator}`;
+                        }
+                        showNotification(message, 'success');
+                        
+                        sessionStorage.setItem('preApprovalProducts', JSON.stringify(products));
+                        renderTable();
+                        updateStats();
+                        
+                        setTimeout(() => {
+                            const nextInput = document.querySelector(`.barcode-input[data-index="${index + 1}"]`);
+                            if (nextInput) nextInput.focus();
+                        }, 100);
+                    }
+                    return;
+                }
+                
+                // Product not found - safely update if row still exists
+                const rowForNotFound = getRowSafely(index, barcode);
+                if (rowForNotFound) {
+                    rowForNotFound.barcode = barcode;
+                    rowForNotFound.id = Date.now();
+                    sessionStorage.setItem('preApprovalProducts', JSON.stringify(products));
+                    
+                    if (data.error) {
+                        showNotification(`❌ Barkod bulunamadı! ${data.error}`, 'error');
+                    } else {
+                        showNotification('❌ Barkod bulunamadı! Ürün bilgilerini manuel olarak girin.', 'error');
+                    }
+                    
+                    renderTable();
+                    updateStats();
+                    
+                    // Sonraki barkod inputuna geç (isim değil!)
+                    setTimeout(() => {
+                        const nextBarcodeInput = document.querySelector(`.barcode-input[data-index="${index + 1}"]`);
+                        if (nextBarcodeInput) nextBarcodeInput.focus();
+                    }, 100);
+                }
+                
+            } catch (error) {
+                console.error('Barcode search error:', error);
+                
+                // Safely handle error - only update if row still exists
+                const rowForError = getRowSafely(index, null);
+                if (rowForError) {
+                    if (!rowForError.barcode || rowForError.barcode === '') {
+                        rowForError.barcode = barcode;
+                        rowForError.id = Date.now();
+                    }
+                    sessionStorage.setItem('preApprovalProducts', JSON.stringify(products));
+                    showNotification('⚠️ Bağlantı hatası! Lütfen tekrar deneyin veya manuel giriş yapın.', 'warning');
+                    renderTable();
+                    updateStats();
+                }
+            }
+        }
+        
+        function addEmptyRow() {
+            products.push(createEmptyProduct());
+            sessionStorage.setItem('preApprovalProducts', JSON.stringify(products));
+            renderTable();
+            updateStats();
+        }
+        
+        function createEmptyProduct() {
+            return {
+                id: generateTempId(),
+                barcode: '',
+                name: '',
+                product_group: '',
+                normal_price: 0,
+                discount_price: 0,
+                image_url: '',
+                source_type: 'external'
+            };
+        }
+
+        function updateStats() {
+            document.getElementById('total-products').textContent = products.length;
+            document.getElementById('selected-count').textContent = selectedProducts.size;
+            
+            const withImage = products.filter(p => p.image_url).length;
+            document.getElementById('with-image').textContent = withImage;
+            document.getElementById('without-image').textContent = products.length - withImage;
+        }
+
+        // Arama/Filtreleme Fonksiyonu
+        function filterTable() {
+            const searchTerm = document.getElementById('search-input').value.trim().toLowerCase();
+            const tbody = document.getElementById('products-tbody');
+            const rows = tbody.querySelectorAll('tr');
+            
+            if (!searchTerm) {
+                // Arama terimi boşsa tüm satırları göster
+                rows.forEach(row => {
+                    row.style.display = '';
+                });
+                return;
+            }
+            
+            // Her satırı kontrol et
+            rows.forEach((row, index) => {
+                const product = products[index];
+                if (!product) {
+                    row.style.display = '';
+                    return;
+                }
+                
+                // Barkod, ürün adı veya ürün grubunda ara
+                const barcode = (product.barcode || '').toLowerCase();
+                const name = (product.name || '').toLowerCase();
+                const group = (product.product_group || '').toLowerCase();
+                
+                const matches = barcode.includes(searchTerm) || 
+                               name.includes(searchTerm) || 
+                               group.includes(searchTerm);
+                
+                row.style.display = matches ? '' : 'none';
+            });
+        }
+
+        function removeProductFromList(index) {
+            products.splice(index, 1);
+            sessionStorage.setItem('preApprovalProducts', JSON.stringify(products));
+            renderTable();
+            updateStats();
+        }
+
+        function showImagePreview(imageUrl) {
+            document.getElementById('preview-image').src = imageUrl;
+            document.getElementById('image-preview-modal').classList.add('show');
+        }
+
+        function closeImageModal() {
+            document.getElementById('image-preview-modal').classList.remove('show');
+        }
+
+        function closeAddModal() {
+            document.getElementById('add-product-modal').classList.remove('show');
+        }
+
+        function cancelAndGoBack() {
+            if (confirm('Tüm değişiklikler iptal edilecek. Emin misiniz?')) {
+                window.location.href = '/dashboard';
+            }
+        }
+
+        // AI Image Generation Functions - Resim Ekleme Ekranı
+        let currentAIProductId = null;
+        let currentAIProductName = '';
+        let selectedAIImageUrl = null;
+        let generatedAIImages = [];
+        let aiImageCallback = null; // Callback for global usage
+
+        function openAIImageModal(productId, productName, callback = null) {
+            if (!STAGE_TWO_ENABLED) {
+                warnStageTwoDisabled('AI görsel');
+                return;
+            }
+            // ========== ÜRÜN ADI KORUMASI ==========
+            // Boş veya varsayılan ürün adı ile resim üretilmesin
+            const invalidNames = ['', 'ürün', 'ürün adı', 'urun', 'urun adi', 'product'];
+            const cleanName = (productName || '').trim().toLowerCase();
+            
+            if (!productName || invalidNames.includes(cleanName) || cleanName.length < 3) {
+                showNotification('⚠️ Önce geçerli bir ürün adı girin!', 'warning');
+                return; // Modal açılmasın
+            }
+            // ========================================
+            
+            currentAIProductId = productId;
+            currentAIProductName = productName;
+            selectedAIImageUrl = null;
+            generatedAIImages = [];
+            aiImageCallback = callback;
+            
+            document.getElementById('ai-product-name').textContent = productName;
+            document.getElementById('ai-loading').style.display = 'none';
+            document.getElementById('ai-main-image-container').style.display = 'none';
+            document.getElementById('ai-gallery-container').style.display = 'none';
+            document.getElementById('ai-error').style.display = 'none';
+            document.getElementById('ai-initial-state').style.display = 'block';
+            document.getElementById('ai-generate-btn').style.display = 'inline-flex';
+            document.getElementById('ai-another-btn').style.display = 'none';
+            document.getElementById('ai-select-btn').style.display = 'none';
+            document.getElementById('ai-thumbnail-gallery').innerHTML = '';
+            
+            document.getElementById('ai-image-modal').classList.add('show');
+        }
+
+        function closeAIModal() {
+            document.getElementById('ai-image-modal').classList.remove('show');
+            currentAIProductId = null;
+            currentAIProductName = '';
+            selectedAIImageUrl = null;
+            aiImageCallback = null;
+        }
+
+        // Tek resim oluştur - Hızlı mod
+        async function generateSingleAIImage() {
+            document.getElementById('ai-loading').style.display = 'block';
+            document.getElementById('ai-initial-state').style.display = 'none';
+            document.getElementById('ai-error').style.display = 'none';
+            document.getElementById('ai-generate-btn').style.display = 'none';
+            document.getElementById('ai-another-btn').style.display = 'none';
+            
+            try {
+                const response = await fetch('/api/ai/generate-product-image', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        product_name: currentAIProductName,
+                        product_id: currentAIProductId,
+                        count: 1  // Tek resim - hızlı
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success && data.images && data.images.length > 0) {
+                    const newImageUrl = data.images[0];
+                    generatedAIImages.push(newImageUrl);
+                    selectedAIImageUrl = newImageUrl;
+                    displayAIGallery();
+                } else {
+                    throw new Error(data.error || 'AI resim oluşturulamadı');
+                }
+            } catch (error) {
+                console.error('AI image generation error:', error);
+                document.getElementById('ai-loading').style.display = 'none';
+                document.getElementById('ai-error').style.display = 'block';
+                document.getElementById('ai-generate-btn').style.display = 'inline-flex';
+            }
+        }
+
+        function displayAIGallery() {
+            document.getElementById('ai-loading').style.display = 'none';
+            document.getElementById('ai-main-image-container').style.display = 'block';
+            document.getElementById('ai-gallery-container').style.display = 'block';
+            
+            // Ana resmi göster
+            document.getElementById('ai-main-image').src = selectedAIImageUrl;
+            
+            // Thumbnail galerisini güncelle
+            const gallery = document.getElementById('ai-thumbnail-gallery');
+            gallery.innerHTML = '';
+            
+            generatedAIImages.forEach((imageUrl, index) => {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'ai-thumbnail-wrapper';
+                wrapper.innerHTML = `
+                    <img src="${imageUrl}" 
+                         class="ai-thumbnail ${imageUrl === selectedAIImageUrl ? 'selected' : ''}" 
+                         data-image-url="${imageUrl}"
+                         data-product-id="${currentAIProductId}"
+                         onmouseover="previewAIThumbnail(${index})"
+                         alt="Resim ${index + 1}">
+                    <span class="thumb-number">${index + 1}</span>
+                    <button class="thumb-select-btn" onclick="selectAndApplyAIImage(${index})">✓ Seç</button>
+                `;
+                gallery.appendChild(wrapper);
+            });
+            
+            // Butonları göster
+            document.getElementById('ai-another-btn').style.display = 'inline-flex';
+            document.getElementById('ai-select-btn').style.display = 'inline-flex';
+        }
+
+        function previewAIThumbnail(index) {
+            // Thumbnail üzerine gelince ana resmi güncelle (sadece önizleme)
+            const imageUrl = generatedAIImages[index];
+            document.getElementById('ai-main-image').src = imageUrl;
+        }
+
+        function selectAIThumbnail(index) {
+            selectedAIImageUrl = generatedAIImages[index];
+            
+            // Ana resmi güncelle
+            document.getElementById('ai-main-image').src = selectedAIImageUrl;
+            
+            // Thumbnail seçimini güncelle
+            document.querySelectorAll('.ai-thumbnail').forEach((thumb, i) => {
+                thumb.classList.toggle('selected', i === index);
+            });
+        }
+        
+        // Thumbnail'den direkt seç ve ata
+        async function selectAndApplyAIImage(index) {
+            selectedAIImageUrl = generatedAIImages[index];
+            
+            // Thumbnail seçimini göster
+            document.querySelectorAll('.ai-thumbnail').forEach((thumb, i) => {
+                thumb.classList.toggle('selected', i === index);
+            });
+            
+            // Direkt kaydet ve ata
+            await selectAIImage();
+        }
+
+        async function selectAIImage() {
+            if (!selectedAIImageUrl) return;
+            
+            try {
+                // Save the selected AI image
+                const response = await fetch('/api/ai/save-selected-image', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        product_id: currentAIProductId,
+                        image_url: selectedAIImageUrl
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    const savedUrl = data.saved_url || selectedAIImageUrl;
+                    
+                    // Callback varsa çağır (global kullanım için)
+                    if (aiImageCallback && typeof aiImageCallback === 'function') {
+                        aiImageCallback(savedUrl, currentAIProductId);
+                    } else {
+                        // Normal kullanım - product listesini güncelle
+                        const product = products.find(p => (p.id || products.indexOf(p)) == currentAIProductId);
+                        if (product) {
+                            product.image_url = getSafeImageUrl(savedUrl);
+                        }
+                        renderTable();
+                        updateStats();
+                    }
+                    
+                    closeAIModal();
+                    alert('✅ AI resim başarıyla kaydedildi!');
+                } else {
+                    throw new Error(data.error || 'Resim kaydedilemedi');
+                }
+            } catch (error) {
+                console.error('Error saving AI image:', error);
+                alert('⚠️ Resim kaydedilirken hata oluştu: ' + error.message);
+            }
+        }
+        
+        // Global erişim için window'a ekle
+        window.openAIImageModal = openAIImageModal;
+
+        function uploadImageForProduct(productIdOrIndex) {
+            // Ürünü bul
+            let productIndex = -1;
+            let product = null;
+            
+            // ID veya index olabilir
+            for (let i = 0; i < products.length; i++) {
+                if (products[i].id == productIdOrIndex || i == productIdOrIndex) {
+                    productIndex = i;
+                    product = products[i];
+                    break;
+                }
+            }
+            
+            if (!product) {
+                showNotification('❌ Ürün bulunamadı', 'error');
+                return;
+            }
+            
+            if (!product.barcode) {
+                showNotification('❌ Barkod gerekli! Önce barkod girin.', 'error');
+                return;
+            }
+            
+            // Dosya seçici aç
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    showNotification('📤 Resim yükleniyor...', 'info');
+                    
+                    const formData = new FormData();
+                    formData.append('image', file);
+                    formData.append('barcode', product.barcode);
+                    formData.append('sector', 'supermarket');
+                    
+                    try {
+                        const response = await fetch('/api/upload-product-image', {
+                            method: 'POST',
+                            body: formData
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (response.ok && data.success) {
+                            // Ürünü güncelle
+                            products[productIndex].image_url = data.image_url;
+                            products[productIndex].quality_indicator = '🟢';
+                            products[productIndex].source_type = 'external';
+                            
+                            sessionStorage.setItem('preApprovalProducts', JSON.stringify(products));
+                            renderTable();
+                            updateStats();
+                            
+                            showNotification('✅ Resim yüklendi!', 'success');
+                        } else {
+                            showNotification('❌ Yükleme hatası: ' + (data.error || 'Bilinmeyen hata'), 'error');
+                        }
+                    } catch (error) {
+                        console.error('Error uploading image:', error);
+                        showNotification('❌ Resim yüklenirken hata oluştu', 'error');
+                    }
+                }
+            };
+            input.click();
+        }
+
+        function updatePrice(productId, priceType, value) {
+            const product = products.find(p => (p.id || products.indexOf(p)) == productId);
+            if (product) {
+                if (priceType === 'normal') {
+                    product.normal_price = parseFloat(value) || 0;
+                } else {
+                    product.discount_price = parseFloat(value) || 0;
+                }
+                // Save to session storage
+                sessionStorage.setItem('preApprovalProducts', JSON.stringify(products));
+            }
+        }
+
+        // ========== EVENT LISTENERS - Will be attached in DOMContentLoaded ==========
+
+        async function aiDistributeProducts(productsToDistribute = null) {
+            if (!STAGE_TWO_ENABLED) {
+                warnStageTwoDisabled('AI dağıtım');
+                return;
+            }
+            const toDistribute = productsToDistribute || products.filter((p, i) => selectedProducts.has((p.id || i).toString()));
+            
+            if (toDistribute.length === 0) {
+                showNotification('Lütfen dağıtılacak ürünleri seçin', 'warning');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/ai-distribute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ products: toDistribute })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    // Check if distribution is empty
+                    if (!data.distribution || Object.keys(data.distribution).length === 0) {
+                        showNotification('AI dağıtım boş sonuç döndürdü. Kural tabanlı dağıtım yapılıyor...', 'warning');
+                        fallbackDistribute(toDistribute);
+                        return;
+                    }
+                    
+                    // Apply AI distribution
+                    Object.entries(data.distribution).forEach(([productId, pageNum]) => {
+                        pageAssignments[productId] = pageNum;
+                    });
+                    
+                    selectedProducts.clear();
+                    renderTable();
+                    updateStats();
+                    updatePageDistribution();
+                    
+                    // Show success with detailed summary
+                    let summaryMsg = `✅ ${toDistribute.length} ürün AI ile dağıtıldı`;
+                    if (data.credits_used) {
+                        summaryMsg += ` (${data.credits_used} kredi kullanıldı`;
+                        if (data.credits_remaining !== undefined) {
+                            summaryMsg += `, ${data.credits_remaining} kredi kaldı`;
+                        }
+                        summaryMsg += ')';
+                    }
+                    
+                    // Display category summary if available
+                    if (data.summary) {
+                        let categorySummary = '\n\nKategoriler:';
+                        Object.entries(data.summary).forEach(([cat, info]) => {
+                            categorySummary += `\n${info.emoji} ${cat}: ${info.count} ürün`;
+                            if (info.overflow > 0) {
+                                categorySummary += ` (${info.overflow} taşma)`;
+                            }
+                        });
+                        console.log(categorySummary);
+                    }
+                    
+                    showNotification(summaryMsg, 'success');
+                    
+                } else {
+                    // Handle error response - PRESERVE existing assignments, DON'T fallback
+                    const errorMsg = data.message || data.error || 'AI dağıtım başarısız oldu';
+                    
+                    // Check if needs manual review
+                    if (data.needs_manual_review) {
+                        showNotification(`⚠️ ${errorMsg}\n\nDağıtım yapıldı ama kredi güncellenemedi. Yöneticinizle iletişime geçin.`, 'warning');
+                        // Still apply distribution if available
+                        if (data.distribution) {
+                            Object.entries(data.distribution).forEach(([productId, pageNum]) => {
+                                pageAssignments[productId] = pageNum;
+                            });
+                        }
+                    } else {
+                        // Show error with retry option
+                        const retryPrompt = confirm(`${errorMsg}\n\nTekrar denemek ister misiniz?`);
+                        if (retryPrompt) {
+                            // Retry AI distribution
+                            aiDistributeProducts(toDistribute);
+                            return;
+                        }
+                        showNotification(errorMsg, 'error');
+                    }
+                    
+                    console.error('AI distribution failed:', data);
+                    
+                    // Clear selections but keep existing assignments intact
+                    selectedProducts.clear();
+                    renderTable();
+                }
+                
+            } catch (error) {
+                console.error('Error with AI distribution:', error);
+                
+                // Show network error with retry option
+                const retryPrompt = confirm('Bağlantı hatası!\n\nMevcut atamalar korundu. Tekrar denemek ister misiniz?');
+                if (retryPrompt) {
+                    // Retry AI distribution
+                    aiDistributeProducts(toDistribute);
+                    return;
+                }
+                
+                showNotification('Bağlantı hatası! Mevcut atamalar korundu.', 'error');
+                
+                // PRESERVE existing assignments on network error
+                selectedProducts.clear();
+                renderTable();
+            }
+        }
+        
+        function fallbackDistribute(toDistribute) {
+            let currentPage = 1;
+            let itemsOnPage = 0;
+            const maxItemsPerPage = 12;
+            
+            toDistribute.forEach(product => {
+                if (itemsOnPage >= maxItemsPerPage) {
+                    currentPage++;
+                    itemsOnPage = 0;
+                }
+                pageAssignments[product.id || products.indexOf(product)] = currentPage;
+                itemsOnPage++;
+            });
+            
+            selectedProducts.clear();
+            renderTable();
+            updateStats();
+            updatePageDistribution();
+        }
+
+        function updatePageDistribution() {
+            const distribution = {};
+            Object.values(pageAssignments).forEach(page => {
+                distribution[page] = (distribution[page] || 0) + 1;
+            });
+            
+            const panel = document.getElementById('page-panel');
+            const distDiv = document.getElementById('page-distribution');
+            
+            if (Object.keys(distribution).length > 0) {
+                distDiv.innerHTML = Object.entries(distribution)
+                    .sort(([a], [b]) => a - b)
+                    .map(([page, count]) => `
+                        <div class="page-item">
+                            <span>Sayfa ${page}:</span>
+                            <span><strong>${count}</strong> ürün</span>
+                        </div>
+                    `).join('');
+                panel.style.display = 'block';
+            } else {
+                panel.style.display = 'none';
+            }
+        }
+
+        // ========== DOM READY INITIALIZATION ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 DOM fully loaded - starting initialization');
+            
+            if (!STAGE_TWO_ENABLED) {
+                document.querySelectorAll('.btn-ai').forEach(btn => {
+                    btn.setAttribute('disabled', 'disabled');
+                    btn.title = 'AI özellikleri Stage 2\'de aktif olacak';
+                });
+            }
+            
+            // File upload drag and drop
+            const fileUploadArea = document.getElementById('file-upload-area');
+            if (fileUploadArea) {
+                fileUploadArea.addEventListener('click', () => {
+                    document.getElementById('product-image').click();
+                });
+                
+                fileUploadArea.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    fileUploadArea.classList.add('dragover');
+                });
+                
+                fileUploadArea.addEventListener('dragleave', () => {
+                    fileUploadArea.classList.remove('dragover');
+                });
+                
+                fileUploadArea.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    fileUploadArea.classList.remove('dragover');
+                    
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0 && files[0].type.startsWith('image/')) {
+                        document.getElementById('product-image').files = files;
+                        fileUploadArea.innerHTML = `<p>✅ ${files[0].name}</p>`;
+                    }
+                });
+            }
+
+            // Initialize - ALWAYS start fresh with clean screen
+            // Clear any previous session data
+            sessionStorage.removeItem('preApprovalProducts');
+            console.log('🧹 Session cleared - starting fresh');
+            
+            // Start with 2 empty rows
+            products = [];
+            products.push(createEmptyProduct());
+            products.push(createEmptyProduct());
+            console.log('✨ Added 2 empty rows for fresh start');
+            
+            console.log('✅ Final products array before render:', products.length, products);
+            renderTable();
+            updateStats();
+            
+            // Focus on first barcode input
+            setTimeout(() => {
+                const firstInput = document.querySelector('.barcode-input[data-index="0"]');
+                if (firstInput) firstInput.focus();
+            }, 300);
+
+            // ========== GLOBAL HOVER ZOOM PREVIEW SYSTEM ==========
+            // Create global zoom preview container
+            const zoomPreviewContainer = document.createElement('div');
+            zoomPreviewContainer.id = 'global-zoom-preview';
+            zoomPreviewContainer.className = 'hover-zoom-preview';
+            zoomPreviewContainer.innerHTML = `
+                <img id="zoom-preview-img" src="" alt="Preview">
+                <button class="zoom-select-btn" id="zoom-select-btn" onclick="selectZoomImage()">✅ Seç</button>
+            `;
+            document.body.appendChild(zoomPreviewContainer);
+
+            let currentZoomProductId = null;
+            let currentZoomImageUrl = null;
+
+            window.showZoomPreview = function(imageUrl, productId, event) {
+                if (!imageUrl) return;
+                
+                currentZoomProductId = productId;
+                currentZoomImageUrl = imageUrl;
+                
+                const preview = document.getElementById('global-zoom-preview');
+                const img = document.getElementById('zoom-preview-img');
+                
+                img.src = imageUrl;
+                preview.classList.add('active');
+            }
+
+            window.hideZoomPreview = function() {
+                const preview = document.getElementById('global-zoom-preview');
+                preview.classList.remove('active');
+                currentZoomProductId = null;
+                currentZoomImageUrl = null;
+            }
+
+            window.selectZoomImage = function() {
+                if (currentZoomProductId && currentZoomImageUrl) {
+                    // Update product with selected image
+                    const product = products.find(p => (p.id || products.indexOf(p)) == currentZoomProductId);
+                    if (product) {
+                        product.image_url = getSafeImageUrl(currentZoomImageUrl);
+                        renderTable();
+                        updateStats();
+                    }
+                    hideZoomPreview();
+                }
+            }
+
+            // Global event listener for hover zoom on product images
+            document.addEventListener('mouseover', function(e) {
+                const target = e.target.closest('.product-image-hover');
+                if (target) {
+                    const imageUrl = target.dataset.imageUrl;
+                    const productId = target.dataset.productId;
+                    if (imageUrl) {
+                        showZoomPreview(imageUrl, productId, e);
+                    }
+                }
+            });
+
+            document.addEventListener('mouseout', function(e) {
+                const target = e.target.closest('.product-image-hover');
+                if (target) {
+                    // Check if mouse moved to the zoom preview
+                    const relatedTarget = e.relatedTarget;
+                    if (!relatedTarget || !relatedTarget.closest('#global-zoom-preview')) {
+                        hideZoomPreview();
+                    }
+                }
+            });
+
+            // Keep zoom preview visible when hovering over it
+            document.getElementById('global-zoom-preview').addEventListener('mouseleave', function() {
+                hideZoomPreview();
+            });
+
+            // ========== GOOGLE IMAGE SEARCH ==========
+            let currentSearchIndex = null;
+            
+            // İsim benzerlik hesaplama fonksiyonu (%0-100)
+            function calculateNameSimilarity(name1, name2) {
+                if (!name1 || !name2) return 0;
+                
+                // Küçük harfe çevir ve normalize et
+                const s1 = name1.toLowerCase().trim();
+                const s2 = name2.toLowerCase().trim();
+                
+                if (s1 === s2) return 100;
+                
+                // Kelimeleri ayır
+                const words1 = s1.split(/\s+/).filter(w => w.length > 1);
+                const words2 = s2.split(/\s+/).filter(w => w.length > 1);
+                
+                if (words1.length === 0 || words2.length === 0) return 0;
+                
+                // Eşleşen kelime sayısı
+                let matches = 0;
+                for (const w1 of words1) {
+                    for (const w2 of words2) {
+                        if (w1 === w2 || w1.includes(w2) || w2.includes(w1)) {
+                            matches++;
+                            break;
+                        }
+                    }
+                }
+                
+                // Benzerlik oranı (0-100)
+                const similarity = Math.round((matches / Math.max(words1.length, words2.length)) * 100);
+                return similarity;
+            }
+            
+            // Global scope'a taşı (onclick için)
+            window.openGoogleImageSearch = async function(index, barcode, productName) {
+                currentSearchIndex = index;
+                
+                if (!barcode && !productName) {
+                    showNotification('❌ Barkod veya ürün adı gerekli!', 'error');
+                    return;
+                }
+                
+                // ========== ÖNCE CAMGOZ SORGUSU ==========
+                if (barcode) {
+                    showNotification('🔍 CAMGOZ\'da aranıyor...', 'info');
+                    
+                    try {
+                        const camgozResponse = await fetch('/api/barkod-sorgula', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ barcode: barcode })
+                        });
+                        
+                        const camgozData = await camgozResponse.json();
+                        
+                        if (camgozData.success && camgozData.found && camgozData.product) {
+                            const product = camgozData.product;
+                            
+                            // ========== İSİM BENZERLİK KONTROLÜ (%50) ==========
+                            const similarity = calculateNameSimilarity(productName, product.name);
+                            console.log(`📊 İsim benzerlik: "${productName}" vs "${product.name}" = %${similarity}`);
+                            
+                            if (similarity < 50 && productName && productName.length > 2) {
+                                // Benzerlik düşük - CAMGOZ sonucunu reddet, web'e git
+                                showNotification(`⚠️ CAMGOZ eşleşmedi (%${similarity}): "${product.name}" ≠ "${productName}", web'de aranıyor...`, 'warning');
+                                // Web aramasına devam et (aşağıda)
+                            } else {
+                                // Benzerlik OK veya Excel'de isim yok - CAMGOZ'u kabul et
+                                const existingProduct = products[index];
+                                products[index] = normalizeProduct({
+                                    id: existingProduct.id || Date.now(),
+                                    barcode: barcode,
+                                    name: product.name || existingProduct.name || '',
+                                    product_group: product.product_group || existingProduct.product_group || '',
+                                    normal_price: existingProduct.normal_price || 0,
+                                    discount_price: existingProduct.discount_price || 0,
+                                    image_url: product.image_url || existingProduct.image_url || '',
+                                    quality_indicator: product.quality_indicator || '🟢',
+                                    market_price: product.market_price || 0,
+                                    market_price_tax: product.market_price_tax || 0,
+                                    brand: product.brand || '',
+                                    source_type: ['customer_depot', 'admin_depot'].includes(camgozData.source) ? 'depo' : 'external'
+                                });
+                                
+                                sessionStorage.setItem('preApprovalProducts', JSON.stringify(products));
+                                renderTable();
+                                updateStats();
+                                
+                                // Resim varsa işlem tamam
+                                if (product.image_url) {
+                                    showNotification(`✅ CAMGOZ'da bulundu (%${similarity}): ${product.name}`, 'success');
+                                    return; // Web aramasına geçme
+                                } else {
+                                    showNotification(`⚠️ CAMGOZ'da ürün var ama resim yok, web'de aranıyor...`, 'warning');
+                                }
+                            }
+                        } else {
+                            showNotification('⚠️ CAMGOZ\'da bulunamadı, web\'de aranıyor...', 'warning');
+                        }
+                    } catch (error) {
+                        console.error('CAMGOZ search error:', error);
+                        showNotification('⚠️ CAMGOZ hatası, web\'de aranıyor...', 'warning');
+                    }
+                }
+                
+                // ========== CAMGOZ'DA YOKSA WEB ARAMASI ==========
+                const searchQuery = productName ? `${barcode} ${productName}`.trim() : barcode;
+                
+                showNotification('🔍 Google + AI doğrulama yapılıyor...', 'info');
+                
+                try {
+                    const response = await fetch('/api/google-image-search', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            query: searchQuery,
+                            barcode: barcode,
+                            num_results: 3,
+                            verify: true  // OpenAI doğrulaması aktif
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success && data.images && data.images.length > 0) {
+                        showImageSearchModal(data.images, index, searchQuery, data.verified_index);
+                    } else {
+                        showNotification('❌ Resim bulunamadı: ' + (data.error || 'Sonuç yok'), 'error');
+                    }
+                } catch (error) {
+                    console.error('Google search error:', error);
+                    showNotification('❌ Arama hatası: ' + error.message, 'error');
+                }
+            }
+            
+            window.showImageSearchModal = function(images, index, query, verifiedIndex = null) {
+                // Modal varsa kaldır
+                let existingModal = document.getElementById('image-search-modal');
+                if (existingModal) existingModal.remove();
+                
+                // Modal HTML oluştur
+                const modalHTML = `
+                    <div id="image-search-modal" class="modal-overlay" style="display:flex; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:10000; justify-content:center; align-items:center;">
+                        <div style="background:white; border-radius:16px; padding:24px; max-width:800px; width:90%; max-height:80vh; overflow-y:auto;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                                <h3 style="margin:0; color:#1f2937;">🔍 Resim Seç: "${query}"</h3>
+                                <button onclick="closeImageSearchModal()" style="background:none; border:none; font-size:24px; cursor:pointer;">✕</button>
+                            </div>
+                            ${verifiedIndex !== null ? '<p style="text-align:center; color:#10b981; font-weight:bold; margin-bottom:16px;">✅ AI Önerisi: Yeşil kenarlı resim</p>' : ''}
+                            <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:16px;">
+                                ${images.map((img, i) => {
+                                    const isVerified = verifiedIndex === i;
+                                    const borderColor = isVerified ? '#10b981' : '#e5e7eb';
+                                    const borderWidth = isVerified ? '4px' : '2px';
+                                    return `
+                                    <div class="search-result-card" style="border:${borderWidth} solid ${borderColor}; border-radius:12px; padding:12px; cursor:pointer; transition:all 0.2s; ${isVerified ? 'box-shadow: 0 0 20px rgba(16,185,129,0.3);' : ''}" 
+                                         onclick="selectSearchImage(${index}, '${img.url.replace(/'/g, "\\'")}', '${(img.title || '').replace(/'/g, "\\'")}')"
+                                         onmouseover="this.style.transform='scale(1.02)';"
+                                         onmouseout="this.style.transform='scale(1)';">
+                                        ${isVerified ? '<div style="position:absolute; top:-8px; left:50%; transform:translateX(-50%); background:#10b981; color:white; padding:2px 8px; border-radius:10px; font-size:10px;">AI Önerisi</div>' : ''}
+                                        <img src="${img.url}" alt="${img.title || 'Resim'}" 
+                                             style="width:100%; height:150px; object-fit:contain; border-radius:8px; background:#f3f4f6;"
+                                             onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2250%22>❌</text></svg>'">
+                                        <p style="margin:8px 0 0; font-size:12px; color:#6b7280; text-align:center; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                                            ${img.title || 'Resim ' + (i+1)}
+                                        </p>
+                                    </div>
+                                `}).join('')}
+                            </div>
+                            <div style="margin-top:20px; text-align:center;">
+                                <button onclick="closeImageSearchModal()" style="padding:10px 24px; background:#6b7280; color:white; border:none; border-radius:8px; cursor:pointer;">
+                                    İptal
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                document.body.insertAdjacentHTML('beforeend', modalHTML);
+            }
+            
+            window.closeImageSearchModal = function() {
+                const modal = document.getElementById('image-search-modal');
+                if (modal) modal.remove();
+            }
+            
+            window.selectSearchImage = async function(index, imageUrl, title) {
+                closeImageSearchModal();
+                
+                if (!products[index]) return;
+                
+                showNotification('📥 Resim yükleniyor...', 'info');
+                
+                // Proxy URL oluştur
+                const proxyUrl = `/proxy-image?url=${encodeURIComponent(imageUrl)}`;
+                
+                // Ürüne resmi ata
+                products[index].image_url = proxyUrl;
+                products[index].quality_indicator = '🟡';
+                
+                sessionStorage.setItem('preApprovalProducts', JSON.stringify(products));
+                renderTable();
+                updateStats();
+                
+                showNotification('✅ Resim seçildi!', 'success');
+            }
+
+            // ========== EXCEL UPLOAD EVENT LISTENER ==========
+            // Wire up Excel file input event listener
+            document.getElementById('excel-file-input').addEventListener('change', async function(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+                
+                if (!file.name.endsWith('.xlsx') && !file.name.endsWith('.xls')) {
+                    showNotification('❌ Sadece Excel dosyaları (.xlsx, .xls) yüklenebilir!', 'error');
+                    return;
+                }
+                
+                const formData = new FormData();
+                formData.append('file', file);
+                
+                try {
+                    showNotification('🔄 Excel yükleniyor...', 'info');
+                    
+                    const response = await fetch('/api/pre-approval/upload-excel', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    // Check HTTP status first (CRITICAL FIX)
+                    if (!response.ok) {
+                        // Try to get error details from backend
+                        let errorMsg = 'Sunucu hatası';
+                        try {
+                            const errorData = await response.json();
+                            errorMsg = errorData.error || errorMsg;
+                            if (errorData.validation_errors && errorData.validation_errors.length > 0) {
+                                errorMsg += '\n\nDoğrulama hataları:\n' + errorData.validation_errors.join('\n');
+                            }
+                        } catch (jsonError) {
+                            // If JSON parsing fails, use status text
+                            errorMsg = `HTTP ${response.status}: ${response.statusText}`;
+                        }
+                        console.error('Excel upload failed:', errorMsg);
+                        showNotification('❌ Excel yüklenemedi: ' + errorMsg, 'error');
+                        return;
+                    }
+                    
+                    // Parse successful response
+                    const data = await response.json();
+                    
+                    if (data.success && data.count > 0) {
+                        let message = `✅ ${data.count} ürün yüklendi!`;
+                        if (data.new_count > 0) {
+                            message = `✅ ${data.new_count} yeni ürün`;
+                        }
+                        if (data.existing_count > 0) {
+                            message += data.new_count > 0 ? `, ${data.existing_count} mevcut` : `✅ ${data.existing_count} mevcut ürün`;
+                        }
+                        showNotification(message, 'success');
+                        
+                        // Ürünleri direkt listeye ekle (sayfa yenilemeden)
+                        if (data.products && data.products.length > 0) {
+                            const startIndex = products.length;
+                            data.products.forEach(p => {
+                                products.push(normalizeProduct({
+                                    id: Date.now() + Math.random(),
+                                    barcode: p.barcode || '',
+                                    name: p.name || '',
+                                    product_group: p.product_group || '',
+                                    normal_price: p.normal_price || 0,
+                                    discount_price: p.discount_price || 0,
+                                    image_url: p.image_url || '',
+                                    source_type: 'external'
+                                }));
+                            });
+                            sessionStorage.setItem('preApprovalProducts', JSON.stringify(products));
+                            renderTable();
+                            updateStats();
+                            
+                            // NOT: Otomatik batch sorgu DEVRE DIŞI
+                            // Kullanıcı "Al" butonuyla tek tek sorgulayacak
+                            showNotification('ℹ️ Ürünler yüklendi. Resim için "🔍 Al" butonunu kullanın.', 'info');
+                        }
+                    } else {
+                        let errorMsg = data.error || data.message || 'Bilinmeyen hata';
+                        if (data.errors && data.errors.length > 0) {
+                            errorMsg += `\n\nİlk ${data.errors.length} hata:\n` + data.errors.join('\n');
+                        }
+                        showNotification('❌ Yükleme hatası: ' + errorMsg, 'error');
+                    }
+                } catch (error) {
+                    console.error('Excel upload error:', error);
+                    showNotification('❌ Excel yüklenirken beklenmeyen hata: ' + error.message, 'error');
+                }
+                
+                // Reset file input
+                event.target.value = '';
+            });
+
+            // ========== EVENT LISTENERS ==========
+            const selectAllCheckbox = document.getElementById('select-all-checkbox');
+            if (selectAllCheckbox) {
+                selectAllCheckbox.addEventListener('change', (e) => {
+                    const checkboxes = document.querySelectorAll('.product-checkbox:not([disabled])');
+                    checkboxes.forEach(cb => {
+                        cb.checked = e.target.checked;
+                        const productId = cb.dataset.id;
+                        if (e.target.checked) {
+                            selectedProducts.add(productId);
+                        } else {
+                            selectedProducts.delete(productId);
+                        }
+                    });
+                    updateStats();
+                });
+            }
+
+            document.addEventListener('change', (e) => {
+                if (e.target.classList.contains('product-checkbox')) {
+                    const productId = e.target.dataset.id;
+                    if (e.target.checked) {
+                        selectedProducts.add(productId);
+                    } else {
+                        selectedProducts.delete(productId);
+                    }
+                    updateStats();
+                }
+            });
+
+            const selectAllBtn = document.getElementById('select-all-btn');
+            if (selectAllBtn) {
+                selectAllBtn.addEventListener('click', () => {
+                    const checkboxes = document.querySelectorAll('.product-checkbox:not([disabled])');
+                    checkboxes.forEach(cb => cb.checked = true);
+                    
+                    selectedProducts.clear();
+                    products.forEach((p, i) => {
+                        if (!pageAssignments[p.id || i]) {
+                            selectedProducts.add((p.id || i).toString());
+                        }
+                    });
+                    updateStats();
+                });
+            }
+
+            // Kaydet Butonu - Aşama 2: AI gruplama + depoya kaydet + ürün ID'le
+            const saveBtn = document.getElementById('save-btn');
+            if (saveBtn) {
+                saveBtn.addEventListener('click', async () => {
+                    // Listedeki aktif ve dolu ürünleri al (boş satırları hariç tut)
+                    const activeProducts = products.filter(p => 
+                        p.active !== false && 
+                        (p.barcode || p.name) // En az barkod veya isim olmalı
+                    );
+                    
+                    if (activeProducts.length === 0) {
+                        showNotification('❌ Kaydedilecek ürün yok. Barkod veya ürün adı girin.', 'error');
+                        return;
+                    }
+                    
+                    // Zorunlu alan kontrolü (isim, resim) - sadece dolu satırlar için
+                    const NAME_MIN = 3;
+                    const NAME_MAX = 80; // Ürün açıklaması için genişletildi (Canvas'ta 36'dan sonrası kesilir)
+                    
+                    const missingName = activeProducts.filter(p => !p.name);
+                    const shortName = activeProducts.filter(p => p.name && p.name.trim().length < NAME_MIN);
+                    const longName = activeProducts.filter(p => p.name && p.name.trim().length > NAME_MAX);
+                    const missingImage = activeProducts.filter(p => !p.image_url);
+                    
+                    if (missingName.length > 0 || shortName.length > 0 || longName.length > 0 || missingImage.length > 0) {
+                        // Hata mesajı oluştur
+                        let errorMsg = '❌ Eksik/Hatalı bilgiler var:\n\n';
+                        
+                        if (missingName.length > 0) {
+                            errorMsg += '📝 İSİM EKSİK:\n';
+                            missingName.forEach(p => {
+                                errorMsg += `• ${p.barcode}\n`;
+                            });
+                            errorMsg += '\n';
+                        }
+                        
+                        if (shortName.length > 0) {
+                            errorMsg += `📝 İSİM ÇOK KISA (min ${NAME_MIN} karakter):\n`;
+                            shortName.forEach(p => {
+                                errorMsg += `• ${p.barcode} - "${p.name}" (${p.name.trim().length} kar.)\n`;
+                            });
+                            errorMsg += '\n';
+                        }
+                        
+                        if (longName.length > 0) {
+                            errorMsg += `📝 İSİM ÇOK UZUN (max ${NAME_MAX} karakter):\n`;
+                            longName.forEach(p => {
+                                errorMsg += `• ${p.barcode} - "${p.name.substring(0, 20)}..." (${p.name.trim().length} kar.)\n`;
+                            });
+                            errorMsg += '\n';
+                        }
+                        
+                        if (missingImage.length > 0) {
+                            errorMsg += '🖼️ RESİM EKSİK:\n';
+                            missingImage.forEach(p => {
+                                errorMsg += `• ${p.barcode}${p.name ? ' - ' + p.name : ''}\n`;
+                            });
+                        }
+                        
+                        // Popup göster
+                        alert(errorMsg);
+                        
+                        // Eksik satırları yanıp söndür
+                        const allInvalid = [...missingName, ...shortName, ...longName, ...missingImage];
+                        allInvalid.forEach(p => {
+                            const row = document.querySelector(`tr[data-barcode="${p.barcode}"]`);
+                            if (row) {
+                                row.classList.remove('blink-row'); // Reset animation
+                                void row.offsetWidth; // Trigger reflow
+                                row.classList.add('blink-row', 'invalid-row');
+                            }
+                        });
+                        
+                        // 5 saniye sonra blink'i kaldır
+                        setTimeout(() => {
+                            allInvalid.forEach(p => {
+                                const row = document.querySelector(`tr[data-barcode="${p.barcode}"]`);
+                                if (row) row.classList.remove('blink-row');
+                            });
+                        }, 4000);
+                        
+                        return;
+                    }
+                    
+                    saveBtn.disabled = true;
+                    saveBtn.innerHTML = '<span>⏳</span> Kaydediliyor...';
+                    
+                    try {
+                        // TODO: Aşama 1 - OpenAI 1024px resize buraya eklenecek
+                        // const resizedProducts = await openaiResize1024(activeProducts);
+                        
+                        const response = await fetch('/api/products/save', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ products: activeProducts })
+                        });
+                        
+                        const result = await response.json();
+                        
+                        if (result.success || result.saved_count > 0 || result.updated_count > 0) {
+                            showNotification(`✅ ${result.message}`, 'success');
+                            
+                            // Kaydedilen ve güncellenen ürünleri işaretle
+                            const allProcessed = [...(result.saved_products || []), ...(result.updated_products || [])];
+                            allProcessed.forEach(saved => {
+                                const idx = products.findIndex(p => p.barcode === saved.barcode);
+                                if (idx !== -1) {
+                                    products[idx].product_group = saved.group;
+                                    products[idx].saved = true;
+                                    if (saved.depot_url) {
+                                        products[idx].image_url = saved.depot_url;
+                                    }
+                                }
+                            });
+                            
+                            // Atlanan ürünleri de işaretle
+                            if (result.skipped_products) {
+                                result.skipped_products.forEach(skipped => {
+                                    const idx = products.findIndex(p => p.barcode === skipped.barcode);
+                                    if (idx !== -1) {
+                                        products[idx].already_saved = true;
+                                    }
+                                });
+                            }
+                            
+                            renderTable();
+                        } else {
+                            showNotification(`❌ ${result.message || 'Kayıt hatası'}`, 'error');
+                            
+                            // Hatalı ürünleri vurgula
+                            if (result.errors) {
+                                result.errors.forEach(err => {
+                                    const row = document.querySelector(`tr[data-barcode="${err.barcode}"]`);
+                                    if (row) row.classList.add('invalid-row');
+                                });
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Kaydetme hatası:', error);
+                        showNotification('❌ Sunucu hatası', 'error');
+                    } finally {
+                        saveBtn.disabled = false;
+                        saveBtn.innerHTML = '<span>💾</span> Kaydet';
+                    }
+                });
+            }
+
+            const aiDistributeBtn = document.getElementById('ai-distribute-btn');
+            if (aiDistributeBtn) {
+                aiDistributeBtn.addEventListener('click', async () => {
+                    try {
+                        showNotification('🤖 AI ile ürünler kategorize ediliyor...', 'info');
+                        
+                        const response = await fetch('/api/ai-distribute', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ products: products })
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (data.success) {
+                            Object.entries(data.distribution).forEach(([productId, pageNum]) => {
+                                pageAssignments[productId] = pageNum;
+                            });
+                            
+                            renderTable();
+                            updateStats();
+                            updatePageDistribution();
+                            
+                            if (data.summary) {
+                                let summaryText = '✅ AI Dağıtım Tamamlandı!\n\n';
+                                Object.entries(data.summary).forEach(([category, info]) => {
+                                    summaryText += `${info.emoji} ${category}: Sayfa ${info.pages.join(', ')}\n`;
+                                });
+                                showNotification(summaryText, 'success');
+                            } else {
+                                showNotification('✅ Ürünler AI ile dağıtıldı!', 'success');
+                            }
+                        } else {
+                            showNotification('❌ ' + (data.message || 'AI dağıtım hatası'), 'warning');
+                        }
+                    } catch (error) {
+                        console.error('AI distribute error:', error);
+                        showNotification('❌ AI dağıtım hatası: ' + error.message, 'warning');
+                    }
+                });
+            }
+
+            const addProductBtn = document.getElementById('add-product-btn');
+            if (addProductBtn) {
+                addProductBtn.addEventListener('click', () => {
+                    document.getElementById('add-product-modal').classList.add('show');
+                });
+            }
+
+            const addProductForm = document.getElementById('add-product-form');
+            if (addProductForm) {
+                addProductForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const formData = new FormData(e.target);
+                    const newProduct = normalizeProduct({
+                        id: 'manual_' + Date.now(),
+                        barcode: formData.get('barcode'),
+                        name: formData.get('product_name'),
+                        product_group: formData.get('product_group'),
+                        normal_price: parseFloat(formData.get('normal_price')),
+                        discount_price: parseFloat(formData.get('discount_price')),
+                        image_url: null,
+                        source_type: 'external'
+                    });
+                    
+                    const imageFile = document.getElementById('product-image').files[0];
+                    if (imageFile) {
+                        const uploadData = new FormData();
+                        uploadData.append('image', imageFile);
+                        
+                        try {
+                            const response = await fetch('/api/upload-product-image', {
+                                method: 'POST',
+                                body: uploadData
+                            });
+                            
+                            if (response.ok) {
+                                const data = await response.json();
+                                newProduct.image_url = getSafeImageUrl(data.image_url);
+                            }
+                        } catch (error) {
+                            console.error('Error uploading image:', error);
+                        }
+                    }
+                    
+                    products.push(newProduct);
+                    sessionStorage.setItem('preApprovalProducts', JSON.stringify(products));
+                    renderTable();
+                    updateStats();
+                    closeAddModal();
+                    e.target.reset();
+                });
+            }
+
+            // ============= BROŞÜRE AKTAR BUTONU =============
+            const transferCanvasBtn = document.getElementById('transfer-canvas-btn');
+            if (transferCanvasBtn) {
+                transferCanvasBtn.addEventListener('click', async () => {
+                    // Aktif ürünleri al (barkodu olan)
+                    const activeProducts = products.filter(p => 
+                        p.active !== false && p.barcode && p.barcode.trim()
+                    );
+                    
+                    if (activeProducts.length === 0) {
+                        showNotification('⚠️ Listeye en az bir ürün ekleyin!', 'warning');
+                        return;
+                    }
+                    
+                    // Listedeki fiyatları al
+                    const transferData = {
+                        products: activeProducts.map((p, idx) => ({
+                            barcode: p.barcode,
+                            name: p.name || '',
+                            normal_price: parseFloat(p.normal_price) || 0,
+                            discount_price: parseFloat(p.discount_price) || 0,
+                            page_no: pageAssignments[p.client_id] || 1
+                        }))
+                    };
+                    
+                    // Buton durumunu değiştir
+                    const originalText = transferCanvasBtn.innerHTML;
+                    transferCanvasBtn.innerHTML = '<span>⏳</span> Kontrol ediliyor...';
+                    transferCanvasBtn.disabled = true;
+                    
+                    try {
+                        const response = await fetch('/api/products/transfer-to-canvas', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(transferData)
+                        });
+                        
+                        const result = await response.json();
+                        
+                        if (!response.ok || !result.success) {
+                            if (result.error === 'PRICE_VALIDATION_FAILED') {
+                                // Fiyat hatalarını göster
+                                let msg = result.message + '\n\nFiyat hataları:\n';
+                                (result.price_errors || []).forEach(pe => {
+                                    msg += `• ${pe.barcode}: ${pe.reason}\n`;
+                                });
+                                alert(msg);
+                                
+                                // Fiyat hatalı satırları yanıp söndür
+                                (result.price_errors || []).forEach(pe => {
+                                    const row = document.querySelector(`tr[data-barcode="${pe.barcode}"]`);
+                                    if (row) {
+                                        row.classList.remove('blink-row');
+                                        void row.offsetWidth; // Trigger reflow
+                                        row.classList.add('blink-row', 'invalid-row');
+                                    }
+                                });
+                                
+                                // 4 saniye sonra blink'i kaldır
+                                setTimeout(() => {
+                                    (result.price_errors || []).forEach(pe => {
+                                        const row = document.querySelector(`tr[data-barcode="${pe.barcode}"]`);
+                                        if (row) row.classList.remove('blink-row');
+                                    });
+                                }, 4000);
+                            } else if (result.error === 'MISSING_PRODUCTS') {
+                                // Eksik ürünleri göster
+                                let msg = result.message + '\n\nEksik ürünler:\n';
+                                (result.missing_products || []).forEach(mp => {
+                                    msg += `• ${mp.barcode}: ${mp.reason}\n`;
+                                });
+                                alert(msg);
+                            } else {
+                                showNotification(result.error || 'Aktarım hatası', 'error');
+                            }
+                            return;
+                        }
+                        
+                        // Başarılı - Canvas'a gönder
+                        if (result.canvas_payload) {
+                            sessionStorage.setItem('approvedCanvasPayload', JSON.stringify(result.canvas_payload));
+                        }
+                        if (result.page_summary) {
+                            sessionStorage.setItem('approvedPageSummary', JSON.stringify(result.page_summary));
+                        }
+                        
+                        showNotification(`✅ ${result.count} ürün Canvas'a aktarılıyor...`, 'success');
+                        
+                        // Dashboard'a yönlendir
+                        setTimeout(() => {
+                            window.location.href = '/dashboard';
+                        }, 500);
+                        
+                    } catch (error) {
+                        console.error('Transfer error:', error);
+                        showNotification('Bağlantı hatası: ' + error.message, 'error');
+                    } finally {
+                        transferCanvasBtn.innerHTML = originalText;
+                        transferCanvasBtn.disabled = false;
+                    }
+                });
+            }
+
+            // Sayfa yüklendiğinde sütun genişliği özelliğini başlat
+            setTimeout(initResizableColumns, 100);
+            
+            console.log('✅ Initialization complete!');
+        }); // End of DOMContentLoaded
+    </script>
+
+    <script>
+        // Add CSS animations for notifications
+        const notificationStyle = document.createElement('style');
+        notificationStyle.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(notificationStyle);
+        
+        // ========== RESIZABLE COLUMNS (Excel-like) ==========
+        function initResizableColumns() {
+            const table = document.getElementById('products-table');
+            const headers = table.querySelectorAll('th');
+            
+            headers.forEach((header, index) => {
+                // Her header'a resizer ekle (son sütun hariç)
+                if (index < headers.length - 1) {
+                    const resizer = document.createElement('div');
+                    resizer.className = 'resizer';
+                    header.appendChild(resizer);
+                    
+                    let startX, startWidth, nextStartWidth;
+                    
+                    resizer.addEventListener('mousedown', function(e) {
+                        startX = e.pageX;
+                        startWidth = header.offsetWidth;
+                        
+                        resizer.classList.add('resizing');
+                        document.body.style.cursor = 'col-resize';
+                        document.body.style.userSelect = 'none';
+                        
+                        document.addEventListener('mousemove', handleMouseMove);
+                        document.addEventListener('mouseup', handleMouseUp);
+                        
+                        e.preventDefault();
+                    });
+                    
+                    function handleMouseMove(e) {
+                        const diff = e.pageX - startX;
+                        const newWidth = Math.max(50, startWidth + diff); // Min 50px
+                        header.style.width = newWidth + 'px';
+                    }
+                    
+                    function handleMouseUp() {
+                        resizer.classList.remove('resizing');
+                        document.body.style.cursor = '';
+                        document.body.style.userSelect = '';
+                        
+                        document.removeEventListener('mousemove', handleMouseMove);
+                        document.removeEventListener('mouseup', handleMouseUp);
+                        
+                        // Genişlikleri sessionStorage'a kaydet
+                        saveColumnWidths();
+                    }
+                }
+            });
+            
+            // Kayıtlı genişlikleri yükle
+            loadColumnWidths();
+        }
+        
+        function saveColumnWidths() {
+            const headers = document.querySelectorAll('#products-table th');
+            const widths = [];
+            headers.forEach(h => widths.push(h.offsetWidth));
+            sessionStorage.setItem('columnWidths', JSON.stringify(widths));
+        }
+        
+        function loadColumnWidths() {
+            const saved = sessionStorage.getItem('columnWidths');
+            if (saved) {
+                const widths = JSON.parse(saved);
+                const headers = document.querySelectorAll('#products-table th');
+                headers.forEach((h, i) => {
+                    if (widths[i]) {
+                        h.style.width = widths[i] + 'px';
+                    }
+                });
+            }
+        }
+    </script>
+
+    <!-- ========== DOWNLOAD MODAL ========== -->
+    <div class="download-modal-overlay" id="downloadModalOverlay" onclick="closeDownloadModal(event)">
+        <div class="download-modal" onclick="event.stopPropagation()">
+            <div class="download-modal-header">
+                <img src="/static/aeu_logo.png" alt="AEU Yazılım" class="download-modal-logo">
+                <h2>🎯 Ürün Yükleme Formu</h2>
+                <p>Offline çalışan, CSV çıktı veren profesyonel form</p>
+            </div>
+            
+            <div class="download-modal-content">
+                <div class="download-modal-feature">
+                    <div class="download-modal-feature-icon">💻</div>
+                    <div class="download-modal-feature-text">
+                        <h3>Offline Çalışır</h3>
+                        <p>İnternet bağlantısı olmadan çalışır. Masaüstü, laptop veya tablet'te açabilirsiniz.</p>
+                    </div>
+                </div>
+                
+                <div class="download-modal-feature">
+                    <div class="download-modal-feature-icon">📊</div>
+                    <div class="download-modal-feature-text">
+                        <h3>CSV Export</h3>
+                        <p>Ürünlerinizi girdikten sonra CSV dosyası olarak dışa aktarın. Bu CSV'yi sisteme yükleyebilirsiniz.</p>
+                    </div>
+                </div>
+                
+                <div class="download-modal-feature">
+                    <div class="download-modal-feature-icon">🎨</div>
+                    <div class="download-modal-feature-text">
+                        <h3>Kullanımı Kolay</h3>
+                        <p>Sürükle-bırak ile sıralama, otomatik kaydetme, temiz ve modern arayüz.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="download-modal-actions">
+                <button class="download-modal-btn download-modal-btn-primary" onclick="downloadForm()">
+                    <span>⬇️</span> İndir
+                </button>
+                <button class="download-modal-btn download-modal-btn-secondary" onclick="closeDownloadModal()">
+                    <span>✖️</span> İptal
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Form Modal -->
+    <div class="product-form-modal-overlay" id="productFormModalOverlay" onclick="closeProductFormModal(event)">
+        <div class="product-form-modal" onclick="event.stopPropagation()">
+            <div class="product-form-modal-header">
+                <h2><span>📝</span> Ürün Yükleme Formu</h2>
+                <button class="product-form-modal-close" onclick="closeProductFormModal()" title="Kapat">✕</button>
+            </div>
+            <div class="product-form-modal-body">
+                <iframe id="productFormIframe" src="" onload="onProductFormIframeLoad()"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== DOWNLOAD MODAL FUNCTIONS ==========
+        function openDownloadModal() {
+            const overlay = document.getElementById('downloadModalOverlay');
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeDownloadModal(event) {
+            // Close if clicking overlay or explicit close
+            if (!event || event.target.id === 'downloadModalOverlay') {
+                const overlay = document.getElementById('downloadModalOverlay');
+                overlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        }
+        
+        function downloadForm() {
+            // Create anchor element with download attribute to trigger "Save As" dialog
+            const link = document.createElement('a');
+            link.href = '/download/modul/urun-yukle-formu';
+            link.download = 'AEU_Urun_Yukle_Formu.html'; // Force download with filename
+            link.style.display = 'none';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Close modal after download starts
+            setTimeout(() => {
+                closeDownloadModal();
+            }, 500);
+        }
+        
+        // Close modal with ESC key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeDownloadModal();
+                closeProductFormModal();
+            }
+        });
+        
+        // ========== PRODUCT FORM MODAL FUNCTIONS ==========
+        function openProductFormModal() {
+            const overlay = document.getElementById('productFormModalOverlay');
+            const iframe = document.getElementById('productFormIframe');
+            
+            // Load the form in iframe
+            iframe.src = '/modul/urun-yukle-formu';
+            
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeProductFormModal(event) {
+            // Close if clicking overlay or explicit close
+            if (!event || event.target.id === 'productFormModalOverlay') {
+                const overlay = document.getElementById('productFormModalOverlay');
+                const iframe = document.getElementById('productFormIframe');
+                
+                overlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+                
+                // Clear iframe after animation
+                setTimeout(() => {
+                    iframe.src = '';
+                }, 300);
+            }
+        }
+        
+        // Listen for messages from iframe (when products are imported)
+        window.addEventListener('message', function(event) {
+            if (event.data && event.data.type === 'productsImported') {
+                // Refresh the products table
+                showNotification('✅ ' + event.data.message, 'success');
+                closeProductFormModal();
+                loadPendingProducts(); // Tabloyu yenile
+            } else if (event.data && event.data.type === 'closeForm') {
+                closeProductFormModal();
+            }
+        });
+    </script>
+</body>
+</html>

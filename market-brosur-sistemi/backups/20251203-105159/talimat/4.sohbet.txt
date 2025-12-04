@@ -1,0 +1,37 @@
+SOHBET ÖZETİ - Canvas Ürün Aktarım Sorunu
+🎯 SORUN
+Ürünler "Onayla ve Aktar" ile onaylandıktan sonra Canvas'a gelmiyordu
+9+ saat boyunca canvas'a ürün aktarımı yapılamadı
+Fabric.js ile titreme, sınır aşımı ve CORS hataları yaşandı
+✅ YAPILAN DEĞİŞİKLİKLER
+1. routes/main.py - Proxy Image Endpoint
+@main_bp.route('/proxy-image')def proxy_image():    """Proxy external images to avoid CORS issues on canvas exports"""    image_url = request.args.get('url')    # Dış URL'leri kendi sunucumuzdan geçirerek CORS hatası önleniyor
+Neden: CAMGOZ CDN'den gelen resimler CORS hatası veriyordu, Fabric.js canvas'a yükleyemiyordu.
+2. templates/index.html - Güvenli URL ve Normalize Fonksiyonları
+function getSafeImageUrl(url) {    // Dış URL ise /proxy-image?url=... formatına çevir    return `/proxy-image?url=${encodeURIComponent(url)}`;}function normalizeProduct(product) {    if (product && product.image_url) {        product.image_url = getSafeImageUrl(product.image_url);    }    return product;}
+Neden: Tüm ürün verileri yüklenirken/aktarılırken resim URL'leri otomatik normalize ediliyor.
+3. templates/index.html - switchPage skipLoad Parametresi
+function switchPage(pageIndex, options = {}) {    const skipLoad = options.skipLoad === true;    // skipLoad true ise sayfa verilerini yeniden yükleme, sadece hazırla}
+Neden: autoPlaceProductsOnPages ürünleri yerleştirdikten sonra switchPage(0) çağrılıyordu ve bu çağrı yeni eklenen ürünleri siliyordu.
+4. templates/pre_approval.html - Eksik Fonksiyonlar ve Fiyat Sütunları
+initializeEmptyList() fonksiyonu eklendi
+getSafeImageUrl() fonksiyonu eklendi
+Tabloya "Normal Fiyat" ve "İndirimli Fiyat" sütunları eklendi
+Ürün oluşturulurken benzersiz ID (Date.now() + random) atanıyor
+Neden: JavaScript parse hatası yüzünden "Onayla ve Aktar" butonu çalışmıyordu.
+5. Fabric.js Canvas Sınırları (Kısmi)
+fabricCanvas.on('object:moving', function(options) {    // Objelerin canvas dışına çıkmasını engellemeye çalıştık});
+Neden: Ürünler sürüklenince kayboluyordu.
+❌ YAPILAMAYAN / KALAN SORUNLAR
+Sorun	Durum
+Canvas titreme sorunu	Throttle/RAF eklendi ama tam çözülmedi
+Objelerin canvas sınırları	Kısmen çalışıyor, hala kaybolma olabiliyor
+Ürün sürükle-bırak (sidebar → canvas)	Test edilmedi, CORS fix sonrası çalışması gerekiyor
+Canvas'ta ürün görünmeme	Proxy fix sonrası test edilmeli
+Konva.js'e geçiş	Plan yapıldı ama uygulanmadı (alternatif olarak kaldı)
+📁 DEĞİŞEN DOSYALAR
+routes/main.py - /proxy-image endpoint eklendi
+templates/index.html - getSafeImageUrl, normalizeProduct, switchPage options desteği
+templates/pre_approval.html - initializeEmptyList, getSafeImageUrl, fiyat sütunları, ID düzeltmeleri
+📌 ANAYASAYA EKLENEBİLECEK KURALLAR
+## Canvas Görsel Yönetimi### Dış Kaynak Resimler (CORS)- Dış URL'lerden gelen ürün resimleri `/proxy-image?url=...` endpoint'i üzerinden geçirilmeli- `getSafeImageUrl(url)` fonksiyonu ile tüm image_url'ler normalize edilmeli- Bu sayede Fabric.js canvas export/render işlemleri CORS hatası vermez### Sayfa Geçişleri- `switchPage(pageIndex, { skipLoad: true })` kullanılarak otomatik yerleştirme sırasında   mevcut objelerin silinmesi engellenir- Normal kullanıcı sayfa geçişlerinde `skipLoad` gönderilmez### Ürün ID Yönetimi- Her ürün benzersiz ID'ye sahip olmalı: `Date.now() + Math.random().toString(36)`- pageAssignments objesinde key olarak bu ID'ler kullanılır- Backend ve frontend arasında ID'ler string olarak tutulmalı

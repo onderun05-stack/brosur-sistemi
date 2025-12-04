@@ -1,0 +1,21 @@
+1. aşamada ne yaptık / kurallar neydi?
+Depo ürünleri (source=depo)
+İkinci kayıt yok, yeni ürün açılmıyor.
+İsim/fiyat/grup/resim her zaman depo kartından (AdminProduct) geliyor.
+Kullanıcı listede bir alanı değiştirirse → bu sadece ProductUpdateRequest olarak admin onay kuyruğuna düşüyor; ürün datası hemen değişmiyor.
+Zorunlu alan kontrolü ve AI gruplama bu ürünlere uygulanmıyor.
+External ürünler (source=external)
+name + image_url + discount_price üçlüsünden biri bile boşsa → tüm Onayla & Aktar iptal (DB yazımı, Canvas aktarımı yok).
+Zorunlu alanlar tamamsa:
+Sayfa/dağıtım kuralı:
+Hiç sayfa seçilmemişse → liste sırasına göre 1,2,3… otomatik atanır.
+Bazıları dolu, bazıları boşsa → kullanıcıya “otomatik doldurulsun mu?” sorulur; kabul edilirse seçili sayfalar olduğu gibi kalır, boşlar liste sırasına göre kullanılmış sayfa numaraları atlanarak doldurulur (1. sayfada bir ürün varsa başka ürün 1’e düşmez, 2,3,4… gider).
+AI gruplama: Sektörün whitelist’indeki alt gruplardan tek grup seçilir; saçma/boş durumda o sektörün Genel grubuna düşer.
+Snapshot veri DB’ye yazılır, Canvas’a gönderilir.
+Canvas aktarımı
+Depo ürünleri → Canvas’a depo kartındaki veri gönderilir.
+External ürünleri → Canvas’a products tablosundaki snapshot gönderilir.
+Pending yönetimi
+Seçilen ürünler onaylandıktan sonra pending JSON’dan silinir.
+Depo ürünlerinin update_request alanı varsa, bu JSON aynen ProductUpdateRequest tablosuna yazılır.
+Şu anki repo sadece backend tarafını içeriyor; frontend (pre_approval.html) burada olmadığından, Onayla & Aktar butonundaki eski JS kodunu göremiyorum. Yeni sohbette tam yetki açarsan, frontend dosyalarını da ekleyip oradaki initializeEmptyList gibi eski çağrıları temizleyebilir, ardından tüm akışı uçtan uca bağlayabiliriz.

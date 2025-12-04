@@ -1,0 +1,208 @@
+/* Wizard genel */
+
+.bw-container {
+    background:#050816;
+    color:#f9fafb;
+    border-radius:12px;
+    padding:14px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.bw-steps {
+    display:flex;
+    gap:6px;
+    font-size:11px;
+    opacity:.9;
+}
+
+.bw-step {
+    padding:4px 8px;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,0.1);
+}
+
+.bw-step.active {
+    background:linear-gradient(135deg,#8b5cf6,#ec4899);
+    border-color:transparent;
+}
+
+.bw-main {
+    display:grid;
+    grid-template-columns: minmax(0,1.4fr) minmax(0,1fr);
+    gap:10px;
+}
+
+.bw-panel {
+    background:rgba(15,23,42,0.95);
+    border-radius:10px;
+    padding:10px;
+    border:1px solid rgba(148,163,184,0.2);
+}
+
+.bw-panel h3 {
+    margin:0 0 8px;
+    font-size:13px;
+    border-bottom:1px solid rgba(148,163,184,0.3);
+    padding-bottom:5px;
+}
+
+.bw-btn {
+    padding:8px 10px;
+    border-radius:999px;
+    border:none;
+    cursor:pointer;
+    font-size:12px;
+    font-weight:600;
+}
+
+.bw-btn-primary {
+    background:linear-gradient(135deg,#6366f1,#ec4899);
+    color:#fff;
+}
+
+.bw-btn-ghost {
+    background:transparent;
+    color:#e5e7eb;
+    border:1px solid rgba(148,163,184,0.6);
+}
+
+.bw-footer {
+    display:flex;
+    justify-content:space-between;
+    margin-top:8px;
+}
+
+/* Ürün seçim grid */
+
+.bw-product-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
+    gap:8px;
+    max-height:360px;
+    overflow-y:auto;
+}
+
+.bw-product-card {
+    position:relative;
+    background:rgba(15,23,42,0.9);
+    border-radius:8px;
+    padding:6px;
+    border:1px solid transparent;
+    cursor:pointer;
+    transition:all .15s ease;
+}
+
+.bw-product-card:hover {
+    transform:translateY(-1px);
+    border-color:#6366f1;
+    box-shadow:0 8px 18px rgba(15,23,42,0.7);
+}
+
+.bw-product-card.selected {
+    border-color:#22c55e;
+    box-shadow:0 0 0 1px rgba(34,197,94,0.6);
+}
+
+.bw-product-card img {
+    width:100%;
+    height:80px;
+    object-fit:contain;
+    background:#fff;
+    border-radius:6px;
+}
+
+/* küçük lupa hover */
+
+.bw-product-card:hover::after {
+    content:'🔍';
+    position:absolute;
+    right:6px;
+    top:6px;
+    background:rgba(15,23,42,0.9);
+    border-radius:999px;
+    font-size:11px;
+    padding:2px 6px;
+}
+
+/* Magnifier (Lupa) */
+
+.magnifier-wrapper {
+    position:relative;
+    overflow:hidden;
+    border-radius:10px;
+    border:1px solid rgba(148,163,184,0.4);
+}
+
+.magnifier-target {
+    width:100%;
+    display:block;
+}
+
+.magnifier-lens {
+    position:absolute;
+    border-radius:50%;
+    border:2px solid rgba(248,250,252,0.9);
+    width:120px;
+    height:120px;
+    overflow:hidden;
+    pointer-events:none;
+    display:none;
+    box-shadow:0 0 0 2px rgba(15,23,42,0.8),0 12px 30px rgba(0,0,0,0.9);
+    z-index:40;
+}
+
+.magnifier-lens-inner {
+    position:absolute;
+    transform-origin:top left;
+}
+
+/* Stüdyo – Fabric alan */
+
+.studio-toolbar {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:6px;
+    gap:6px;
+}
+
+.studio-toolbar-left,
+.studio-toolbar-right {
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+}
+
+.studio-tag {
+    font-size:11px;
+    padding:3px 7px;
+    border-radius:999px;
+    background:rgba(15,23,42,0.9);
+    border:1px solid rgba(148,163,184,0.5);
+}
+
+.studio-zoom-btn {
+    width:26px;
+    height:26px;
+    border-radius:999px;
+    border:1px solid rgba(148,163,184,0.6);
+    background:rgba(15,23,42,0.95);
+    color:#e5e7eb;
+    font-size:13px;
+    cursor:pointer;
+}
+
+.studio-canvas-frame {
+    background:#020617;
+    border-radius:12px;
+    padding:8px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    border:1px solid rgba(148,163,184,0.4);
+}
+
+

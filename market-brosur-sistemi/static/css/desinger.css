@@ -1,0 +1,138 @@
+body {
+  background: #f4f4f4;
+}
+
+.desinger-nav {
+  margin-bottom: 0.5rem;
+}
+
+.desinger-main {
+  padding-top: 0.5rem;
+}
+
+.desinger-subtitle {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.studio {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+#product-list {
+  width: 260px;
+  background: #ffffff;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.08);
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.product-list-status {
+  font-size: 0.8rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+#product-list-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.product {
+  background: #f3f4f6;
+  padding: 0.4rem 0.5rem;
+  border-radius: 6px;
+  cursor: grab;
+  border: 1px solid #e5e7eb;
+  transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+
+.product:hover {
+  background: #e5e7eb;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.product-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.product-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.15rem;
+  font-size: 0.75rem;
+  color: #4b5563;
+}
+
+.product-price {
+  font-weight: 700;
+  color: #b91c1c;
+}
+
+.product-group {
+  font-size: 0.7rem;
+  color: #6b7280;
+}
+
+#canvas-area {
+  flex-grow: 1;
+  position: relative;
+  background: #ffffff;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  min-height: 400px;
+}
+
+#brochure-canvas {
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
+  background: #ffffff;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.actions button {
+  font-size: 0.85rem;
+}
+
+.desinger-hint {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.desinger-footer {
+  margin-top: 1.5rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+@media (max-width: 960px) {
+  .studio {
+    flex-direction: column;
+  }
+
+  #product-list {
+    width: 100%;
+    max-height: 220px;
+  }
+}
+
+
+

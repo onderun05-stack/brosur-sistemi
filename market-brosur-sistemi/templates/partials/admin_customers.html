@@ -1,0 +1,39 @@
+<div class="content-section" id="customers-section">
+    <div class="toolbar">
+        <span class="toolbar-title">Musteriler</span>
+        <input type="text" class="toolbar-search" id="customer-search" placeholder="Musteri ara...">
+        <button class="toolbar-btn" onclick="loadCustomers()">
+            <span>&#8635;</span> Yenile
+        </button>
+    </div>
+    
+    <div class="table-container">
+        <table class="product-table">
+            <thead>
+                <tr>
+                    <th style="width:50px;">#</th>
+                    <th>Kullanici Adi</th>
+                    <th>E-posta</th>
+                    <th>Kredi</th>
+                    <th>Kayit Tarihi</th>
+                    <th style="width:150px;">Islem</th>
+                </tr>
+            </thead>
+            <tbody id="customers-tbody">
+                <tr>
+                    <td colspan="6">
+                        <div class="loading">
+                            <div class="loading-spinner"></div>
+                            <span>Musteriler yukleniyor...</span>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="status-bar">
+        <span id="customer-status">Hazir</span>
+        <span id="customer-count">0 musteri</span>
+    </div>
+</div>

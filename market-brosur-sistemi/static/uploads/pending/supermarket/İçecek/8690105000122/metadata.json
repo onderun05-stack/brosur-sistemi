@@ -1,0 +1,9 @@
+{
+  "user_id": 2,
+  "sector": "supermarket",
+  "group": "İçecek",
+  "barcode": "8690105000122",
+  "uploaded_at": "2025-12-03T16:24:04.011421",
+  "status": "pending_approval",
+  "original_filename": "product.png"
+}

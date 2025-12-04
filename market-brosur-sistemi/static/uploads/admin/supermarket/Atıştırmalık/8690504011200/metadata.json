@@ -1,0 +1,11 @@
+{
+  "user_id": 2,
+  "sector": "supermarket",
+  "group": "Atıştırmalık",
+  "barcode": "8690504011200",
+  "uploaded_at": "2025-12-03T19:52:35.618760",
+  "status": "admin_depot",
+  "original_filename": "product.png",
+  "original_user_id": 2,
+  "approved_at": "2025-12-03T23:46:58.661545"
+}

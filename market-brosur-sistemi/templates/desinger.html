@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Akıllı Broşür Tasarımı – Desınger Test</title>
+
+  <!-- Basit, bağımsız test sayfası için hafif tema -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+  <link rel="stylesheet" href="/static/css/desinger.css">
+</head>
+<body>
+  <nav class="container-fluid desinger-nav">
+    <ul>
+      <li><strong>Firma Broşür Stüdyosu – Desınger Test</strong></li>
+    </ul>
+    <ul>
+      <li><a href="/admin/dashboard">Admin Paneline Dön</a></li>
+    </ul>
+  </nav>
+
+  <main class="container desinger-main">
+    <h2>Broşür Oluştur (Test Alanı)</h2>
+    <p class="desinger-subtitle">
+      Ürünleri soldaki listeden sürükleyip kanvasa bırak. Açık depodaki gerçek ürünler kullanılır.
+      OpenAI ve KIE.ai ile yerleşim ve arka plan önerileri test edebilirsin.
+    </p>
+
+    <div class="studio">
+      <aside id="product-list">
+        <h4>Ürünler (Depo)</h4>
+        <p id="product-list-status" class="product-list-status">
+          Depodaki ürünler yükleniyor...
+        </p>
+        <div id="product-list-body"></div>
+      </aside>
+
+      <section id="canvas-area">
+        <canvas id="brochure-canvas" width="800" height="600"></canvas>
+
+        <div class="actions">
+          <button id="ai-layout">🧠 OpenAI: Ürünleri Analiz Et</button>
+          <button id="ai-style">🎨 KIE.ai: Arka Plan Öner</button>
+          <button id="clear-canvas">🗑️ Kanvası Temizle</button>
+          <button id="export">📥 PNG Olarak Kaydet</button>
+        </div>
+
+        <small class="desinger-hint">
+          Bu sayfa sadece test amaçlıdır; canlı broşür akışını etkilemez.
+        </small>
+      </section>
+    </div>
+  </main>
+
+  <footer class="container desinger-footer">
+    <small>
+      Desınger Test Modu • Gerçek depo ürünleri ile çalışır • AI istekleri Stage2 ayarına bağlıdır.
+    </small>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+  <script src="/static/js/desinger.js"></script>
+</body>
+</html>
+
+
+

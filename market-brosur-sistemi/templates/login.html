@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş - AEUyazılım Broşür Sistemi</title>
+    <link rel="icon" href="/static/favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="/static/css/glassmorphism.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        /* GLASSMORPHISM LOGIN - Açık Mavi/Cyan Tema */
+        body {
+            font-family: -apple-system, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 25%, #7dd3fc 50%, #a5f3fc 75%, #cffafe 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Altın/Sarı parlama - sağ alt */
+        body::before {
+            content: '';
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(251, 191, 36, 0.6) 0%, rgba(245, 158, 11, 0.3) 30%, transparent 60%);
+            bottom: -150px;
+            right: -100px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            animation: floatYellow 20s ease-in-out infinite;
+        }
+        
+        /* Cyan büyük daire - sağ üst */
+        body::after {
+            content: '';
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(34, 211, 238, 0.5) 0%, rgba(6, 182, 212, 0.2) 40%, transparent 70%);
+            top: -100px;
+            right: 10%;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            animation: floatCyan 25s ease-in-out infinite;
+        }
+        
+        /* Mor/Violet daire - sol */
+        .bg-shape-violet {
+            position: fixed;
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(167, 139, 250, 0.4) 0%, rgba(139, 92, 246, 0.2) 40%, transparent 70%);
+            top: 20%;
+            left: -80px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            animation: floatViolet 22s ease-in-out infinite;
+        }
+        
+        @keyframes floatYellow {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(-20px, -15px) scale(1.05); }
+            50% { transform: translate(-10px, 10px) scale(0.95); }
+            75% { transform: translate(15px, -8px) scale(1.02); }
+        }
+        
+        @keyframes floatCyan {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(15px, 20px) scale(1.08); }
+            66% { transform: translate(-20px, 8px) scale(0.95); }
+        }
+        
+        @keyframes floatViolet {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(25px, -15px) scale(1.1); }
+        }
+        
+        /* Admin background active - hide pseudo elements and reset default gradient */
+        body.admin-background-active::before,
+        body.admin-background-active::after {
+            display: none !important;
+        }
+        
+        /* GLASSMORPHISM LOGIN CONTAINER */
+        .login-container {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-radius: 28px;
+            padding: 50px 60px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 25px 80px rgba(30, 58, 95, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+            width: 100%;
+            max-width: 460px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .logo img {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 16px;
+            display: inline-block;
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+        
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .logo i {
+            font-size: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 16px;
+            display: block;
+        }
+        
+        .logo h1 {
+            font-size: 28px;
+            color: #1e3a5f;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .logo p {
+            color: rgba(30, 58, 95, 0.7);
+            font-size: 14px;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #1e3a5f;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.4);
+            color: #1e3a5f;
+            backdrop-filter: blur(10px);
+        }
+        
+        .form-group input::placeholder {
+            color: rgba(30, 58, 95, 0.5);
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: rgba(251, 191, 36, 0.8);
+            box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.2);
+            background: rgba(255, 255, 255, 0.6);
+        }
+        
+        /* CAM BUTON - Glassmorphism Button */
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.8), rgba(245, 158, 11, 0.8));
+            color: #1e3a5f;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 12px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3);
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(251, 191, 36, 0.5);
+            background: linear-gradient(135deg, rgba(251, 191, 36, 1), rgba(245, 158, 11, 1));
+        }
+        
+        .login-btn:active {
+            transform: translateY(0);
+        }
+        
+        /* Secondary cam buton */
+        .btn-glass {
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.3);
+            color: #1e3a5f;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .btn-glass:hover {
+            background: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+            border-left: 4px solid #dc2626;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        .success-message {
+            background: rgba(34, 197, 94, 0.1);
+            color: #16a34a;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+            border-left: 4px solid #16a34a;
+        }
+        
+        .success-message.show {
+            display: block;
+        }
+        
+        .form-toggle {
+            text-align: center;
+            margin-top: 20px;
+            color: rgba(30, 58, 95, 0.7);
+            font-size: 14px;
+        }
+        
+        .form-toggle a {
+            color: #f59e0b;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .form-toggle a:hover {
+            text-decoration: underline;
+            color: #c4b5fd;
+        }
+        
+        .register-form {
+            display: none;
+        }
+        
+        .register-form.active {
+            display: block;
+        }
+        
+        .login-form.hidden {
+            display: none;
+        }
+        
+        .form-group select {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23a78bfa' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .form-group select option {
+            background: #1e3a5f;
+            color: #ffffff;
+        }
+        
+        .form-group select:focus {
+            outline: none;
+            border-color: rgba(167, 139, 250, 0.6);
+            box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.2);
+        }
+        
+        .sector-hint {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 6px;
+        }
+        
+        /* Error/Success messages glass style */
+        .error-message, .success-message {
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Decorative violet shape -->
+    <div class="bg-shape-violet"></div>
+    
+    <div class="login-container">
+        <div class="logo">
+            <img src="/static/aeu_logo.png" alt="AEU Yazilim Logo" onerror="this.style.display='none'">
+            <h1>AEU Yazılım Broşür Sistemi</h1>
+            <p>Hesabınıza giriş yapın</p>
+        </div>
+        
+        <div id="error-message" class="error-message"></div>
+        <div id="success-message" class="success-message"></div>
+        
+        <!-- LOGIN FORM -->
+        <form id="login-form" class="login-form">
+            <div class="form-group">
+                <label for="login-email">Kullanıcı Adı veya E-posta</label>
+                <input type="text" id="login-email" name="email" required autocomplete="username">
+            </div>
+            
+            <div class="form-group">
+                <label for="login-password">Şifre</label>
+                <input type="password" id="login-password" name="password" required autocomplete="current-password">
+            </div>
+            
+            <button type="submit" class="login-btn">
+                <i class="fas fa-sign-in-alt"></i> Giriş Yap
+            </button>
+            
+            <div class="form-toggle">
+                Hesabınız yok mu? <a onclick="showRegister()">Kayıt Ol</a>
+            </div>
+        </form>
+        
+        <!-- REGISTER FORM -->
+        <form id="register-form" class="register-form">
+            <div class="form-group">
+                <label for="reg-name">İşletme / Şirket Adı</label>
+                <input type="text" id="reg-name" name="name" required placeholder="Örn: ABC Market">
+            </div>
+            
+            <div class="form-group">
+                <label for="reg-email">E-posta Adresi</label>
+                <input type="email" id="reg-email" name="email" required placeholder="ornek@email.com" autocomplete="email">
+            </div>
+            
+            <div class="form-group">
+                <label for="reg-password">Şifre</label>
+                <input type="password" id="reg-password" name="password" required minlength="6" autocomplete="new-password">
+            </div>
+            
+            <div class="form-group">
+                <label for="reg-sector">Sektör Seçimi <span style="color: #dc2626;">*</span></label>
+                <select id="reg-sector" name="sector" required>
+                    <option value="">-- Sektör Seçiniz --</option>
+                    <option value="supermarket">Süpermarket</option>
+                    <option value="giyim">Giyim</option>
+                    <option value="teknoloji">Teknoloji & Elektronik</option>
+                    <option value="kozmetik">Kozmetik & Bakım</option>
+                    <option value="evyasam">Ev & Yaşam</option>
+                    <option value="elsanatlari">El Yapımı & El Sanatları</option>
+                    <option value="restoran">Restoran & Kafe</option>
+                    <option value="diger">Diğer</option>
+                </select>
+                <p class="sector-hint">Sektör seçimi, ürün kategorileri ve içerik önerilerini özelleştirir</p>
+            </div>
+            
+            <button type="submit" class="login-btn">
+                <i class="fas fa-user-plus"></i> Kayıt Ol
+            </button>
+            
+            <div class="form-toggle">
+                Zaten hesabınız var mı? <a onclick="showLogin()">Giriş Yap</a>
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const errorMessage = document.getElementById('error-message');
+        const successMessage = document.getElementById('success-message');
+        const logoText = document.querySelector('.logo p');
+        
+        // Toggle between login and register forms
+        function showRegister() {
+            loginForm.classList.add('hidden');
+            registerForm.classList.add('active');
+            logoText.textContent = 'Yeni hesap oluşturun';
+            hideMessages();
+        }
+        
+        function showLogin() {
+            loginForm.classList.remove('hidden');
+            registerForm.classList.remove('active');
+            logoText.textContent = 'Hesabınıza giriş yapın';
+            hideMessages();
+        }
+        
+        function hideMessages() {
+            errorMessage.classList.remove('show');
+            successMessage.classList.remove('show');
+        }
+        
+        // LOGIN FORM SUBMIT
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    window.location.href = '/dashboard';
+                } else {
+                    showError(data.message || 'Giriş başarısız');
+                }
+            } catch (error) {
+                showError('Bağlantı hatası. Lütfen tekrar deneyin.');
+            }
+        });
+        
+        // REGISTER FORM SUBMIT
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('reg-name').value.trim();
+            const email = document.getElementById('reg-email').value.trim();
+            const password = document.getElementById('reg-password').value;
+            const sector = document.getElementById('reg-sector').value;
+            
+            // Validation
+            if (!name || !email || !password || !sector) {
+                showError('Tüm alanları doldurunuz');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showError('Şifre en az 6 karakter olmalıdır');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password, sector })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showSuccess('Kayıt başarılı! Giriş yapabilirsiniz.');
+                    setTimeout(() => {
+                        showLogin();
+                        document.getElementById('login-email').value = email;
+                    }, 1500);
+                } else {
+                    showError(data.message || 'Kayıt başarısız');
+                }
+            } catch (error) {
+                showError('Bağlantı hatası. Lütfen tekrar deneyin.');
+            }
+        });
+        
+        function showError(message) {
+            hideMessages();
+            errorMessage.textContent = message;
+            errorMessage.classList.add('show');
+            setTimeout(() => {
+                errorMessage.classList.remove('show');
+            }, 5000);
+        }
+        
+        function showSuccess(message) {
+            hideMessages();
+            successMessage.textContent = message;
+            successMessage.classList.add('show');
+            setTimeout(() => {
+                successMessage.classList.remove('show');
+            }, 5000);
+        }
+        
+        // ========== BACKGROUND SETTINGS LOADER ==========
+        async function loadBackgroundSettings() {
+            try {
+                const response = await fetch('/api/get-background-settings');
+                const result = await response.json();
+                
+                if (result.success && result.data && result.data.pages) {
+                    const settings = result.data;
+                    
+                    // Apply to login page
+                    if (settings.pages.login) {
+                        applyBackground(settings.pages.login);
+                    }
+                    
+                    console.log('✅ Background settings loaded for login page');
+                } else {
+                    console.log('ℹ️ No background settings found for login page');
+                }
+            } catch (error) {
+                console.error('❌ Load background error:', error);
+            }
+        }
+        
+        // Apply background to login page
+        function applyBackground(settings) {
+            try {
+                // Validate settings
+                if (!settings || typeof settings !== 'object') return;
+                if (!settings.type) return;
+                
+                const bodyElement = document.body;
+                if (!bodyElement) return;
+                
+                // Apply based on type
+                if (settings.type === 'none') {
+                    // Reset to shared default (cream theme matching dashboard)
+                    bodyElement.classList.add('admin-background-active'); // Hide pseudo-elements
+                    bodyElement.style.background = 'linear-gradient(135deg, #fdf5e6 0%, #faebd7 50%, #ffe4c4 75%, #f5deb3 100%)';
+                    bodyElement.style.backgroundImage = '';
+                    bodyElement.style.backgroundSize = '';
+                    bodyElement.style.backgroundPosition = '';
+                    bodyElement.style.backgroundRepeat = '';
+                    console.log('✅ Background reset to shared default (cream theme) for login page');
+                    return;
+                }
+                
+                // For gradient/image types, value is required
+                if (!settings.value) return;
+                if (settings.value.length > 500) return; // Security check
+                
+                // Add class to hide pseudo-elements (decorative circles)
+                bodyElement.classList.add('admin-background-active');
+                
+                if (settings.type === 'gradient') {
+                    bodyElement.style.background = settings.value;
+                    bodyElement.style.backgroundImage = '';
+                    bodyElement.style.backgroundSize = '';
+                    bodyElement.style.backgroundPosition = '';
+                    bodyElement.style.backgroundRepeat = '';
+                } else if (settings.type === 'image') {
+                    // Clear any existing gradient
+                    bodyElement.style.background = '';
+                    bodyElement.style.backgroundImage = `url(${settings.value})`;
+                    
+                    // Apply position settings
+                    const position = settings.position || 'cover';
+                    if (position === 'cover') {
+                        bodyElement.style.backgroundSize = 'cover';
+                        bodyElement.style.backgroundPosition = 'center';
+                        bodyElement.style.backgroundRepeat = 'no-repeat';
+                    } else if (position === 'contain') {
+                        bodyElement.style.backgroundSize = 'contain';
+                        bodyElement.style.backgroundPosition = 'center';
+                        bodyElement.style.backgroundRepeat = 'no-repeat';
+                    } else if (position === 'repeat') {
+                        bodyElement.style.backgroundSize = 'auto';
+                        bodyElement.style.backgroundPosition = 'top left';
+                        bodyElement.style.backgroundRepeat = 'repeat';
+                    } else if (position === 'center') {
+                        bodyElement.style.backgroundSize = 'auto';
+                        bodyElement.style.backgroundPosition = 'center';
+                        bodyElement.style.backgroundRepeat = 'no-repeat';
+                    }
+                }
+                
+                console.log('✅ Background applied to login page');
+            } catch (error) {
+                console.error('❌ Apply background error for login:', error);
+            }
+        }
+        
+        // Load background on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            loadBackgroundSettings();
+        });
+    </script>
+</body>
+</html>

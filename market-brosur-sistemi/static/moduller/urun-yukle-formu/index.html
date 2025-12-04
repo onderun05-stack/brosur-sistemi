@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AEU Ürün Yükleme Formu</title>
+<link rel="icon" type="image/png" href="/static/aeu_logo.png">
+<!-- SheetJS for Excel export -->
+<script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 30px 20px;
+    }
+
+    .header {
+        text-align: center;
+        color: white;
+        margin-bottom: 30px;
+    }
+
+    .header h1 {
+        font-size: 2.2em;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .header p {
+        font-size: 1.1em;
+        opacity: 0.95;
+    }
+
+    .main-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: flex;
+        gap: 25px;
+        align-items: flex-start;
+    }
+
+    .table-section {
+        flex: 1;
+        background: rgba(255,255,255,0.98);
+        border-radius: 16px;
+        padding: 25px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    }
+
+    .notes-section {
+        width: 350px;
+        background: rgba(255,255,255,0.95);
+        border-radius: 16px;
+        padding: 25px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        border-left: 4px solid #667eea;
+    }
+
+    .notes-section h3 {
+        color: #667eea;
+        margin-bottom: 15px;
+        font-size: 1.3em;
+        border-bottom: 2px solid #667eea;
+        padding-bottom: 10px;
+    }
+
+    .notes-section ul {
+        list-style: none;
+    }
+
+    .notes-section li {
+        margin-bottom: 12px;
+        padding-left: 20px;
+        position: relative;
+        line-height: 1.6;
+        color: #444;
+    }
+
+    .notes-section li:before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: #27ae60;
+        font-weight: bold;
+        font-size: 1.2em;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+    thead {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+    }
+
+    th {
+        color: white;
+        padding: 14px 8px;
+        text-align: center;
+        font-weight: 600;
+        font-size: 0.95em;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    td {
+        border: 1px solid #ddd;
+        padding: 0;
+    }
+
+    input {
+        width: 100%;
+        border: 0;
+        padding: 12px 8px;
+        font-size: 14px;
+        font-family: inherit;
+        transition: background 0.2s;
+    }
+
+    input:focus {
+        outline: none;
+        background: #f0f8ff;
+    }
+
+    input::placeholder {
+        color: #aaa;
+        font-style: italic;
+    }
+
+    tbody tr:hover {
+        background: #f9f9f9;
+    }
+
+    /* Fiyat input wrapper - ₺ simgesi için */
+    .price-wrapper {
+        display: flex;
+        align-items: center;
+        width: 100%;
+    }
+    
+    .price-wrapper input {
+        flex: 1;
+        text-align: right;
+        padding-right: 4px;
+    }
+    
+    .price-wrapper .currency {
+        padding: 0 8px;
+        color: #27ae60;
+        font-weight: bold;
+        background: #f0f9f4;
+        border-left: 1px solid #ddd;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        min-height: 42px;
+    }
+
+    .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 15px;
+        font-weight: 600;
+        transition: all 0.3s;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+    }
+
+    .btn:active {
+        transform: translateY(0);
+    }
+
+    .btn-add {
+        background: linear-gradient(135deg, #27ae60, #229954);
+        color: white;
+    }
+
+    .btn-delete {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        color: white;
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    .btn-excel {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        color: white;
+    }
+
+    .btn-import {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+    }
+
+    .btn-cancel {
+        background: linear-gradient(135deg, #6b7280, #4b5563);
+        color: white;
+    }
+
+    .actions {
+        margin-top: 10px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .info-box {
+        background: #e8f4fd;
+        border-left: 4px solid #3498db;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 20px;
+        color: #2c3e50;
+    }
+
+    .info-box strong {
+        color: #2980b9;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+        .main-container {
+            flex-direction: column;
+        }
+
+        .notes-section {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .header h1 {
+            font-size: 1.6em;
+        }
+
+        table {
+            font-size: 13px;
+        }
+
+        input {
+            padding: 10px 6px;
+        }
+
+        .notes-section {
+            padding: 20px;
+        }
+    }
+</style>
+</head>
+<body>
+
+<div class="header">
+    <h1>🛒 AEU Ürün Yükleme Formu</h1>
+    <p>Ürünlerinizi ekleyin ve Excel formatında dışa aktarın</p>
+</div>
+
+<div class="main-container">
+    <!-- Tablo Bölümü -->
+    <div class="table-section">
+        <table id="urunTablosu">
+            <colgroup>
+                <col style="width:20%;">
+                <col style="width:40%;">
+                <col style="width:18%;">
+                <col style="width:16%;">
+                <col style="width:6%;">
+            </colgroup>
+
+            <thead>
+                <tr>
+                    <th>Barkod</th>
+                    <th>Ürün Adı</th>
+                    <th>İndirim Fiyatı ₺</th>
+                    <th>Normal Fiyat ₺</th>
+                    <th>Sil</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td><input type="text" placeholder="869..." /></td>
+                    <td><input type="text" placeholder="Otomatik gelecek (opsiyonel)" /></td>
+                    <td><div class="price-wrapper"><input type="text" class="price-input" placeholder="29,99" oninput="formatPrice(this)" /><span class="currency">₺</span></div></td>
+                    <td><div class="price-wrapper"><input type="text" class="price-input" placeholder="opsiyonel" oninput="formatPrice(this)" /><span class="currency">₺</span></div></td>
+                    <td style="text-align:center; padding:8px;"><button class="btn btn-delete" onclick="silSatir(this)">✕</button></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="actions">
+            <button class="btn btn-add" onclick="satirEkle()">➕ Satır Ekle</button>
+            <button class="btn btn-excel" onclick="exportToExcel()">📊 Excel İndir</button>
+            <button class="btn btn-import" onclick="importToSite()">⬆️ Siteye Aktar</button>
+            <button class="btn btn-cancel" onclick="closeForm()">❌ Vazgeç</button>
+        </div>
+
+        <div class="info-box">
+            <strong>💡 İpucu:</strong> Tabloda gezinmek için <kbd>Enter</kbd> tuşunu kullanın. Son hücredeyken Enter'a basarsanız otomatik yeni satır eklenir!
+        </div>
+    </div>
+
+    <!-- Notlar Bölümü -->
+    <div class="notes-section">
+        <h3>📋 Önemli Notlar</h3>
+        <ul>
+            <li><strong>Barkod alanı zorunludur.</strong> Her ürün için mutlaka barkod girilmelidir.</li>
+            <li><strong>Ürün adı opsiyoneldir.</strong> Ürün ismini, ürünü kendiniz tanımlayabilmek için yazabilirsiniz. Ürün listeye aktarılınca barkod sorgulamasından otomatik doldurulacaktır. Lütfen listede ürün ismini kontrol ediniz (isim gelmediyse kendiniz yazarsınız).</li>
+            <li><strong>İndirim Fiyatı ₺</strong> doldurulması zorunludur. Müşteriye gösterilecek indirimli fiyattır.</li>
+            <li><strong>Normal Fiyat ₺</strong> opsiyoneldir. Normal fiyat girerseniz, broşürde üzeri çizili olarak gösterilir.</li>
+            <li><strong>"Excel İndir"</strong> butonuyla formu Excel olarak kaydedin (ileride kullanmak için).</li>
+            <li><strong>"Siteye Aktar"</strong> butonuyla ürünleri direkt sisteme gönderin.</li>
+            <li><strong>"Vazgeç"</strong> butonuyla formu kapatın.</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+// Fiyat formatlama - virgül ve nokta desteği
+function formatPrice(input) {
+    // Sadece rakam, virgül ve nokta kabul et
+    let value = input.value.replace(/[^0-9.,]/g, '');
+    
+    // Birden fazla nokta/virgül varsa sadece ilkini tut
+    let parts = value.split(/[.,]/);
+    if (parts.length > 2) {
+        value = parts[0] + ',' + parts.slice(1).join('');
+    }
+    
+    input.value = value;
+}
+
+// Fiyatı sayıya çevir (virgül ve nokta desteği)
+function parsePrice(value) {
+    if (!value || value.trim() === '') return 0;
+    // Virgülü noktaya çevir ve parse et
+    let cleaned = value.replace(',', '.').replace(/[^0-9.]/g, '');
+    let num = parseFloat(cleaned);
+    return isNaN(num) ? 0 : num;
+}
+
+// Satır ekleme
+function satirEkle() {
+    const tbody = document.querySelector("#urunTablosu tbody");
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+        <td><input type="text" placeholder="869..." /></td>
+        <td><input type="text" placeholder="Otomatik gelecek (opsiyonel)" /></td>
+        <td><div class="price-wrapper"><input type="text" class="price-input" placeholder="29,99" oninput="formatPrice(this)" /><span class="currency">₺</span></div></td>
+        <td><div class="price-wrapper"><input type="text" class="price-input" placeholder="opsiyonel" oninput="formatPrice(this)" /><span class="currency">₺</span></div></td>
+        <td style="text-align:center; padding:8px;"><button class="btn btn-delete" onclick="silSatir(this)">✕</button></td>
+    `;
+    tbody.appendChild(tr);
+    // Klavye navigasyonu zaten event delegation ile çalışıyor
+    
+    // İlk hücreye odaklan
+    tr.querySelector('input').focus();
+}
+
+// Satır silme
+function silSatir(btn) {
+    const tbody = btn.closest('tbody');
+    if (tbody.querySelectorAll('tr').length > 1) {
+        btn.closest('tr').remove();
+    } else {
+        alert('En az bir satır olmalıdır!');
+    }
+}
+
+// Collect product data from table
+function collectProductData() {
+    const rows = document.querySelectorAll("#urunTablosu tbody tr");
+    const products = [];
+    
+    rows.forEach(row => {
+        const inputs = row.querySelectorAll('input');
+        const barkod = inputs[0].value.trim();
+        const urunAdi = inputs[1].value.trim();
+        const indirimFiyati = inputs[2].value.trim();
+        const normalFiyat = inputs[3].value.trim();
+        
+        // Barkod + İndirim Fiyatı zorunlu
+        // Skip completely empty rows (all fields blank)
+        if (!barkod && !urunAdi && !indirimFiyati && !normalFiyat) {
+            return; // Skip empty row
+        }
+        
+        // Only add if both required fields are present
+        if (barkod && indirimFiyati) {
+            const discountPrice = parsePrice(indirimFiyati);
+            const normalPrice = parsePrice(normalFiyat);
+            
+            // Validate numbers
+            if (discountPrice > 0) {
+                products.push({
+                    barcode: barkod,
+                    name: urunAdi,
+                    discount_price: discountPrice,
+                    normal_price: normalPrice
+                });
+            }
+        }
+    });
+    
+    return products;
+}
+
+// Excel Export (using SheetJS)
+function exportToExcel() {
+    const products = collectProductData();
+    
+    if (products.length === 0) {
+        alert('❌ En az bir ürün ekleyin! (Barkod ve İndirim Fiyatı zorunludur)');
+        return;
+    }
+    
+    // Create worksheet data
+    const wsData = [
+        ['Barkod', 'Ürün Adı', 'İndirim Fiyatı', 'Normal Fiyat']
+    ];
+    
+    products.forEach(p => {
+        wsData.push([
+            p.barcode,
+            p.name,
+            p.discount_price,
+            p.normal_price || ''
+        ]);
+    });
+    
+    // Create workbook and worksheet
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    
+    // Auto-size columns
+    const colWidths = [
+        { wch: 15 },  // Barkod
+        { wch: 40 },  // Ürün Adı
+        { wch: 15 },  // İndirim Fiyatı
+        { wch: 15 }   // Normal Fiyat
+    ];
+    ws['!cols'] = colWidths;
+    
+    // Add worksheet to workbook
+    XLSX.utils.book_append_sheet(wb, ws, "Ürünler");
+    
+    // Generate Excel file and download
+    const tarih = new Date().toISOString().split('T')[0];
+    XLSX.writeFile(wb, `AEU_Urunler_${tarih}.xlsx`);
+    
+    alert('✅ Excel dosyası indirildi! İleride kullanmak için saklayabilirsiniz.');
+}
+
+// Import to Site (POST to backend)
+async function importToSite() {
+    const products = collectProductData();
+    
+    if (products.length === 0) {
+        alert('❌ En az bir ürün ekleyin! (Barkod ve İndirim Fiyatı zorunludur)');
+        return;
+    }
+    
+    // Show loading indicator - find button directly
+    const importBtn = document.querySelector('.btn-import');
+    const originalText = importBtn ? importBtn.textContent : '';
+    if (importBtn) {
+        importBtn.textContent = '⏳ Aktarılıyor...';
+        importBtn.disabled = true;
+    }
+    
+    try {
+        const response = await fetch('/api/pre-approval/import', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ products, target: "pending" })
+        });
+        
+        // Check HTTP response first
+        if (!response.ok) {
+            let errorMsg = `Sunucu hatası (${response.status})`;
+            try {
+                const errorData = await response.json();
+                errorMsg = errorData.error || errorMsg;
+            } catch (e) {
+                // JSON parse failed, use status text
+            }
+            throw new Error(errorMsg);
+        }
+        
+        const data = await response.json();
+        
+        if (data.success && data.count > 0) {
+            let message = `${data.count} ürün başarıyla siteye aktarıldı!`;
+            if (data.updated > 0) {
+                message += ` (${data.updated} mevcut ürün güncellendi)`;
+            }
+            
+            // Keep button disabled to prevent double-submit
+            if (importBtn) {
+                importBtn.textContent = '✅ Aktarıldı!';
+            }
+            
+            // Check if we're in an iframe (modal) or standalone window
+            if (window.parent !== window) {
+                // In iframe - send message to parent and stop
+                window.parent.postMessage({
+                    type: 'productsImported',
+                    message: message,
+                    count: data.count
+                }, '*');
+                // Don't do anything else - parent will handle closing
+                return;
+            } else if (window.opener) {
+                // Standalone window with opener
+                alert('✅ ' + message);
+                window.opener.location.reload();
+                window.close();
+            } else {
+                // Standalone without opener - redirect to pre-approval
+                alert('✅ ' + message);
+                window.location.href = '/pre-approval';
+            }
+        } else {
+            let errorMsg = data.error || 'Bilinmeyen hata';
+            if (data.errors && data.errors.length > 0) {
+                errorMsg += '\n\nİlk hatalar:\n' + data.errors.join('\n');
+            }
+            alert('❌ Aktarım hatası: ' + errorMsg);
+            
+            // Re-enable button
+            if (importBtn) {
+                importBtn.textContent = originalText;
+                importBtn.disabled = false;
+            }
+        }
+    } catch (error) {
+        console.error('Import error:', error);
+        alert('❌ Siteye aktarırken hata oluştu: ' + error.message);
+        
+        // Re-enable button
+        if (importBtn) {
+            importBtn.textContent = originalText;
+            importBtn.disabled = false;
+        }
+    }
+}
+
+// Close Form
+function closeForm() {
+    if (confirm('Formu kapatmak istediğinize emin misiniz? Kaydedilmemiş veriler kaybolacaktır.')) {
+        // Check if we're in an iframe (modal) or standalone window
+        if (window.parent !== window) {
+            // In iframe - send message to parent to close modal
+            window.parent.postMessage({ type: 'closeForm' }, '*');
+        } else {
+            window.close();
+        }
+    }
+}
+
+// Klavye navigasyonu (Enter + Ok tuşları)
+function aktifKlavyeNavigasyon() {
+    const table = document.getElementById("urunTablosu");
+    const colCount = 4; // Barkod, Ürün Adı, İndirim Fiyatı, Normal Fiyat
+    
+    function getInputs() {
+        return Array.from(document.querySelectorAll("table tbody input"));
+    }
+    
+    function getInputIndex(input) {
+        return getInputs().indexOf(input);
+    }
+    
+    function getRowCol(index) {
+        return {
+            row: Math.floor(index / colCount),
+            col: index % colCount
+        };
+    }
+    
+    function getInputAt(row, col) {
+        const inputs = getInputs();
+        const index = row * colCount + col;
+        return inputs[index] || null;
+    }
+    
+    function getTotalRows() {
+        return Math.ceil(getInputs().length / colCount);
+    }
+    
+    table.addEventListener('keydown', function(e) {
+        const input = e.target;
+        if (input.tagName !== 'INPUT') return;
+        
+        const index = getInputIndex(input);
+        const { row, col } = getRowCol(index);
+        const totalRows = getTotalRows();
+        
+        // Number input'larda yukarı/aşağı ok ile değer değişimini engelle
+        if (input.type === 'number' && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) {
+            e.preventDefault();
+        }
+        
+        let targetInput = null;
+        
+        switch(e.key) {
+            case 'Enter':
+                e.preventDefault();
+                // Sağa git, son sütundaysa yeni satıra
+                if (col < colCount - 1) {
+                    targetInput = getInputAt(row, col + 1);
+                } else if (row < totalRows - 1) {
+                    targetInput = getInputAt(row + 1, 0);
+                } else {
+                    // Son satırın son sütunundayız - yeni satır ekle
+                    satirEkle();
+                    setTimeout(() => {
+                        const inputs = getInputs();
+                        inputs[inputs.length - colCount].focus();
+                    }, 50);
+                    return;
+                }
+                break;
+                
+            case 'ArrowRight':
+                // Sağa git (cursor sonundaysa)
+                if (input.selectionStart === input.value.length) {
+                    e.preventDefault();
+                    if (col < colCount - 1) {
+                        targetInput = getInputAt(row, col + 1);
+                    }
+                }
+                break;
+                
+            case 'ArrowLeft':
+                // Sola git (cursor başındaysa)
+                if (input.selectionStart === 0) {
+                    e.preventDefault();
+                    if (col > 0) {
+                        targetInput = getInputAt(row, col - 1);
+                    }
+                }
+                break;
+                
+            case 'ArrowUp':
+                e.preventDefault();
+                if (row > 0) {
+                    targetInput = getInputAt(row - 1, col);
+                }
+                break;
+                
+            case 'ArrowDown':
+                e.preventDefault();
+                if (row < totalRows - 1) {
+                    targetInput = getInputAt(row + 1, col);
+                }
+                break;
+                
+            case 'Tab':
+                // Tab ile son hücredeyse yeni satır ekle
+                if (!e.shiftKey && col === colCount - 1 && row === totalRows - 1) {
+                    e.preventDefault();
+                    satirEkle();
+                    setTimeout(() => {
+                        const inputs = getInputs();
+                        inputs[inputs.length - colCount].focus();
+                    }, 50);
+                    return;
+                }
+                break;
+        }
+        
+        if (targetInput) {
+            targetInput.focus();
+            targetInput.select();
+        }
+    });
+}
+
+// Sayfa yüklendiğinde klavye navigasyonunu aktif et
+aktifKlavyeNavigasyon();
+
+// Başlangıçta 3 boş satır ekle
+for (let i = 0; i < 2; i++) {
+    satirEkle();
+}
+</script>
+
+</body>
+</html>

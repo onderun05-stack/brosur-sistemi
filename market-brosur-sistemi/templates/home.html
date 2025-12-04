@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>AEU Yazılım – AI Destekli Broşür Tasarım Platformu</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Yapay zeka ile broşür tasarla, tek tıkla sosyal medyada yayınla. Market, ayakkabı, parfüm, saat ve tüm sektörler için.">
+    <link rel="icon" href="/static/favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+        
+        :root {
+            --primary-dark: #1e3a5f;
+            --primary-light: #0ea5e9;
+            --accent-gold: #fbbf24;
+            --accent-gold-light: rgba(251, 191, 36, 0.3);
+            --cyan-light: #a5f3fc;
+            --violet: #a78bfa;
+            --white: #ffffff;
+            --glass-bg: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.4);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 20%, #7dd3fc 40%, #67e8f9 60%, #a5f3fc 80%, #cffafe 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* ============= ANIMATED BACKGROUND SHAPES ============= */
+        .bg-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        
+        /* Sarı/Altın parlama - sağ alt */
+        .shape-gold {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(251, 191, 36, 0.5) 0%, rgba(245, 158, 11, 0.2) 40%, transparent 70%);
+            bottom: -200px;
+            right: -150px;
+            border-radius: 50%;
+            animation: floatGold 20s ease-in-out infinite;
+        }
+        
+        /* Mor daire - sol üst */
+        .shape-violet {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(167, 139, 250, 0.4) 0%, rgba(139, 92, 246, 0.15) 50%, transparent 70%);
+            top: -100px;
+            left: -100px;
+            border-radius: 50%;
+            animation: floatViolet 25s ease-in-out infinite;
+        }
+        
+        /* Cyan daire - sağ üst */
+        .shape-cyan {
+            position: absolute;
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(34, 211, 238, 0.4) 0%, transparent 60%);
+            top: 10%;
+            right: 5%;
+            border-radius: 50%;
+            animation: floatCyan 18s ease-in-out infinite;
+        }
+        
+        /* Küçük sarı daire - sol orta */
+        .shape-gold-small {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(251, 191, 36, 0.4) 0%, transparent 60%);
+            top: 40%;
+            left: 5%;
+            border-radius: 50%;
+            animation: floatGoldSmall 15s ease-in-out infinite;
+        }
+        
+        @keyframes floatGold {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(-30px, -20px) scale(1.05); }
+            50% { transform: translate(-15px, 15px) scale(0.95); }
+            75% { transform: translate(20px, -10px) scale(1.02); }
+        }
+        
+        @keyframes floatViolet {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(30px, 20px) scale(1.1); }
+        }
+        
+        @keyframes floatCyan {
+            0%, 100% { transform: translate(0, 0); }
+            33% { transform: translate(-20px, 15px); }
+            66% { transform: translate(15px, -10px); }
+        }
+        
+        @keyframes floatGoldSmall {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(20px, -30px) scale(1.15); }
+        }
+        
+        /* ============= FLOATING BROCHURE DECORATIONS ============= */
+        .floating-brochures {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .mini-brochure {
+            position: absolute;
+            width: 140px;
+            height: 180px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 50px rgba(30, 58, 95, 0.25), 0 0 0 1px rgba(255,255,255,0.5);
+            overflow: hidden;
+            animation: floatBrochure 20s ease-in-out infinite;
+        }
+        
+        /* Broşür Başlık Bandı */
+        .brochure-header {
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 11px;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        
+        /* Ürün Görseli Alanı */
+        .brochure-product {
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
+            font-size: 40px;
+            position: relative;
+        }
+        
+        /* İndirim Rozeti */
+        .brochure-badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #ef4444;
+            color: white;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 10px;
+            animation: pulse 2s infinite;
+        }
+        
+        /* Fiyat ve Ürün Adı */
+        .brochure-content {
+            padding: 8px 10px;
+            background: white;
+        }
+        
+        .brochure-name {
+            font-size: 9px;
+            color: #475569;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .brochure-price {
+            display: flex;
+            align-items: baseline;
+            gap: 5px;
+        }
+        
+        .brochure-price .new {
+            font-size: 16px;
+            font-weight: 800;
+            color: #ef4444;
+        }
+        
+        .brochure-price .old {
+            font-size: 10px;
+            color: #94a3b8;
+            text-decoration: line-through;
+        }
+        
+        .brochure-price .currency {
+            font-size: 10px;
+            font-weight: 600;
+            color: #ef4444;
+        }
+        
+        /* Sektör Renkleri */
+        .mini-brochure.type-market .brochure-header { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+        .mini-brochure.type-shoe .brochure-header { background: linear-gradient(135deg, #ec4899 0%, #db2777 100%); }
+        .mini-brochure.type-perfume .brochure-header { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); }
+        .mini-brochure.type-watch .brochure-header { background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%); }
+        .mini-brochure.type-tech .brochure-header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+        .mini-brochure.type-food .brochure-header { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); }
+        .mini-brochure.type-cosmetic .brochure-header { background: linear-gradient(135deg, #f472b6 0%, #ec4899 100%); }
+        .mini-brochure.type-furniture .brochure-header { background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%); }
+        
+        /* Pozisyonlar ve Animasyon Gecikmeleri */
+        .mini-brochure:nth-child(1) { top: 12%; left: 2%; animation-delay: 0s; transform: rotate(-5deg); }
+        .mini-brochure:nth-child(2) { top: 55%; left: 5%; animation-delay: -4s; transform: rotate(3deg); }
+        .mini-brochure:nth-child(3) { top: 18%; right: 3%; animation-delay: -8s; transform: rotate(5deg); }
+        .mini-brochure:nth-child(4) { top: 65%; right: 2%; animation-delay: -12s; transform: rotate(-3deg); }
+        .mini-brochure:nth-child(5) { top: 38%; right: 6%; animation-delay: -6s; opacity: 0.85; transform: scale(0.85) rotate(4deg); }
+        .mini-brochure:nth-child(6) { top: 75%; left: 15%; animation-delay: -10s; opacity: 0.8; transform: scale(0.8) rotate(-4deg); }
+        .mini-brochure:nth-child(7) { top: 8%; left: 18%; animation-delay: -14s; opacity: 0.75; transform: scale(0.75) rotate(6deg); }
+        .mini-brochure:nth-child(8) { top: 42%; left: 1%; animation-delay: -16s; opacity: 0.7; transform: scale(0.7) rotate(-6deg); }
+        
+        @keyframes floatBrochure {
+            0%, 100% { transform: translateY(0) rotate(var(--rotate, -3deg)); }
+            25% { transform: translateY(-12px) rotate(calc(var(--rotate, -3deg) + 3deg)); }
+            50% { transform: translateY(-5px) rotate(calc(var(--rotate, -3deg) - 2deg)); }
+            75% { transform: translateY(-18px) rotate(calc(var(--rotate, -3deg) + 2deg)); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        /* ============= HEADER ============= */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--accent-gold) 0%, #f59e0b 50%, #ea580c 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 20px;
+            color: white;
+            box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4);
+        }
+        
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .logo-text h1 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+        
+        .logo-text span {
+            font-size: 11px;
+            color: rgba(30, 58, 95, 0.7);
+        }
+        
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        nav a {
+            text-decoration: none;
+            color: var(--primary-dark);
+            font-size: 14px;
+            font-weight: 500;
+            padding: 10px 18px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        nav a:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+        
+        .btn-login {
+            background: var(--glass-bg) !important;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            font-weight: 600;
+        }
+        
+        .btn-login:hover {
+            background: rgba(255, 255, 255, 0.5) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(30, 58, 95, 0.15);
+        }
+        
+        /* ============= MAIN CONTENT ============= */
+        main {
+            position: relative;
+            z-index: 10;
+            padding-top: 100px;
+        }
+        
+        /* ============= HERO SECTION ============= */
+        .hero {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 40px 40px;
+            text-align: center;
+        }
+        
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(251, 191, 36, 0.2);
+            border: 1px solid rgba(251, 191, 36, 0.4);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #b45309;
+            margin-bottom: 30px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(251, 191, 36, 0); }
+        }
+        
+        .hero h1 {
+            font-size: clamp(36px, 6vw, 64px);
+            font-weight: 800;
+            color: var(--primary-dark);
+            line-height: 1.1;
+            margin-bottom: 24px;
+        }
+        
+        .hero h1 span {
+            background: linear-gradient(135deg, var(--accent-gold) 0%, #f59e0b 50%, #ea580c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-subtitle {
+            font-size: clamp(16px, 2vw, 20px);
+            color: rgba(30, 58, 95, 0.8);
+            max-width: 700px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+        }
+        
+        /* ============= CTA BUTTONS ============= */
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 50px;
+        }
+        
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 36px;
+            background: linear-gradient(135deg, var(--accent-gold) 0%, #f59e0b 100%);
+            color: var(--primary-dark);
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 14px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(251, 191, 36, 0.4);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(251, 191, 36, 0.5);
+        }
+        
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 36px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            color: var(--primary-dark);
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 14px;
+            text-decoration: none;
+            border: 1px solid var(--glass-border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.5);
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(30, 58, 95, 0.1);
+        }
+        
+        /* ============= SECTOR ICONS ============= */
+        .sectors-showcase {
+            margin-bottom: 60px;
+        }
+        
+        .sectors-label {
+            font-size: 13px;
+            color: rgba(30, 58, 95, 0.6);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .sectors-grid {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        
+        .sector-icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+        
+        .sector-icon:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 10px 25px rgba(30, 58, 95, 0.1);
+        }
+        
+        .sector-icon i {
+            font-size: 28px;
+        }
+        
+        .sector-icon span {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--primary-dark);
+        }
+        
+        .sector-icon.market i { color: #22c55e; }
+        .sector-icon.shoe i { color: #ec4899; }
+        .sector-icon.perfume i { color: #8b5cf6; }
+        .sector-icon.watch i { color: #0ea5e9; }
+        .sector-icon.tech i { color: #f97316; }
+        .sector-icon.pharmacy i { color: #14b8a6; }
+        .sector-icon.furniture i { color: #a16207; }
+        .sector-icon.clothing i { color: #e11d48; }
+        
+        /* ============= FEATURE CARDS ============= */
+        .features {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px 80px;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+        
+        .feature-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 32px;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(30, 58, 95, 0.15);
+            background: rgba(255, 255, 255, 0.4);
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        
+        .feature-card:nth-child(1) .feature-icon {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.3), rgba(245, 158, 11, 0.2));
+        }
+        
+        .feature-card:nth-child(2) .feature-icon {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(167, 139, 250, 0.2));
+        }
+        
+        .feature-card:nth-child(3) .feature-icon {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(74, 222, 128, 0.2));
+        }
+        
+        .feature-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 12px;
+        }
+        
+        .feature-card p {
+            font-size: 14px;
+            color: rgba(30, 58, 95, 0.7);
+            line-height: 1.6;
+        }
+        
+        .feature-list {
+            list-style: none;
+            margin-top: 16px;
+        }
+        
+        .feature-list li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: rgba(30, 58, 95, 0.8);
+            margin-bottom: 8px;
+        }
+        
+        .feature-list li i {
+            color: #22c55e;
+            font-size: 14px;
+        }
+        
+        /* ============= SOCIAL PROOF ============= */
+        .social-proof {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px 80px;
+            text-align: center;
+        }
+        
+        .social-proof h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 40px;
+        }
+        
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .social-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 28px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .social-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px rgba(30, 58, 95, 0.1);
+        }
+        
+        .social-card i {
+            font-size: 24px;
+        }
+        
+        .social-card.instagram i { color: #e4405f; }
+        .social-card.facebook i { color: #1877f2; }
+        .social-card.whatsapp i { color: #25d366; }
+        .social-card.twitter i { color: #1da1f2; }
+        
+        .social-card span {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+        
+        /* ============= FOOTER ============= */
+        footer {
+            background: rgba(30, 58, 95, 0.05);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .footer-logo .logo-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 18px;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+        
+        .footer-links a {
+            text-decoration: none;
+            color: rgba(30, 58, 95, 0.7);
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary-dark);
+        }
+        
+        .footer-copyright {
+            font-size: 13px;
+            color: rgba(30, 58, 95, 0.5);
+        }
+        
+        /* ============= RESPONSIVE ============= */
+        @media (max-width: 768px) {
+            header {
+                padding: 12px 20px;
+            }
+            
+            nav a:not(.btn-login) {
+                display: none;
+            }
+            
+            .hero {
+                padding: 40px 20px;
+            }
+            
+            .mini-brochure {
+                width: 80px;
+                height: 110px;
+            }
+            
+            .mini-brochure:nth-child(3),
+            .mini-brochure:nth-child(5) {
+                display: none;
+            }
+            
+            .features {
+                padding: 0 20px 60px;
+            }
+            
+            .social-proof {
+                padding: 0 20px 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Shapes -->
+    <div class="bg-shapes">
+        <div class="shape-gold"></div>
+        <div class="shape-violet"></div>
+        <div class="shape-cyan"></div>
+        <div class="shape-gold-small"></div>
+    </div>
+    
+    <!-- Floating Brochure Decorations - Gerçekçi Örnek Broşürler -->
+    <div class="floating-brochures">
+        <!-- Market Broşürü -->
+        <div class="mini-brochure type-market" style="--rotate: -5deg;">
+            <div class="brochure-header">🛒 SÜPER İNDİRİM</div>
+            <div class="brochure-product">🥛<span class="brochure-badge">%30</span></div>
+            <div class="brochure-content">
+                <div class="brochure-name">Günlük Süt 1L</div>
+                <div class="brochure-price">
+                    <span class="new">24.90</span>
+                    <span class="currency">₺</span>
+                    <span class="old">35.90₺</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Ayakkabı Broşürü -->
+        <div class="mini-brochure type-shoe" style="--rotate: 3deg;">
+            <div class="brochure-header">👟 YENİ SEZON</div>
+            <div class="brochure-product">👟<span class="brochure-badge">%40</span></div>
+            <div class="brochure-content">
+                <div class="brochure-name">Spor Ayakkabı</div>
+                <div class="brochure-price">
+                    <span class="new">799</span>
+                    <span class="currency">₺</span>
+                    <span class="old">1299₺</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Parfüm Broşürü -->
+        <div class="mini-brochure type-perfume" style="--rotate: 5deg;">
+            <div class="brochure-header">💎 ÖZEL FIRSAT</div>
+            <div class="brochure-product">🧴<span class="brochure-badge">%25</span></div>
+            <div class="brochure-content">
+                <div class="brochure-name">Kadın Parfüm EDT</div>
+                <div class="brochure-price">
+                    <span class="new">449</span>
+                    <span class="currency">₺</span>
+                    <span class="old">599₺</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Saat Broşürü -->
+        <div class="mini-brochure type-watch" style="--rotate: -3deg;">
+            <div class="brochure-header">⌚ KAMPANYA</div>
+            <div class="brochure-product">⌚<span class="brochure-badge">%50</span></div>
+            <div class="brochure-content">
+                <div class="brochure-name">Akıllı Saat Pro</div>
+                <div class="brochure-price">
+                    <span class="new">1.299</span>
+                    <span class="currency">₺</span>
+                    <span class="old">2.599₺</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Teknoloji Broşürü -->
+        <div class="mini-brochure type-tech" style="--rotate: 4deg;">
+            <div class="brochure-header">📱 TEKNOLOJİ</div>
+            <div class="brochure-product">📱<span class="brochure-badge">%20</span></div>
+            <div class="brochure-content">
+                <div class="brochure-name">Kablosuz Kulaklık</div>
+                <div class="brochure-price">
+                    <span class="new">399</span>
+                    <span class="currency">₺</span>
+                    <span class="old">499₺</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Gıda Broşürü -->
+        <div class="mini-brochure type-food" style="--rotate: -4deg;">
+            <div class="brochure-header">🍎 TAZE ÜRÜN</div>
+            <div class="brochure-product">🍎<span class="brochure-badge">%35</span></div>
+            <div class="brochure-content">
+                <div class="brochure-name">Organik Elma 1kg</div>
+                <div class="brochure-price">
+                    <span class="new">29.90</span>
+                    <span class="currency">₺</span>
+                    <span class="old">45.90₺</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Kozmetik Broşürü -->
+        <div class="mini-brochure type-cosmetic" style="--rotate: 6deg;">
+            <div class="brochure-header">💄 GÜZELLİK</div>
+            <div class="brochure-product">💄<span class="brochure-badge">2AL1ÖDE</span></div>
+            <div class="brochure-content">
+                <div class="brochure-name">Ruj Koleksiyonu</div>
+                <div class="brochure-price">
+                    <span class="new">149</span>
+                    <span class="currency">₺</span>
+                    <span class="old">249₺</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobilya Broşürü -->
+        <div class="mini-brochure type-furniture" style="--rotate: -6deg;">
+            <div class="brochure-header">🛋️ EV & DEKOR</div>
+            <div class="brochure-product">🛋️<span class="brochure-badge">%45</span></div>
+            <div class="brochure-content">
+                <div class="brochure-name">Koltuk Takımı</div>
+                <div class="brochure-price">
+                    <span class="new">8.999</span>
+                    <span class="currency">₺</span>
+                    <span class="old">15.999₺</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <div class="logo-icon">A</div>
+            <div class="logo-text">
+                <h1>AEU Yazılım</h1>
+                <span>AI Destekli Broşür Platformu</span>
+            </div>
+        </div>
+        <nav>
+            <a href="#ozellikler">Özellikler</a>
+            <a href="#sektorler">Sektörler</a>
+            <a href="#iletisim">İletişim</a>
+            <a href="/login" class="btn-login">Giriş Yap</a>
+        </nav>
+    </header>
+    
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-badge">
+                <i class="fas fa-robot"></i>
+                Yapay Zeka Destekli Platform
+            </div>
+            
+            <h1>
+                Broşür Tasarla,<br>
+                <span>Tek Tıkla Yayınla</span>
+            </h1>
+            
+            <p class="hero-subtitle">
+                Excel'den ürün yükle, AI ile otomatik yerleştir, profesyonel broşür oluştur 
+                ve sosyal medyada anında paylaş. Tüm sektörler için hazır.
+            </p>
+            
+            <div class="cta-buttons">
+                <a href="/login" class="btn-primary">
+                    <i class="fas fa-rocket"></i>
+                    Hemen Başla
+                </a>
+                <a href="#ozellikler" class="btn-secondary">
+                    <i class="fas fa-play-circle"></i>
+                    Nasıl Çalışır?
+                </a>
+            </div>
+            
+            <!-- Sector Icons -->
+            <div class="sectors-showcase" id="sektorler">
+                <p class="sectors-label">Tüm Sektörler İçin</p>
+                <div class="sectors-grid">
+                    <div class="sector-icon market">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Market</span>
+                    </div>
+                    <div class="sector-icon shoe">
+                        <i class="fas fa-shoe-prints"></i>
+                        <span>Ayakkabı</span>
+                    </div>
+                    <div class="sector-icon perfume">
+                        <i class="fas fa-spray-can"></i>
+                        <span>Parfüm</span>
+                    </div>
+                    <div class="sector-icon watch">
+                        <i class="fas fa-clock"></i>
+                        <span>Saat</span>
+                    </div>
+                    <div class="sector-icon tech">
+                        <i class="fas fa-mobile-alt"></i>
+                        <span>Teknoloji</span>
+                    </div>
+                    <div class="sector-icon pharmacy">
+                        <i class="fas fa-pills"></i>
+                        <span>Eczane</span>
+                    </div>
+                    <div class="sector-icon furniture">
+                        <i class="fas fa-couch"></i>
+                        <span>Mobilya</span>
+                    </div>
+                    <div class="sector-icon clothing">
+                        <i class="fas fa-tshirt"></i>
+                        <span>Giyim</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Features Section -->
+        <section class="features" id="ozellikler">
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>AI Destekli Tasarım</h3>
+                    <p>Yapay zeka ürünlerinizi analiz eder, en uygun yerleşimi önerir ve profesyonel broşür oluşturur.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> Otomatik ürün yerleştirme</li>
+                        <li><i class="fas fa-check"></i> Akıllı renk uyumu</li>
+                        <li><i class="fas fa-check"></i> Fiyat optimizasyonu</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Tek Tıkla Paylaş</h3>
+                    <p>Oluşturduğunuz broşürü Instagram, Facebook, WhatsApp ve diğer platformlarda anında paylaşın.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> Sosyal medya boyutları</li>
+                        <li><i class="fas fa-check"></i> Direkt paylaşım</li>
+                        <li><i class="fas fa-check"></i> PDF/PNG çıktı</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Excel Entegrasyonu</h3>
+                    <p>Ürün listenizi Excel'den yükleyin, barkod okutun, fiyatları güncelleyin - her şey otomatik.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> Excel/CSV import</li>
+                        <li><i class="fas fa-check"></i> Barkod okuma</li>
+                        <li><i class="fas fa-check"></i> Toplu güncelleme</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Social Proof -->
+        <section class="social-proof">
+            <h2>Tüm Platformlarda Yayınla</h2>
+            <div class="social-icons">
+                <div class="social-card instagram">
+                    <i class="fab fa-instagram"></i>
+                    <span>Instagram</span>
+                </div>
+                <div class="social-card facebook">
+                    <i class="fab fa-facebook"></i>
+                    <span>Facebook</span>
+                </div>
+                <div class="social-card whatsapp">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>WhatsApp</span>
+                </div>
+                <div class="social-card twitter">
+                    <i class="fab fa-twitter"></i>
+                    <span>Twitter</span>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer id="iletisim">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <div class="logo-icon">A</div>
+                <span style="font-weight: 600; color: var(--primary-dark);">AEU Yazılım</span>
+            </div>
+            <div class="footer-links">
+                <a href="#">Hakkımızda</a>
+                <a href="#">Gizlilik Politikası</a>
+                <a href="#">Kullanım Şartları</a>
+                <a href="mailto:info@aeuyazilim.com">İletişim</a>
+            </div>
+            <p class="footer-copyright">
+                © 2025 AEU Yazılım. Tüm hakları saklıdır.
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,7 @@
+Müşteri ürün akışı: Müşteri yüklediği ürünleri anında Canvas’ta kullanabiliyor; aynı anda kopyası admin onay kuyruğuna gidiyor. Admin onaylarsa ana depoya, reddederse yalnızca müşterinin deposunda kalıyor.
+Canvas erişilebilirliği: “Ürün eklendi ama Canvas’ta görünmüyor” sorununu giderdik. Pending ürünler sessionStorage üzerinden Canvas’a otomatik taşınıyor, sol panel kaldırıldığı için JS tarafında guard’lar eklendi.
+Fabric.js textBaseline hatası: alphabetical değerini her yerde alphabetice çeviren global patch + JSON sanitize fonksiyonları eklendi; object:added, loadFromJSON, toJSON akışları temizlendi.
+Admin paneli ve depolar: admin_all_products hem dosya depolarını hem DB kayıtlarını birleştiriyor, allow_edit bayrağı ve kaynak etiketleri normalize edildi. Admin UI’de görseller ve edit butonları doğru çalışıyor.
+Ön onay formu & backend: Ürün yükleme formları barcode/isim/grup/sektör gibi metadata’yı gönderiyor; backend bu bilgileri metadata.json ile pending depoya yazıyor, gerektiğinde müşteri deposuna da kopyalıyor.
+Canvas düzeni: Sol sidebar tamamen kaldırıldı; canvas-stage düzeniyle canvas merkezde, gereksiz butonlar gizlendi. CSS buna göre sadeleştirildi.
+Guardlar & event fix: DOM referanslarına koruma eklendi, updatePageTabs yeniden tanımlandı, ghost yardımcısı devre dışı.

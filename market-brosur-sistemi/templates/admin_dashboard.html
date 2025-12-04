@@ -1,0 +1,1758 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Paneli - Market Brosuru</title>
+    <link rel="icon" href="/static/favicon.ico">
+    <link href="/static/css/glassmorphism.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        /* GLASSMORPHISM ADMIN - Koyu lacivert arka plan */
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%);
+            min-height: 100vh;
+            color: #ffffff;
+            position: relative;
+        }
+        
+        /* Sarı büyük daire - sağ alt */
+        body::before {
+            content: '';
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, #fbbf24 0%, #f59e0b 30%, transparent 70%);
+            bottom: -200px;
+            right: -150px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            animation: floatYellow 20s ease-in-out infinite;
+        }
+        
+        /* Beyaz/gri büyük daire - sol üst */
+        body::after {
+            content: '';
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 60%);
+            top: -150px;
+            left: -150px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            animation: floatWhite 25s ease-in-out infinite;
+        }
+        
+        @keyframes floatYellow {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(-30px, -20px) scale(1.02); }
+            50% { transform: translate(-15px, 15px) scale(0.98); }
+            75% { transform: translate(20px, -10px) scale(1.01); }
+        }
+        
+        @keyframes floatWhite {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(20px, 30px) scale(1.03); }
+            66% { transform: translate(-25px, 10px) scale(0.97); }
+        }
+        
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* GLASSMORPHISM SIDEBAR */
+        .sidebar {
+            width: 280px;
+            background: rgba(255, 255, 255, 0.08);
+            border-right: 1px solid rgba(255, 255, 255, 0.15);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        
+        .sidebar-header {
+            padding: 15px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.6), rgba(139, 92, 246, 0.6));
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .sidebar-header img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            padding: 2px;
+        }
+        
+        .sidebar-header-text h1 {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .sidebar-header-text p {
+            font-size: 11px;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+        
+        .nav-section {
+            padding: 8px;
+        }
+        
+        .nav-section-title {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            padding: 8px 8px 4px;
+            font-weight: 600;
+        }
+        
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 10px 12px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+        }
+        
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+        
+        .nav-btn.active {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.5), rgba(139, 92, 246, 0.5));
+            color: #fff;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+        
+        .nav-btn .icon {
+            width: 18px;
+            font-size: 14px;
+            text-align: center;
+        }
+        
+        .nav-btn .badge,
+        .folder-item .badge {
+            margin-left: auto;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+            min-width: 20px;
+            text-align: center;
+        }
+        
+        /* WINDOWS FILE EXPLORER STYLE FOLDER TREE */
+        .folder-tree {
+            margin-left: 0;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        
+        .folder-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            cursor: pointer;
+            font-size: 13px;
+            color: #e0e0e0;
+            user-select: none;
+            transition: all 0.15s;
+            border-left: 2px solid transparent;
+            position: relative;
+        }
+        
+        .folder-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+        }
+        
+        .folder-item.active {
+            background: rgba(99, 102, 241, 0.2);
+            border-left-color: #fbbf24;
+            color: #fff;
+        }
+        
+        .folder-item .expand-arrow {
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #888;
+            transition: transform 0.2s;
+        }
+        
+        .folder-item.expanded .expand-arrow {
+            transform: rotate(90deg);
+        }
+        
+        .folder-item .folder-icon {
+            color: #fbbf24;
+            font-size: 16px;
+        }
+        
+        .folder-item.expanded .folder-icon {
+            color: #fcd34d;
+        }
+        
+        .folder-children {
+            display: none;
+            margin-left: 0;
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            margin-left: 18px;
+        }
+        
+        .folder-children.expanded {
+            display: block;
+        }
+        
+        .sector-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 10px 5px 12px;
+            cursor: pointer;
+            font-size: 12px;
+            color: #b0b0b0;
+            transition: all 0.15s;
+            border-left: 2px solid transparent;
+            position: relative;
+        }
+        
+        /* Tree connection line */
+        .sector-item::before {
+            content: '';
+            position: absolute;
+            left: -1px;
+            top: 50%;
+            width: 10px;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .sector-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+        }
+        
+        .sector-item.active {
+            background: rgba(99, 102, 241, 0.25);
+            border-left-color: #fbbf24;
+            color: #fff;
+            font-weight: 500;
+        }
+        
+        .sector-item .sector-icon {
+            font-size: 14px;
+            width: 18px;
+            text-align: center;
+        }
+        
+        .sector-item .count {
+            margin-left: auto;
+            font-size: 10px;
+            color: #6b7280;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 2px 8px;
+            border-radius: 10px;
+            min-width: 24px;
+            text-align: center;
+        }
+        
+        .sector-item.active .count {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+        }
+        
+        /* GLASSMORPHISM MAIN CONTENT */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: transparent;
+            overflow: hidden;
+        }
+        
+        #content-area {
+            flex: 1;
+            overflow: auto;
+            padding: 20px;
+        }
+        
+        /* GLASSMORPHISM TOOLBAR */
+        .toolbar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.08);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        
+        .toolbar-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #fff;
+        }
+        
+        .toolbar-search {
+            flex: 1;
+            max-width: 300px;
+            padding: 8px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            font-size: 13px;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            backdrop-filter: blur(10px);
+        }
+        
+        .toolbar-search::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .toolbar-search:focus {
+            outline: none;
+            border-color: rgba(167, 139, 250, 0.6);
+            background: rgba(255,255,255,0.15);
+            box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.2);
+        }
+        
+        .toolbar-btn {
+            padding: 8px 14px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 6px;
+            font-size: 12px;
+            color: #ccc;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        
+        .toolbar-btn:hover {
+            background: rgba(102, 126, 234, 0.3);
+            color: #fff;
+        }
+        
+        .toolbar-btn.primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+        }
+        
+        .toolbar-btn.primary:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        
+        .table-container {
+            flex: 1;
+            overflow: auto;
+        }
+        
+        /* ========== GERÇEK EXCEL TARZI TABLO ========== */
+        .product-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            table-layout: fixed;
+            /* Excel kenarlık */
+            border: 2px solid #4a5568;
+        }
+        
+        /* TÜM HÜCRELER - Excel kenarlık (sıkışık) */
+        .product-table th,
+        .product-table td {
+            border: 1px solid #4a5568;
+            padding: 2px 6px;
+            position: relative;
+            height: 22px;
+            line-height: 1.2;
+            font-size: 12px;
+        }
+        
+        /* BAŞLIK HÜCRELERİ */
+        .product-table th {
+            position: sticky;
+            top: 0;
+            background: linear-gradient(180deg, #374151 0%, #1f2937 100%);
+            font-weight: 600;
+            color: #f3f4f6;
+            text-align: left;
+            white-space: nowrap;
+            cursor: default;
+            user-select: none;
+            z-index: 10;
+        }
+        
+        /* Başlık satırı - Excel yeşil/mavi tema */
+        .product-table thead tr.header-row th {
+            background: linear-gradient(180deg, #2d5a27 0%, #1e4620 100%);
+            border-bottom: 2px solid #4ade80;
+            color: #ffffff;
+        }
+        
+        /* Filtre satırı */
+        .product-table thead tr.filter-row th {
+            background: #1f2937;
+            padding: 4px 6px;
+        }
+        
+        /* ========== EXCEL SUTUN BOYUTLANDIRICI ========== */
+        .product-table th .resizer {
+            position: absolute;
+            right: -5px;
+            top: 0;
+            bottom: 0;
+            width: 11px;
+            cursor: col-resize;
+            background: transparent;
+            z-index: 100;
+        }
+        
+        /* Resizer - her zaman görünür çizgi */
+        .product-table th .resizer::before {
+            content: '';
+            position: absolute;
+            right: 5px;
+            top: 4px;
+            bottom: 4px;
+            width: 3px;
+            background: linear-gradient(180deg, 
+                rgba(251, 191, 36, 0.1) 0%, 
+                rgba(251, 191, 36, 0.3) 50%, 
+                rgba(251, 191, 36, 0.1) 100%);
+            border-radius: 2px;
+            transition: all 0.15s ease;
+        }
+        
+        /* Resizer - hover efekti */
+        .product-table th .resizer:hover::before {
+            background: linear-gradient(180deg, 
+                rgba(251, 191, 36, 0.5) 0%, 
+                rgba(251, 191, 36, 1) 50%, 
+                rgba(251, 191, 36, 0.5) 100%);
+            width: 4px;
+            box-shadow: 0 0 10px rgba(251, 191, 36, 0.8);
+        }
+        
+        /* Resizer - aktif sürükleme */
+        .product-table th .resizer.resizing::before {
+            background: #fbbf24;
+            width: 4px;
+            box-shadow: 0 0 15px rgba(251, 191, 36, 1);
+        }
+        
+        /* Sürükleme sırasında tablo - SÜTUN */
+        .product-table.resizing-col {
+            cursor: col-resize !important;
+            user-select: none;
+        }
+        
+        .product-table.resizing-col * {
+            cursor: col-resize !important;
+        }
+        
+        .product-table.resizing-col th .resizer::before {
+            background: rgba(251, 191, 36, 0.6);
+        }
+        
+        /* ========== EXCEL SATIR BOYUTLANDIRICI ========== */
+        .product-table td {
+            position: relative;
+        }
+        
+        .product-table td .row-resizer {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: -4px;
+            height: 8px;
+            cursor: row-resize;
+            background: transparent;
+            z-index: 50;
+        }
+        
+        /* Satır resizer - görünür çizgi */
+        .product-table td:first-child .row-resizer::before {
+            content: '';
+            position: absolute;
+            left: 4px;
+            right: 4px;
+            bottom: 3px;
+            height: 2px;
+            background: rgba(251, 191, 36, 0.2);
+            border-radius: 1px;
+            transition: all 0.15s ease;
+        }
+        
+        .product-table td:first-child .row-resizer:hover::before {
+            background: #fbbf24;
+            height: 3px;
+            box-shadow: 0 0 8px rgba(251, 191, 36, 0.8);
+        }
+        
+        .product-table td:first-child .row-resizer.resizing::before {
+            background: #fbbf24;
+            height: 3px;
+            box-shadow: 0 0 12px rgba(251, 191, 36, 1);
+        }
+        
+        /* Sürükleme sırasında tablo - SATIR */
+        .product-table.resizing-row {
+            cursor: row-resize !important;
+            user-select: none;
+        }
+        
+        .product-table.resizing-row * {
+            cursor: row-resize !important;
+        }
+        
+        /* VERİ HÜCRELERİ - Excel tarzı */
+        .product-table td {
+            background: #1a1a2e;
+            vertical-align: middle;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: #e5e7eb;
+        }
+        
+        /* SATIRLAR */
+        .product-table tbody tr {
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+        
+        /* Alternatif satır rengi - Excel tarzı */
+        .product-table tbody tr:nth-child(odd) td {
+            background: #1e1e32;
+        }
+        
+        .product-table tbody tr:nth-child(even) td {
+            background: #252542;
+        }
+        
+        /* Hover - Excel mavi seçim */
+        .product-table tbody tr:hover td {
+            background: #3b82f6 !important;
+            color: #ffffff;
+        }
+        
+        /* Seçili satır */
+        .product-table tbody tr.selected td {
+            background: #2563eb !important;
+            color: #ffffff;
+        }
+        
+        /* Excel tarzı sıkışık sütun genişlikleri */
+        .col-quality { width: 20px; text-align: center; }
+        .col-thumb { width: 30px; }
+        .col-barcode { width: 110px; }
+        .col-name { width: auto; min-width: 150px; }
+        .col-group { width: 80px; }
+        .col-source { width: 70px; }
+        .col-price { width: 70px; text-align: right; }
+        .col-actions { width: 80px; text-align: center; }
+        
+        /* Excel-style Filter Row */
+        .filter-row {
+            background: rgba(0, 0, 0, 0.2);
+        }
+        
+        .filter-row th {
+            padding: 4px 6px;
+        }
+        
+        .column-filter {
+            width: 100%;
+            padding: 4px 6px;
+            font-size: 11px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            color: #fff;
+            outline: none;
+        }
+        
+        .column-filter:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #667eea;
+        }
+        
+        .column-filter::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        select.column-filter {
+            cursor: pointer;
+        }
+        
+        select.column-filter option {
+            background: #1a1a2e;
+            color: #fff;
+        }
+        
+        /* Text warning for missing names */
+        .text-warning {
+            color: #ffc107 !important;
+            font-style: italic;
+        }
+        
+        /* Excel tarzı küçük kalite göstergesi */
+        .quality-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            cursor: help;
+            box-shadow: 0 0 4px currentColor;
+        }
+        
+        .quality-high { background: #28a745; color: #28a745; }
+        .quality-medium { background: #ffc107; color: #ffc107; }
+        .quality-low { background: #dc3545; color: #dc3545; }
+        .quality-unknown { background: #6c757d; color: #6c757d; }
+        
+        /* Excel tarzı küçük kaynak rozeti */
+        .source-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            padding: 1px 4px;
+            border-radius: 2px;
+            font-size: 9px;
+            font-weight: 500;
+            cursor: help;
+            white-space: nowrap;
+        }
+        
+        .source-customer {
+            background: rgba(99, 102, 241, 0.2);
+            color: #818cf8;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+        
+        .source-admin {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .source-google {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+        
+        .source-camgoz {
+            background: rgba(236, 72, 153, 0.2);
+            color: #f472b6;
+            border: 1px solid rgba(236, 72, 153, 0.3);
+        }
+        
+        .source-n11 {
+            background: rgba(244, 114, 182, 0.2);
+            color: #f472b6;
+            border: 1px solid rgba(244, 114, 182, 0.3);
+        }
+        
+        .source-trendyol {
+            background: rgba(249, 115, 22, 0.2);
+            color: #fb923c;
+            border: 1px solid rgba(249, 115, 22, 0.3);
+        }
+        
+        .source-manual {
+            background: rgba(148, 163, 184, 0.2);
+            color: #94a3b8;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+        }
+        
+        .source-ai {
+            background: rgba(167, 139, 250, 0.2);
+            color: #a78bfa;
+            border: 1px solid rgba(167, 139, 250, 0.3);
+        }
+        
+        .source-unknown {
+            background: rgba(107, 114, 128, 0.2);
+            color: #9ca3af;
+            border: 1px solid rgba(107, 114, 128, 0.3);
+        }
+        
+        .thumb-cell {
+            position: relative;
+        }
+        
+        /* Excel tarzı küçük thumbnail */
+        .thumb-img {
+            width: 18px;
+            height: 18px;
+            object-fit: cover;
+            border-radius: 2px;
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .thumb-img:hover {
+            transform: scale(2);
+            border-color: #667eea;
+            z-index: 100;
+            position: relative;
+        }
+        
+        /* Excel tarzı küçük düzenle butonu */
+        .btn-edit {
+            padding: 1px 6px;
+            background: rgba(102, 126, 234, 0.2);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 2px;
+            font-size: 10px;
+            color: #ccc;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-edit:hover {
+            background: rgba(102, 126, 234, 0.4);
+            color: #fff;
+        }
+        
+        .hover-preview {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            pointer-events: none;
+            background: rgba(26, 26, 46, 0.95);
+            padding: 8px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+        }
+        
+        .hover-preview.show {
+            display: block;
+        }
+        
+        .hover-preview img {
+            max-width: 300px;
+            max-height: 300px;
+            border-radius: 8px;
+        }
+        
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-overlay.show {
+            display: flex;
+        }
+        
+        .modal {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 12px;
+            width: 500px;
+            max-width: 90%;
+            max-height: 90vh;
+            overflow: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+        }
+        
+        .modal-header {
+            padding: 18px 20px;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+        }
+        
+        .modal-header h3 {
+            font-size: 16px;
+            color: #fff;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+            color: #888;
+            transition: color 0.2s;
+        }
+        
+        .modal-close:hover {
+            color: #fff;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            color: #aaa;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 6px;
+            font-size: 13px;
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .form-group .preview-img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            margin-top: 10px;
+        }
+        
+        .modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid rgba(102, 126, 234, 0.2);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 10px 18px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            background: rgba(255,255,255,0.05);
+            color: #ccc;
+            transition: all 0.2s;
+        }
+        
+        .btn:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+        }
+        
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+            border-color: transparent;
+        }
+        
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            color: #888;
+        }
+        
+        .empty-state .icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+        
+        .empty-state h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: #ccc;
+        }
+        
+        .empty-state p {
+            font-size: 13px;
+        }
+        
+        .status-bar {
+            padding: 10px 15px;
+            background: rgba(26, 26, 46, 0.8);
+            border-top: 1px solid rgba(102, 126, 234, 0.2);
+            font-size: 12px;
+            color: #888;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            color: #888;
+        }
+        
+        .loading-spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(102, 126, 234, 0.2);
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .divider {
+            height: 1px;
+            background: rgba(102, 126, 234, 0.2);
+            margin: 8px 0;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            background: rgba(26, 26, 46, 0.95);
+            color: #fff;
+            font-size: 13px;
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            animation: slideIn 0.3s ease;
+        }
+        
+        .notification.success {
+            border-color: #28a745;
+            background: rgba(40, 167, 69, 0.2);
+        }
+        
+        .notification.error {
+            border-color: #dc3545;
+            background: rgba(220, 53, 69, 0.2);
+        }
+        
+        .notification button {
+            background: none;
+            border: none;
+            color: #888;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        /* INLINE SITE SETTINGS PANEL */
+        .inline-settings-panel {
+            background: rgba(255, 255, 255, 0.08);
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            margin-top: 10px;
+        }
+        
+        .inline-settings-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 20px;
+            cursor: pointer;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.3));
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+        
+        .inline-settings-header:hover {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.5), rgba(139, 92, 246, 0.5));
+        }
+        
+        .inline-settings-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+            flex: 1;
+        }
+        
+        .settings-toggle-icon { font-size: 20px; }
+        .toggle-arrow { font-size: 12px; transition: transform 0.3s; }
+        .toggle-arrow.collapsed { transform: rotate(-90deg); }
+        
+        .inline-settings-content {
+            padding: 20px;
+            max-height: 500px;
+            overflow-y: auto;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+        
+        .inline-settings-content.collapsed {
+            max-height: 0;
+            padding: 0 20px;
+            overflow: hidden;
+        }
+        
+        .settings-tabs-inline {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .settings-tab-inline {
+            padding: 10px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+        
+        .settings-tab-inline:hover {
+            background: rgba(99, 102, 241, 0.3);
+        }
+        
+        .settings-tab-inline.active {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+        }
+        
+        .inline-panel { display: none; }
+        .inline-panel.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        .settings-grid-inline {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .glass-card-mini {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            padding: 15px;
+        }
+        
+        .glass-card-mini.wide { grid-column: span 2; }
+        .glass-card-mini h4 { font-size: 13px; margin-bottom: 10px; }
+        
+        .glass-card-mini input[type="text"],
+        .glass-card-mini input[type="password"],
+        .glass-card-mini input[type="number"],
+        .glass-card-mini select {
+            width: 100%;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            color: white;
+        }
+        
+        .glass-card-mini input:focus { outline: none; border-color: #6366f1; }
+        .glass-card-mini input[type="color"] { width: 60px; height: 40px; border-radius: 8px; }
+        .glass-card-mini .unit { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 5px; display: block; }
+        .logo-preview-mini { width: 60px; height: 60px; margin-top: 10px; border-radius: 8px; }
+        
+        .btn-save-inline {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .btn-save-inline:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); }
+        
+        .users-toolbar-inline { display: flex; gap: 10px; margin-bottom: 15px; }
+        .users-toolbar-inline input { flex: 1; padding: 10px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; color: white; }
+        .users-toolbar-inline button { padding: 10px 20px; background: rgba(99,102,241,0.3); border: 1px solid rgba(99,102,241,0.5); border-radius: 8px; color: white; cursor: pointer; }
+        
+        .users-table-container { max-height: 300px; overflow-y: auto; border-radius: 8px; background: rgba(0,0,0,0.2); }
+        .users-table-inline { width: 100%; border-collapse: collapse; }
+        .users-table-inline th, .users-table-inline td { padding: 12px 15px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .users-table-inline th { background: rgba(99,102,241,0.2); font-weight: 600; position: sticky; top: 0; }
+        .users-table-inline tr:hover td { background: rgba(255,255,255,0.05); }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="/static/aeu_logo.png" alt="AEU Logo" onerror="this.style.display='none'">
+                <div class="sidebar-header-text">
+                    <h1>Admin Paneli</h1>
+                    <p>AEU Yazilim</p>
+                </div>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Gezinti</div>
+                
+                <div class="folder-tree">
+                    <!-- Ürünler Klasörü -->
+                    <div class="folder-item expanded" onclick="toggleFolder(this, 'products-folder')">
+                        <span class="expand-arrow">▶</span>
+                        <span class="folder-icon">📁</span>
+                        <span>Ürünler</span>
+                    </div>
+                    <div class="folder-children expanded" id="products-folder">
+                        <div class="sector-item active" data-sector="all" onclick="selectSector('all', this)">
+                            <span class="sector-icon">📋</span>
+                            <span>Tüm Ürünler</span>
+                            <span class="count" id="count-all">0</span>
+                        </div>
+                        <div class="sector-item" data-sector="supermarket" onclick="selectSector('supermarket', this)">
+                            <span class="sector-icon">🛒</span>
+                            <span>Supermarket</span>
+                            <span class="count" id="count-supermarket">0</span>
+                        </div>
+                        <div class="sector-item" data-sector="giyim" onclick="selectSector('giyim', this)">
+                            <span class="sector-icon">👗</span>
+                            <span>Giyim</span>
+                            <span class="count" id="count-giyim">0</span>
+                        </div>
+                        <div class="sector-item" data-sector="teknoloji" onclick="selectSector('teknoloji', this)">
+                            <span class="sector-icon">📱</span>
+                            <span>Teknoloji</span>
+                            <span class="count" id="count-teknoloji">0</span>
+                        </div>
+                        <div class="sector-item" data-sector="kozmetik" onclick="selectSector('kozmetik', this)">
+                            <span class="sector-icon">💄</span>
+                            <span>Kozmetik</span>
+                            <span class="count" id="count-kozmetik">0</span>
+                        </div>
+                        <div class="sector-item" data-sector="evyasam" onclick="selectSector('evyasam', this)">
+                            <span class="sector-icon">🏠</span>
+                            <span>Ev & Yaşam</span>
+                            <span class="count" id="count-evyasam">0</span>
+                        </div>
+                        <div class="sector-item" data-sector="elsanatlari" onclick="selectSector('elsanatlari', this)">
+                            <span class="sector-icon">🎨</span>
+                            <span>El Yapımı</span>
+                            <span class="count" id="count-elsanatlari">0</span>
+                        </div>
+                        <div class="sector-item" data-sector="restoran" onclick="selectSector('restoran', this)">
+                            <span class="sector-icon">🍽️</span>
+                            <span>Restoran</span>
+                            <span class="count" id="count-restoran">0</span>
+                        </div>
+                        <div class="sector-item" data-sector="diger" onclick="selectSector('diger', this)">
+                            <span class="sector-icon">📦</span>
+                            <span>Diğer</span>
+                            <span class="count" id="count-diger">0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="divider"></div>
+                
+                <div class="folder-item" data-section="pending" onclick="loadSection('pending')">
+                    <span class="expand-arrow" style="visibility:hidden">▶</span>
+                    <span class="folder-icon">⏳</span>
+                    <span>Onay Bekleyenler</span>
+                    <span class="badge" id="pending-badge">0</span>
+                </div>
+                
+                <div class="folder-item" data-section="customers" onclick="loadSection('customers')">
+                    <span class="expand-arrow" style="visibility:hidden">▶</span>
+                    <span class="folder-icon">👥</span>
+                    <span>Müşteriler</span>
+                </div>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Yönetim</div>
+                
+                <div class="folder-item" onclick="window.location.href='/download/modul/urun-yukle-formu'">
+                    <span class="expand-arrow" style="visibility:hidden">▶</span>
+                    <span class="folder-icon">📥</span>
+                    <span>Ürün Yükle Formu İndir</span>
+                </div>
+                
+                <div class="folder-item" data-section="settings" onclick="loadSection('settings')">
+                    <span class="expand-arrow" style="visibility:hidden">▶</span>
+                    <span class="folder-icon">⚙️</span>
+                    <span>Site Yönetimi</span>
+                </div>
+                
+                <div class="folder-item" onclick="window.location.href='/dashboard'">
+                    <span class="expand-arrow" style="visibility:hidden">▶</span>
+                    <span class="folder-icon">↩️</span>
+                    <span>Ana Sayfaya Dön</span>
+                </div>
+            </div>
+        </aside>
+        
+        <main class="main-content">
+            <div id="content-area">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <span>Yukleniyor...</span>
+                </div>
+            </div>
+            
+        </main>
+    </div>
+    
+    <div class="hover-preview" id="hover-preview">
+        <img id="hover-preview-img" src="" alt="Preview">
+    </div>
+    
+    <div class="modal-overlay" id="edit-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Urun Duzenle</h3>
+                <button class="modal-close" onclick="closeEditModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="edit-id">
+                <div class="form-group">
+                    <label>Barkod <span style="color: #dc2626;">*</span></label>
+                    <input type="text" id="edit-barcode" readonly required>
+                </div>
+                <div class="form-group">
+                    <label>Urun Adi <span style="color: #dc2626;">*</span></label>
+                    <input type="text" id="edit-name" placeholder="Urun adini giriniz" required>
+                </div>
+                <div class="form-group">
+                    <label>Sektör <span style="color: #dc2626;">*</span></label>
+                    <select id="edit-sector" onchange="updateProductGroupDropdown(this.value)" required>
+                        <option value="supermarket">Süpermarket</option>
+                        <option value="giyim">Giyim</option>
+                        <option value="teknoloji">Teknoloji</option>
+                        <option value="kozmetik">Kozmetik</option>
+                        <option value="evyasam">Ev & Yaşam</option>
+                        <option value="elsanatlari">El Sanatları</option>
+                        <option value="restoran">Restoran</option>
+                        <option value="diger">Diğer</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Urun Grubu <span style="color: #dc2626;">*</span></label>
+                    <select id="edit-group" required>
+                        <option value="">Seçiniz</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Resim <span style="color: #dc2626;">*</span></label>
+                    <input type="file" id="edit-image" accept="image/*" required>
+                    <img class="preview-img" id="edit-preview-img" src="" style="display:none;">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" onclick="deleteProduct()" style="margin-right:auto;">🗑️ Sil</button>
+                <button class="btn" onclick="closeEditModal()">İptal</button>
+                <button class="btn btn-primary" onclick="saveProduct()">💾 Kaydet</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/static/js/admin/admin_main.js"></script>
+    <script src="/static/js/admin/admin_products.js"></script>
+    <script src="/static/js/admin/admin_settings.js"></script>
+    
+    <script>
+    // Inline Site Settings Functions
+    function toggleInlineSettings() {
+        const content = document.getElementById('settings-content-area');
+        const arrow = document.getElementById('settings-arrow');
+        content.classList.toggle('collapsed');
+        arrow.classList.toggle('collapsed');
+    }
+    
+    function switchInlineTab(tabId, btn) {
+        // Remove active from all tabs
+        document.querySelectorAll('.settings-tab-inline').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.inline-panel').forEach(p => p.classList.remove('active'));
+        
+        // Activate selected
+        btn.classList.add('active');
+        document.getElementById('inline-' + tabId).classList.add('active');
+    }
+    
+    function loadInlineUsers() {
+        const tbody = document.getElementById('inline-users-body');
+        if (!tbody) return; // Element yoksa çık
+        
+        fetch('/api/admin/users')
+            .then(r => r.json())
+            .then(data => {
+                if (data.success && data.users) {
+                    tbody.innerHTML = data.users.map(u => `
+                        <tr>
+                            <td>${u.name || '-'}</td>
+                            <td>${u.email}</td>
+                            <td>${u.sector || '-'}</td>
+                            <td>${u.credits || 0}</td>
+                            <td>${u.role || 'customer'}</td>
+                            <td>
+                                <button onclick="addCredits(${u.id})" style="padding:5px 10px;background:#10b981;border:none;border-radius:4px;color:white;cursor:pointer;">+Kredi</button>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+            })
+            .catch(e => console.error('Users load error:', e));
+    }
+    
+    function saveAIPricing() {
+        const data = {
+            gpt4o: document.getElementById('price-gpt4o').value,
+            gpt4o_mini: document.getElementById('price-gpt4o-mini').value,
+            dalle3: document.getElementById('price-dalle3').value,
+            default_credits: document.getElementById('default-credits').value
+        };
+        
+        fetch('/api/admin/settings/ai-pricing', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        })
+        .then(r => r.json())
+        .then(data => {
+            alert(data.success ? 'AI fiyatları kaydedildi!' : 'Hata: ' + data.error);
+        });
+    }
+    
+    function saveAPISettings() {
+        const data = {
+            openai_key: document.getElementById('openai-key').value,
+            camgoz_key: document.getElementById('camgoz-key').value,
+            jojapi_key: document.getElementById('jojapi-key').value
+        };
+        
+        fetch('/api/admin/settings/api-keys', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        })
+        .then(r => r.json())
+        .then(data => {
+            alert(data.success ? 'API anahtarları kaydedildi!' : 'Hata: ' + data.error);
+        });
+    }
+    
+    function saveThemeSettings() {
+        const data = {
+            primary_color: document.getElementById('primary-color-inline').value,
+            secondary_color: document.getElementById('secondary-color-inline').value,
+            theme_mode: document.getElementById('theme-mode-inline').value,
+            blur_amount: document.getElementById('blur-amount-inline').value
+        };
+        
+        fetch('/api/admin/settings/theme', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        })
+        .then(r => r.json())
+        .then(data => {
+            alert(data.success ? 'Tema ayarları kaydedildi!' : 'Hata: ' + data.error);
+        });
+    }
+    
+    // Load users on panel open
+    document.addEventListener('DOMContentLoaded', function() {
+        loadInlineUsers();
+        
+        // Blur slider value display
+        const blurSlider = document.getElementById('blur-amount-inline');
+        if (blurSlider) {
+            blurSlider.addEventListener('input', function() {
+                document.getElementById('blur-value').textContent = this.value + 'px';
+            });
+        }
+    });
+    </script>
+    
+    <!-- ============= BROŞÜR WIZARD TEST ALANI ============= -->
+    <div id="wizard-test-section" style="
+        position: fixed;
+        top: 80px;
+        bottom: 20px;
+        left: 300px;
+        right: 20px;
+        background: rgba(15, 23, 42, 0.95);
+        border: 2px solid rgba(99, 102, 241, 0.5);
+        border-radius: 16px;
+        padding: 20px;
+        z-index: 500;
+        display: none;
+        backdrop-filter: blur(20px);
+        box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        overflow-y: auto;
+    ">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h3 style="color: #fff; font-size: 16px; margin: 0;">🧪 Broşür Wizard Test Alanı</h3>
+            <button onclick="toggleWizardTest()" style="background: none; border: none; color: #888; font-size: 20px; cursor: pointer;">&times;</button>
+        </div>
+        
+        <!-- Wizard Root -->
+        <div id="brochure-wizard-root" style="
+            background: rgba(255,255,255,0.08);
+            border: 2px dashed rgba(139, 92, 246, 0.5);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            min-height: 350px;
+        ">
+            <p style="color: #888; text-align: center;">🧙 Wizard'ı başlatmak için "Wizard Başlat" butonuna tıkla</p>
+        </div>
+        
+        <!-- Canvas son aşama için -->
+        <div style="display: flex; gap: 20px; align-items: flex-start;">
+            <div style="flex: 1;">
+                <p style="color: #aaa; font-size: 12px; margin-bottom: 10px;">📄 Canvas Önizleme (A4 - 595x842)</p>
+                <canvas id="test-brochure-canvas" width="595" height="842" style="
+                    background: #fff;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+                    max-width: 100%;
+                    height: auto;
+                "></canvas>
+            </div>
+            <div style="width: 200px;">
+                <p style="color: #aaa; font-size: 12px; margin-bottom: 10px;">🔧 Test Kontrolleri</p>
+                <button onclick="testWizardInit()" style="width: 100%; padding: 10px; margin-bottom: 8px; background: linear-gradient(135deg, #667eea, #764ba2); border: none; border-radius: 8px; color: #fff; cursor: pointer;">
+                    🚀 Wizard Başlat
+                </button>
+                <button onclick="testCanvasRender()" style="width: 100%; padding: 10px; margin-bottom: 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff; cursor: pointer;">
+                    🎨 Canvas Test
+                </button>
+                <button onclick="clearTestCanvas()" style="width: 100%; padding: 10px; background: rgba(220,53,69,0.2); border: 1px solid rgba(220,53,69,0.5); border-radius: 8px; color: #dc3545; cursor: pointer;">
+                    🗑️ Temizle
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Test Panel Toggle Buttons -->
+    <button onclick="toggleWizardTest()" style="
+        position: fixed;
+        bottom: 20px;
+        left: 300px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border: none;
+        border-radius: 12px;
+        padding: 12px 20px;
+        color: #fff;
+        font-size: 14px;
+        cursor: pointer;
+        z-index: 499;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    " id="wizard-test-toggle">
+        🧪 Wizard Test
+    </button>
+
+    <button onclick="window.open('/admin/desinger', '_blank')" style="
+        position: fixed;
+        bottom: 20px;
+        left: 460px;
+        background: linear-gradient(135deg, #10b981, #059669);
+        border: none;
+        border-radius: 12px;
+        padding: 12px 20px;
+        color: #fff;
+        font-size: 14px;
+        cursor: pointer;
+        z-index: 499;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+    " id="wizard-test-deng-toggle">
+        🧪 Wizard Test DENG
+    </button>
+
+    <button onclick="window.open('/admin/githb', '_blank')" style="
+        position: fixed;
+        bottom: 20px;
+        left: 650px;
+        background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        border: none;
+        border-radius: 12px;
+        padding: 12px 20px;
+        color: #fff;
+        font-size: 14px;
+        cursor: pointer;
+        z-index: 499;
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+    " id="githb-test-toggle">
+        🧪 Gıthb Test 2
+    </button>
+    
+    <script>
+    // Test Panel Functions
+    let testCanvas = null;
+    
+    function toggleWizardTest() {
+        const panel = document.getElementById('wizard-test-section');
+        const btn = document.getElementById('wizard-test-toggle');
+        if (panel.style.display === 'none') {
+            panel.style.display = 'block';
+            btn.style.display = 'none';
+            initTestCanvas();
+        } else {
+            panel.style.display = 'none';
+            btn.style.display = 'block';
+        }
+    }
+    
+    function initTestCanvas() {
+        if (!testCanvas && typeof fabric !== 'undefined') {
+            testCanvas = new fabric.Canvas('test-brochure-canvas', {
+                width: 595,
+                height: 842,
+                backgroundColor: '#ffffff'
+            });
+            console.log('✅ Test canvas initialized');
+        }
+    }
+    
+    async function testWizardInit() {
+        const root = document.getElementById('brochure-wizard-root');
+        
+        // Wizard fonksiyonu kontrol
+        if (typeof initBrochureWizard !== 'function') {
+            if (root) {
+                root.innerHTML = '<p style="color: #ef4444; text-align: center; padding: 20px;">❌ Wizard V2 yüklenemedi. Sayfayı yenileyin.</p>';
+            }
+            console.error('❌ initBrochureWizard fonksiyonu bulunamadı');
+            return;
+        }
+        
+        // Loading göster
+        if (root) {
+            root.innerHTML = '<p style="color: #8b5cf6; text-align: center; padding: 40px;">⏳ Depodaki ürünler yükleniyor...</p>';
+        }
+        
+        try {
+            // Önce müşteri ürünlerini dene (fiyatlı), sonra admin deposunu
+            let products = [];
+            
+            // 1. Müşteri ürünleri (veritabanından, fiyatlı)
+            try {
+                const userResponse = await fetch('/api/products');
+                const userData = await userResponse.json();
+                if (userData.success && userData.products && userData.products.length > 0) {
+                    products = userData.products.map(p => ({
+                        id: p.id || p.barcode,
+                        name: p.name || p.product_name,
+                        normal_price: parseFloat(p.normal_price) || 0,
+                        discount_price: parseFloat(p.discount_price) || parseFloat(p.normal_price) || 0,
+                        image_url: p.image_url || '/static/placeholder.png',
+                        barcode: p.barcode,
+                        product_group: p.product_group
+                    }));
+                    console.log(`📦 Müşteri ürünleri: ${products.length}`);
+                }
+            } catch (e) {
+                console.log('Müşteri ürünleri alınamadı, admin deposuna bakılıyor...');
+            }
+            
+            // 2. Eğer müşteri ürünü yoksa, admin deposundan al
+            if (products.length === 0) {
+                const adminResponse = await fetch('/api/admin/all-products');
+                const adminData = await adminResponse.json();
+                if (adminData.success && adminData.products) {
+                    products = adminData.products.map(p => ({
+                        id: p.barcode,
+                        name: p.product_name || p.name || p.barcode,
+                        normal_price: parseFloat(p.normal_price) || 0,
+                        discount_price: parseFloat(p.discount_price) || 0,
+                        image_url: p.image_url || '/static/placeholder.png',
+                        barcode: p.barcode,
+                        product_group: p.product_group
+                    }));
+                    console.log(`📦 Admin depo ürünleri: ${products.length}`);
+                }
+            }
+            
+            if (products.length > 0) {
+                
+                initBrochureWizard(products, { perPageLimit: 12 });
+                console.log(`🚀 Wizard V2 başlatıldı! (${products.length} gerçek ürün)`);
+            } else {
+                if (root) {
+                    root.innerHTML = `
+                        <div style="text-align: center; padding: 40px; color: #fbbf24;">
+                            <p style="font-size: 24px; margin-bottom: 10px;">⚠️</p>
+                            <p>Depoda ürün bulunamadı!</p>
+                            <p style="font-size: 12px; opacity: 0.7; margin-top: 10px;">
+                                Önce "Ürünler" bölümünden ürün ekleyin.
+                            </p>
+                        </div>
+                    `;
+                }
+                console.warn('⚠️ Depoda ürün yok');
+            }
+        } catch (error) {
+            console.error('❌ Ürün yükleme hatası:', error);
+            if (root) {
+                root.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #ef4444;">
+                        <p style="font-size: 24px; margin-bottom: 10px;">❌</p>
+                        <p>Ürünler yüklenemedi!</p>
+                        <p style="font-size: 12px; opacity: 0.7; margin-top: 10px;">
+                            ${error.message}
+                        </p>
+                    </div>
+                `;
+            }
+        }
+    }
+    
+    function testCanvasRender() {
+        if (!testCanvas) initTestCanvas();
+        if (!testCanvas) {
+            alert('Fabric.js yüklenmedi!');
+            return;
+        }
+        
+        // Test header
+        const header = new fabric.Rect({
+            left: 0, top: 0,
+            width: 595, height: 80,
+            fill: '#e53935',
+            selectable: false
+        });
+        testCanvas.add(header);
+        
+        // Test slogan
+        const slogan = new fabric.Text('TEST SLOGANI!', {
+            left: 297.5, top: 30,
+            fontSize: 28, fontWeight: 'bold',
+            fill: '#ffffff',
+            originX: 'center',
+            fontFamily: 'Arial Black'
+        });
+        testCanvas.add(slogan);
+        
+        // Test grid
+        for (let i = 0; i < 6; i++) {
+            const col = i % 3;
+            const row = Math.floor(i / 3);
+            const card = new fabric.Rect({
+                left: 20 + col * 190,
+                top: 100 + row * 200,
+                width: 175,
+                height: 180,
+                fill: '#f5f5f5',
+                stroke: '#ddd',
+                strokeWidth: 1,
+                rx: 8, ry: 8
+            });
+            testCanvas.add(card);
+            
+            const label = new fabric.Text('Ürün ' + (i + 1), {
+                left: 20 + col * 190 + 87.5,
+                top: 100 + row * 200 + 90,
+                fontSize: 14,
+                fill: '#333',
+                originX: 'center'
+            });
+            testCanvas.add(label);
+        }
+        
+        testCanvas.renderAll();
+        console.log('🎨 Test canvas rendered');
+    }
+    
+    function clearTestCanvas() {
+        if (testCanvas) {
+            testCanvas.clear();
+            testCanvas.backgroundColor = '#ffffff';
+            testCanvas.renderAll();
+            console.log('🗑️ Test canvas cleared');
+        }
+    }
+    </script>
+    
+    <!-- Fabric.js for test canvas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+    
+    <!-- Wizard V2 -->
+    <link rel="stylesheet" href="/static/css/brochure-wizard-v2.css">
+    <script src="/static/js/brochure-wizard-v2.js"></script>
+    
+    <!-- Ghost Assistant -->
+    <script src="/static/js/ghost.js"></script>
+</body>
+</html>
