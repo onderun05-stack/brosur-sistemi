@@ -265,13 +265,10 @@ def api_desinger_kie_background():
     try:
         data = request.get_json() or {}
         purpose = data.get('purpose', 'discount')
-        custom_prompt = data.get('backgroundPrompt', None)  # styles.json'dan gelen özel prompt
+        reference_prompt = data.get('referencePrompt', None)  # styles.json'dan gelen referans prompt
+        preview_image = data.get('previewImage', None)  # Örnek görsel yolu
         
         # Purpose/theme doğrudan kullan (yeni stiller için)
-        # Yeni stiller: classic_red, modern_blue, grid_clean, garden_green, premium_dark, fresh_produce
-        # Eski stiller: market, discount, tea, fresh, butcher
-        
-        # Eğer yeni stil ID'si geldiyse direkt kullan
         new_styles = ['classic_red', 'modern_blue', 'grid_clean', 'garden_green', 'premium_dark', 'fresh_produce']
         
         if purpose in new_styles:
@@ -292,11 +289,12 @@ def api_desinger_kie_background():
             theme = theme_map.get(purpose, 'market')
         
         # OpenAI DALL-E ile profesyonel Türk market broşürü arka planı üret
+        # reference_prompt varsa onu kullan (daha detaylı ve spesifik)
         result = ai_service.generate_background_with_dalle(
             theme=theme,
             season='summer',
             product_category='food',
-            custom_prompt=custom_prompt  # Özel prompt varsa kullan
+            custom_prompt=reference_prompt  # Referans prompt varsa kullan
         )
         
         # Sonuç formatını uyumlu hale getir

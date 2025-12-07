@@ -4,92 +4,85 @@
       "id": "classic_red",
       "name": "Klasik Market",
       "description": "Kırmızı/yeşil klasik market tarzı, grid layout",
-      "preview": "/static/templates/examples/style_classic.jpg",
+      "preview": "/static/templates/examples/classic_red.jpg",
+      "reference_prompt": "Turkish supermarket brochure like Kırmızı Market, BIM, A101. White/cream background, red header banner, green accents, clean grid layout for products, professional retail flyer style.",
       "colors": {
         "primary": "#e63946",
         "secondary": "#2a9d8f",
         "background": "#ffffff",
         "accent": "#f4a261"
       },
-      "background_prompt": "Simple clean white or cream background for Turkish supermarket brochure. Professional retail style, empty center for products, no patterns, no decorations, just clean solid color.",
-      "layout": "grid",
-      "features": ["grid_3x4", "price_tags_red", "header_red"]
+      "layout": "grid"
     },
     {
       "id": "modern_blue",
       "name": "Modern Mavi",
       "description": "Mavi gradient, sarı header, yeşil alt",
-      "preview": "/static/templates/examples/style_modern.jpg",
+      "preview": "/static/templates/examples/modern_blue.jpg",
+      "reference_prompt": "Modern Turkish supermarket brochure with blue gradient background from dark blue at top to light blue at bottom, yellow/gold header banner, green grass strip at very bottom, clean professional design.",
       "colors": {
         "primary": "#0077b6",
         "secondary": "#ffd60a",
-        "background": "linear-gradient(180deg, #0077b6, #48cae4)",
+        "background": "#48cae4",
         "accent": "#06d6a0"
       },
-      "background_prompt": "Clean blue gradient background from dark blue at top to light blue at bottom. Yellow banner area at top for header. Green grass effect at very bottom. Empty center for products. Professional Turkish supermarket poster style. No text, no products, just background.",
-      "layout": "free",
-      "features": ["gradient_blue", "header_yellow", "footer_green"]
+      "layout": "free"
     },
     {
       "id": "grid_clean",
       "name": "Temiz Grid",
       "description": "Krem/bej arka plan, düzenli grid",
-      "preview": "/static/templates/examples/style_grid.jpg",
+      "preview": "/static/templates/examples/grid_clean.jpg",
+      "reference_prompt": "Clean cream/beige solid color background for Turkish supermarket brochure like Show Market or Migros. Simple flat design, no patterns, professional retail poster.",
       "colors": {
         "primary": "#ff6b35",
         "secondary": "#004e89",
         "background": "#f5f5dc",
         "accent": "#ffc233"
       },
-      "background_prompt": "Simple solid cream or beige background (#f5f5dc). Clean, professional retail poster style. No patterns, no gradients, just flat solid color. Empty space for product grid layout.",
-      "layout": "grid",
-      "features": ["grid_5x4", "price_tags_yellow", "clean_minimal"]
+      "layout": "grid"
     },
     {
       "id": "garden_green",
       "name": "Bahçe Temalı",
       "description": "Yeşil çim, bahçe/mobilya ürünleri için",
-      "preview": "/static/templates/examples/style_garden.jpg",
+      "preview": "/static/templates/examples/garden_green.jpg",
+      "reference_prompt": "Garden themed brochure with lush green grass lawn at bottom, light blue sky at top, yellow banner in middle. Like Hedef Yapı Market or Koçtaş garden flyers. Outdoor summer feeling.",
       "colors": {
         "primary": "#06d6a0",
         "secondary": "#118ab2",
         "background": "#2d6a4f",
         "accent": "#ffd60a"
       },
-      "background_prompt": "Green grass lawn garden background. Lush green turf texture. Blue sky visible at top. Empty center area for products. Outdoor garden furniture advertisement style. Professional photography quality.",
-      "layout": "free",
-      "features": ["grass_background", "outdoor_theme", "header_yellow"]
+      "layout": "free"
     },
     {
       "id": "premium_dark",
       "name": "Premium/Kasap",
       "description": "Koyu bordo, ahşap doku, et ürünleri için",
-      "preview": "/static/templates/examples/style_premium.jpg",
+      "preview": "/static/templates/examples/premium_dark.jpg",
+      "reference_prompt": "Premium dark butcher shop brochure background. Dark burgundy/maroon color with subtle wood grain texture. Warm amber lighting, luxurious steakhouse aesthetic. Rich and appetizing.",
       "colors": {
         "primary": "#9d0208",
         "secondary": "#6a040f",
         "background": "#370617",
         "accent": "#ffd60a"
       },
-      "background_prompt": "Dark burgundy and wood texture background for premium butcher shop brochure. Rich maroon color with subtle wood grain texture. Professional, luxury feel. Empty center for meat products. Steakhouse aesthetic, appetizing design.",
-      "layout": "free",
-      "features": ["dark_theme", "wood_texture", "premium_feel"]
+      "layout": "free"
     },
     {
       "id": "fresh_produce",
       "name": "Manav/Taze",
       "description": "Açık yeşil, taze sebze-meyve için",
-      "preview": "/static/templates/examples/style_fresh.jpg",
+      "preview": "/static/templates/examples/fresh_produce.jpg",
+      "reference_prompt": "Fresh produce market brochure with very light mint green background. Simple green leaf decorations at corners only. Fresh, healthy, organic feeling. Clean open space for vegetables and fruits.",
       "colors": {
         "primary": "#06d6a0",
         "secondary": "#118ab2",
         "background": "#e9f5e9",
         "accent": "#ff6b35"
       },
-      "background_prompt": "Light green fresh produce market background. Soft mint green or light sage color. Clean, healthy, organic feel. Empty center for vegetables and fruits. Farm fresh atmosphere. Simple gradient from white to light green.",
-      "layout": "grid",
-      "features": ["light_green", "fresh_theme", "organic_feel"]
+      "layout": "grid"
     }
   ]
 }
-

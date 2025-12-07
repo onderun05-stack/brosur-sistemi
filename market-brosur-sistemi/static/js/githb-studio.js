@@ -437,7 +437,8 @@ function renderStyleGrid() {
   
   grid.innerHTML = designStyles.map(style => `
     <div class="style-card" data-style-id="${style.id}" onclick="selectStyle('${style.id}')">
-      <div class="style-preview">
+      <div class="style-preview" style="background: linear-gradient(135deg, ${style.colors.primary}40, ${style.colors.background || '#fff'});">
+        ${style.preview ? `<img src="${style.preview}" alt="${style.name}" onerror="this.style.display='none'">` : ''}
         <div class="style-preview-placeholder">
           <div class="style-preview-colors">
             <span style="background:${style.colors.primary}"></span>
@@ -449,9 +450,6 @@ function renderStyleGrid() {
       </div>
       <div class="style-name">${style.name}</div>
       <div class="style-desc">${style.description}</div>
-      <div class="style-features">
-        ${style.features.slice(0, 3).map(f => `<span class="style-feature">${f}</span>`).join('')}
-      </div>
     </div>
   `).join('');
 }
@@ -484,7 +482,7 @@ async function applySelectedStyle() {
   }
   
   closeStylePicker();
-  showToast(`"${style.name}" stili için arka plan oluşturuluyor...`, 'success');
+  showToast(`"${style.name}" stili için arka plan oluşturuluyor... (30-60 sn)`, 'success');
   
   try {
     const response = await fetch('/api/desinger/kie-background', {
@@ -492,8 +490,9 @@ async function applySelectedStyle() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
         purpose: style.id,
-        backgroundPrompt: style.background_prompt,
-        colors: style.colors
+        referencePrompt: style.reference_prompt,  // OpenAI'a referans prompt
+        colors: style.colors,
+        previewImage: style.preview  // Örnek görsel yolu
       })
     });
     
