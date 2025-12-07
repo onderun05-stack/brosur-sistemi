@@ -270,13 +270,11 @@ def generate_auto_brochure(products):
             'pages': []
         }
 
-def generate_background_with_dalle(theme='market', season='summer', product_category='food'):
+def generate_background_with_dalle(theme='market', season='summer', product_category='food', custom_prompt=None):
     """
     Generate professional Turkish supermarket brochure background using DALL-E 3
-    Referans: Kırmızı Market tarzı profesyonel broşür arka planı
-    Theme: 'market', 'discount', 'tea', 'fresh', 'butcher'
-    Season: 'summer', 'winter', 'autumn', 'spring'
-    Category: 'food', 'electronics', 'cleaning', 'beverages'
+    Referans: Kırmızı Market, BIM, A101, ŞOK tarzı profesyonel broşür arka planı
+    Theme: 'market', 'discount', 'tea', 'fresh', 'butcher', 'classic_red', 'modern_blue', 'grid_clean', 'garden_green', 'premium_dark', 'fresh_produce'
     """
     if not client:
         return {
@@ -285,137 +283,225 @@ def generate_background_with_dalle(theme='market', season='summer', product_cate
         }
     
     try:
-        # Kırmızı Market tarzı profesyonel Türk market broşürü prompt'ları
+        # Gerçek Türk market broşürlerine benzer basit ve etkili prompt'lar
         prompts = {
-            'market': f"""
-                Professional Turkish supermarket brochure background, print-ready quality.
+            # ===== YENİ STİLLER (styles.json ile uyumlu) =====
+            'classic_red': """
+                Simple clean background for Turkish supermarket brochure.
                 
-                STYLE REFERENCE: Traditional Turkish grocery store weekly flyer (like BIM, A101, ŞOK markets)
+                EXACTLY LIKE: Kırmızı Market, BIM, A101 weekly flyers
                 
-                COMPOSITION:
-                - TOP BANNER AREA (15% height): Golden/cream colored decorative header strip with subtle ornamental pattern
-                - MAIN CONTENT AREA (70% height): Clean white/light cream background with subtle texture
-                - BOTTOM STRIP (15% height): Matching footer area for store info
+                DESIGN:
+                - Solid white or very light cream (#FFFEF0) background
+                - Simple red header banner at top (10% height)
+                - Clean empty space in middle for products
+                - Optional: very subtle grid lines (barely visible)
                 
-                DESIGN ELEMENTS:
-                - Soft green gradient accents (like tea plantation fields - yeşil çay tarlası)
-                - Subtle diagonal light rays from top corners
-                - Very light watermark pattern (barely visible geometric shapes)
-                - Professional drop shadows for depth
-                - Clean grid layout guides (invisible but structured)
+                COLORS: White background, Red (#E31837) header, Green (#228B22) accents
                 
-                COLOR PALETTE:
-                - Primary: Forest green (#228B22), Golden yellow (#FFD700)
-                - Secondary: Cream white (#FFFDD0), Light gray (#F5F5F5)
-                - Accents: Red (#E31837) for discount highlights
-                
-                MUST HAVE:
-                - Large empty rectangular areas for product placement (3x3 or 4x3 grid)
-                - Space at top for logo and date banner
-                - Professional print quality, 300 DPI look
-                - NO text, NO products, NO prices - ONLY the background template
-                - Turkish market aesthetic - warm, inviting, family-friendly
-                
-                STYLE: Clean, organized, professional retail advertising
-                FORMAT: Vertical A4 proportion (595x842 pixels ratio)
+                REQUIREMENTS:
+                - VERY SIMPLE, CLEAN, MINIMAL
+                - NO complex patterns, NO gradients in main area
+                - NO decorations, NO textures
+                - Just clean solid colors
+                - Vertical A4 format (595x842 ratio)
+                - NO text, NO products, ONLY background
             """,
             
-            'discount': f"""
-                Explosive Turkish supermarket SALE brochure background, premium print quality.
+            'modern_blue': """
+                Modern blue gradient background for Turkish supermarket brochure.
                 
-                STYLE: "SÜPER İNDİRİM" / "ŞOK FİYAT" campaign style
+                EXACTLY LIKE: AEU Yazılım style modern market flyer
                 
-                COMPOSITION:
-                - Dramatic red-to-yellow gradient burst from center
-                - Starburst/explosion pattern radiating outward
-                - Golden sparkle effects scattered throughout
-                - White/cream product placement zones (clean rectangles)
+                DESIGN:
+                - Blue gradient from top (#0077b6) to bottom (#48cae4)
+                - Yellow/gold header banner at very top
+                - Green grass strip at very bottom (5% height)
+                - Large empty center for products
                 
-                DESIGN ELEMENTS:
-                - Bold red (#E31837) as dominant color
-                - Yellow (#FFD700) highlight accents
-                - White clean zones for product cards
-                - Subtle confetti or celebration particles
-                - Professional retail advertising quality
+                COLORS: Blue gradient, Yellow (#FFD60A) header, Green (#06D6A0) footer
                 
-                MUST HAVE:
-                - Empty rectangular zones for 8-12 products
-                - Top banner area for "İNDİRİM" text
-                - Bottom strip for store info
-                - High energy, exciting, urgent feeling
-                - NO text, NO products - ONLY background template
-                
-                FORMAT: Vertical A4 proportion
+                REQUIREMENTS:
+                - Smooth clean gradient, no texture
+                - Simple solid color bands
+                - Professional retail poster look
+                - Vertical A4 format
+                - NO text, NO products, ONLY background
             """,
             
-            'tea': f"""
-                Turkish tea-themed supermarket brochure background, professional quality.
+            'grid_clean': """
+                Clean cream/beige background for Turkish supermarket brochure.
                 
-                STYLE: Çay kampanyası broşürü (Tea campaign flyer)
+                EXACTLY LIKE: Show Supermarket, Migros weekly flyers
                 
-                MAIN VISUAL:
-                - Beautiful green tea plantation hillside (Rize/Karadeniz style)
-                - Rolling hills covered with lush tea bushes
-                - Soft morning mist in valleys
-                - Golden sunlight from top-right corner
+                DESIGN:
+                - Solid cream/beige color (#F5F5DC)
+                - Very subtle shadow zones where products will go
+                - Simple header strip area at top
+                - Clean footer area at bottom
                 
-                COMPOSITION:
-                - Tea plantation fills 40% of background (top area)
-                - Gradient fade to cream/white for product area (bottom 60%)
-                - Traditional Turkish tea glass silhouette as watermark
+                COLORS: Cream (#F5F5DC) main, Orange (#FF6B35) accents
                 
-                COLOR PALETTE:
-                - Dominant: Tea green (#4A7C59), Forest green (#228B22)
-                - Accent: Golden amber (#FFBF00) like brewed tea
-                - Base: Warm cream (#FFF8DC)
-                
-                MUST HAVE:
-                - Clean white/cream zones for product placement
-                - Professional print quality
-                - Warm, traditional, authentic Turkish feeling
-                - NO text, NO products - ONLY background
-                
-                FORMAT: Vertical A4 proportion
+                REQUIREMENTS:
+                - FLAT solid color, no gradients
+                - NO patterns, NO decorations
+                - Super clean minimal design
+                - Vertical A4 format
+                - NO text, NO products, ONLY background
             """,
             
-            'fresh': f"""
-                Fresh produce Turkish market brochure background, professional quality.
+            'garden_green': """
+                Green garden/grass background for Turkish home/garden store brochure.
                 
-                STYLE: Manav/Sebze-Meyve kampanyası (Fresh produce campaign)
+                EXACTLY LIKE: Hedef Yapı Market, Koçtaş garden flyers
                 
-                MAIN VISUAL:
-                - Wooden market stall texture at edges
-                - Fresh green leaves and herbs as decorative border
-                - Water droplets for freshness effect
-                - Natural sunlight feeling
+                DESIGN:
+                - Lush green grass lawn filling bottom 60%
+                - Light blue sky at top 20%
+                - Yellow banner strip between sky and grass
+                - Grass texture realistic but not busy
                 
-                COLOR PALETTE:
-                - Fresh green (#32CD32), Leaf green (#228B22)
-                - Warm wood brown (#8B4513)
-                - Clean white (#FFFFFF) for product zones
-                - Accent: Orange (#FF8C00), Red (#FF6347) for warmth
+                COLORS: Green grass (#2D6A4F), Blue sky (#87CEEB), Yellow (#FFD60A) banner
                 
-                MUST HAVE:
-                - Large clean areas for product photos
+                REQUIREMENTS:
+                - Realistic grass texture
+                - Clean sky, few or no clouds
+                - Outdoor summer feeling
+                - Vertical A4 format
+                - NO text, NO products, ONLY background
+            """,
+            
+            'premium_dark': """
+                Dark premium background for Turkish butcher shop brochure.
+                
+                EXACTLY LIKE: Premium kasap, steakhouse advertisements
+                
+                DESIGN:
+                - Dark burgundy/maroon background (#370617)
+                - Subtle wood grain texture overlay
+                - Warm amber lighting from corners
+                - Rich, luxurious feeling
+                
+                COLORS: Dark burgundy (#370617), Maroon (#6A040F), Gold (#FFD60A) accents
+                
+                REQUIREMENTS:
+                - Dark but warm colors
+                - Subtle texture, not distracting
+                - Premium luxury feel
+                - Vertical A4 format
+                - NO text, NO products, ONLY background
+            """,
+            
+            'fresh_produce': """
+                Fresh light green background for Turkish produce market brochure.
+                
+                EXACTLY LIKE: Fresh manav, organic market flyers
+                
+                DESIGN:
+                - Very light mint green (#E9F5E9) solid background
+                - Simple green leaf decorations at corners only
+                - Clean white/cream center area
                 - Fresh, healthy, organic feeling
-                - Farm-to-table aesthetic
-                - NO text, NO products - ONLY background
                 
-                FORMAT: Vertical A4 proportion
+                COLORS: Light mint (#E9F5E9), Leaf green (#06D6A0), White center
+                
+                REQUIREMENTS:
+                - Very light, airy, fresh colors
+                - Minimal leaf decorations (corners only)
+                - Clean open space for products
+                - Vertical A4 format
+                - NO text, NO products, ONLY background
             """,
             
-            'butcher': f"""
-                Turkish butcher shop brochure background, premium quality.
-                
-                STYLE: Kasap/Et kampanyası (Meat products campaign)
-                
-                MAIN VISUAL:
-                - Rich dark wood texture border
-                - Subtle marble/stone pattern in center
-                - Warm amber lighting effect
-                - Traditional butcher shop aesthetic
-                
-                COLOR PALETTE:
+            # ===== ESKİ STİLLER (backward compatibility) =====
+            'market': """
+                Simple clean white/cream background for Turkish supermarket brochure.
+                Like Kırmızı Market, BIM, A101 flyers.
+                Solid cream (#FFFEF0) color, red header strip, clean empty center.
+                NO patterns, NO textures, just clean solid colors.
+                Vertical A4 format, NO text, NO products.
+            """,
+            
+            'discount': """
+                Red and yellow sale/discount background for Turkish supermarket.
+                Like ŞOK market "İNDİRİM" flyers.
+                Red-yellow gradient burst, starburst pattern from center.
+                Yellow (#FFD700) and Red (#E31837) colors.
+                Empty zones for products, NO text, NO products.
+                Vertical A4 format.
+            """,
+            
+            'tea': """
+                Green tea plantation themed background for Turkish market.
+                Rize/Karadeniz tea fields style.
+                Green tea hills at top 40%, fade to cream at bottom.
+                Forest green (#228B22) and cream (#FFF8DC) colors.
+                Clean zones for tea products, NO text, NO products.
+                Vertical A4 format.
+            """,
+            
+            'fresh': """
+                Fresh produce green background for Turkish manav/market.
+                Light green (#E9F5E9) with leaf decorations at corners.
+                Fresh, organic, healthy feeling.
+                Clean center for vegetables and fruits.
+                NO text, NO products, Vertical A4 format.
+            """,
+            
+            'butcher': """
+                Dark premium butcher shop background.
+                Dark burgundy (#370617) with wood texture.
+                Premium kasap/steakhouse style.
+                Warm amber lighting, luxurious feel.
+                NO text, NO products, Vertical A4 format.
+            """
+        }
+        
+        # Özel prompt varsa onu kullan
+        if custom_prompt:
+            selected_prompt = custom_prompt
+        else:
+            selected_prompt = prompts.get(theme, prompts['market'])
+        
+        # DALL-E 3 ile arka plan oluştur
+        response = client.images.generate(
+            model="dall-e-3",
+            prompt=selected_prompt,
+            size="1024x1792",  # Vertical A4-like
+            quality="hd",
+            n=1
+        )
+        
+        if response.data and len(response.data) > 0:
+            return {
+                'success': True,
+                'background_url': response.data[0].url,
+                'theme': theme,
+                'model': 'dall-e-3'
+            }
+        
+        return {'success': False, 'error': 'No image generated'}
+        
+    except Exception as e:
+        logging.error(f"DALL-E background generation error: {e}")
+        return {'success': False, 'error': str(e)}
+
+
+def generate_background_with_dalle_OLD(theme='market', season='summer', product_category='food'):
+    """
+    ESKİ VERSİYON - Karmaşık prompt'lar (yedek olarak saklıyoruz)
+    """
+    if not client:
+        return {
+            'success': False,
+            'error': 'OpenAI API key not configured'
+        }
+    
+    try:
+        prompts_old = {
+            'market_old': f"""Professional Turkish supermarket brochure background...""",
+            'discount_old': f"""Explosive Turkish supermarket SALE brochure background...""",
+            'butcher_old': f"""Turkish butcher shop brochure background, premium quality.
                 - Deep burgundy red (#722F37)
                 - Dark wood brown (#3E2723)
                 - Cream marble (#F5F5DC)

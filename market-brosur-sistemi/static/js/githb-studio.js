@@ -459,12 +459,10 @@ function renderStyleGrid() {
 function selectStyle(styleId) {
   selectedStyleId = styleId;
   
-  // Önceki seçimi kaldır
   document.querySelectorAll('.style-card').forEach(card => {
     card.classList.remove('selected');
   });
   
-  // Yeni seçimi işaretle
   const selectedCard = document.querySelector(`.style-card[data-style-id="${styleId}"]`);
   if (selectedCard) {
     selectedCard.classList.add('selected');
@@ -508,7 +506,6 @@ async function applySelectedStyle() {
           scaleY: fabricCanvas.height / bgImg.height
         });
         
-        // Stil bilgisini kaydet
         const page = getCurrentPage();
         page.styleProfileId = style.id;
         
@@ -516,19 +513,19 @@ async function applySelectedStyle() {
       }, { crossOrigin: 'Anonymous' });
     } else {
       // Fallback: Basit renk arka planı
-      const bgColor = style.colors.background || '#ffffff';
-      fabricCanvas.setBackgroundColor(bgColor, fabricCanvas.renderAll.bind(fabricCanvas));
-      showToast(`⚠️ Görsel oluşturulamadı, düz renk uygulandı`, 'success');
+      applyFallbackBackground(style);
     }
   } catch (e) {
     console.error('Stil uygulama hatası:', e);
-    // Fallback
-    const style = designStyles.find(s => s.id === selectedStyleId);
-    if (style) {
-      fabricCanvas.setBackgroundColor(style.colors.background || '#ffffff', fabricCanvas.renderAll.bind(fabricCanvas));
-    }
-    showToast('⚠️ Arka plan hatası, düz renk uygulandı', 'error');
+    applyFallbackBackground(style);
   }
+}
+
+function applyFallbackBackground(style) {
+  if (!style) return;
+  const bgColor = style.colors.background || '#ffffff';
+  fabricCanvas.setBackgroundColor(bgColor, fabricCanvas.renderAll.bind(fabricCanvas));
+  showToast(`⚠️ Düz renk arka plan uygulandı`, 'success');
 }
 
 // ============= AI LAYOUT (OpenAI) =============
@@ -555,7 +552,6 @@ async function callAiLayout({ scope }) {
     };
   });
 
-  // Örnek stilleri de gönder
   const styleExamples = designStyles.map(s => ({
     id: s.id,
     name: s.name,
@@ -592,7 +588,6 @@ function showAnalysisModal(data) {
   const modal = document.getElementById('analysis-modal');
   const body = document.getElementById('analysis-modal-body');
   
-  const analysis = data.analysis || {};
   const result = data.result || {};
   
   let layoutHtml = '';
@@ -620,7 +615,6 @@ function showAnalysisModal(data) {
     `;
   }
   
-  // Önerilen stil
   let styleHtml = '';
   if (result.recommended_style) {
     const recStyle = designStyles.find(s => s.id === result.recommended_style);
@@ -691,7 +685,7 @@ function closeAnalysisModal() {
   document.getElementById('analysis-modal').classList.add('hidden');
 }
 
-function applyAnalysisSuggestion() {
+async function applyAnalysisSuggestion() {
   if (!lastAnalysisResult || !lastAnalysisResult.result) {
     showToast('Uygulanacak öneri bulunamadı', 'error');
     return;
@@ -699,10 +693,9 @@ function applyAnalysisSuggestion() {
   
   const result = lastAnalysisResult.result;
   
-  // Önerilen stili uygula
   if (result.recommended_style) {
     selectedStyleId = result.recommended_style;
-    applySelectedStyle();
+    await applySelectedStyle();
   } else if (result.color_theme && result.color_theme.primary) {
     const page = getCurrentPage();
     page.backgroundColor = result.color_theme.primary + '10';
@@ -734,7 +727,6 @@ function renderTemplatePreview() {
     div.textContent = "Henüz ana tema kaydedilmedi.";
     return;
   }
-  const r = masterTemplate.contentRegions[0];
   const logo = masterTemplate.logoPlacement || {};
   const styleName = masterTemplate.styleId ? 
     (designStyles.find(s => s.id === masterTemplate.styleId)?.name || masterTemplate.styleId) : 

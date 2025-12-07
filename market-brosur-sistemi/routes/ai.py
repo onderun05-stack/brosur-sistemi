@@ -252,6 +252,8 @@ def api_desinger_kie_background():
     NOT: Bu sadece TEST endpoint'i - Stage 2 kontrolü yok, ana sistemi etkilemez.
     KIE.ai yerine OpenAI DALL-E kullanılıyor (KIE_API_KEY gerekmez).
     Görsel CORS sorunu olmaması için sunucuya indirilip yerel URL olarak döndürülür.
+    
+    Yeni: styles.json'daki stilleri destekler (classic_red, modern_blue, grid_clean, garden_green, premium_dark, fresh_produce)
     """
     import requests
     import uuid
@@ -259,31 +261,42 @@ def api_desinger_kie_background():
     user = get_current_user()
     if not user:
         return jsonify({'success': False, 'error': 'Not authenticated'}), 401
-    # Stage 2 kontrolü kaldırıldı - test endpoint'i olduğu için
 
     try:
         data = request.get_json() or {}
         purpose = data.get('purpose', 'discount')
+        custom_prompt = data.get('backgroundPrompt', None)  # styles.json'dan gelen özel prompt
         
-        # Purpose'a göre tema belirle (Kırmızı Market referanslı)
-        theme_map = {
-            'discount': 'discount',      # İndirim kampanyası - kırmızı/sarı patlama
-            'market': 'market',          # Genel market - yeşil/krem profesyonel
-            'tea': 'tea',                # Çay kampanyası - yeşil çay tarlası
-            'fresh': 'fresh',            # Manav/sebze-meyve - taze yeşil
-            'butcher': 'butcher',        # Kasap/et ürünleri - bordo/ahşap
-            'holiday_ramazan': 'market',
-            'holiday_kurban': 'butcher',
-            'holiday_newyear': 'discount',
-            'grocery': 'fresh',
-        }
-        theme = theme_map.get(purpose, 'market')
+        # Purpose/theme doğrudan kullan (yeni stiller için)
+        # Yeni stiller: classic_red, modern_blue, grid_clean, garden_green, premium_dark, fresh_produce
+        # Eski stiller: market, discount, tea, fresh, butcher
+        
+        # Eğer yeni stil ID'si geldiyse direkt kullan
+        new_styles = ['classic_red', 'modern_blue', 'grid_clean', 'garden_green', 'premium_dark', 'fresh_produce']
+        
+        if purpose in new_styles:
+            theme = purpose
+        else:
+            # Eski mapping (backward compatibility)
+            theme_map = {
+                'discount': 'discount',
+                'market': 'market',
+                'tea': 'tea',
+                'fresh': 'fresh',
+                'butcher': 'butcher',
+                'holiday_ramazan': 'market',
+                'holiday_kurban': 'butcher',
+                'holiday_newyear': 'discount',
+                'grocery': 'fresh',
+            }
+            theme = theme_map.get(purpose, 'market')
         
         # OpenAI DALL-E ile profesyonel Türk market broşürü arka planı üret
         result = ai_service.generate_background_with_dalle(
             theme=theme,
             season='summer',
-            product_category='food'
+            product_category='food',
+            custom_prompt=custom_prompt  # Özel prompt varsa kullan
         )
         
         # Sonuç formatını uyumlu hale getir
