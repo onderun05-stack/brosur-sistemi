@@ -1,14 +1,15 @@
 /**
- * Gıthb Test 2 Studio - Gerçek Depo + AI Entegrasyonu
- * Bu dosya ana sisteme dokunmadan sadece test amaçlı çalışır.
+ * Gıthb Test Studio - Gerçek Depo + AI Entegrasyonu
+ * Yeni özellikler: caption, backgroundPrompt, logoPlacement, Analysis Modal
  */
 
 // ============= GLOBAL STATE =============
 let allProducts = [];  // Gerçek depo ürünleri
 let masterTemplate = null;
+let lastAnalysisResult = null;  // Son AI analiz sonucu
 
 const studioState = {
-  pages: [{ id: "page-1", objectsMeta: [], styleProfileId: null }],
+  pages: [{ id: "page-1", objectsMeta: [], styleProfileId: null, backgroundColor: "#ffffff" }],
   currentPageIndex: 0,
   selectedObjectMeta: null
 };
@@ -21,6 +22,7 @@ window.addEventListener("DOMContentLoaded", () => {
   initCanvas();
   initPageButtons();
   initButtons();
+  renderTemplatePreview();
 });
 
 // ============= DEPO ÜRÜNLERİNİ YÜKLE =============
@@ -30,9 +32,9 @@ async function loadDepotProducts() {
   const productCount = document.getElementById("product-count");
   
   container.innerHTML = `
-    <div style="text-align:center;padding:20px;">
+    <div class="loading-container">
       <div class="loading-spinner"></div>
-      <p style="color:#9ca3af;margin-top:10px;font-size:11px;">Depo ürünleri yükleniyor...</p>
+      <p>Depo ürünleri yükleniyor...</p>
     </div>
   `;
   
@@ -50,7 +52,8 @@ async function loadDepotProducts() {
         oldPrice: parseFloat(p.normal_price) || 0,
         image_url: p.image_url || '/static/placeholder.png',
         product_group: p.product_group || 'Genel',
-        sector: p.sector || 'supermarket'
+        sector: p.sector || 'supermarket',
+        caption: getCaption(p)  // Yeni: Caption hesapla
       }));
       
       depotStatus.textContent = 'Admin Deposu';
@@ -69,7 +72,8 @@ async function loadDepotProducts() {
           oldPrice: parseFloat(p.normal_price) || 0,
           image_url: p.image_url || '/static/placeholder.png',
           product_group: p.product_group || 'Genel',
-          sector: p.sector || 'supermarket'
+          sector: p.sector || 'supermarket',
+          caption: getCaption(p)
         }));
         
         depotStatus.textContent = 'Müşteri Deposu';
@@ -85,12 +89,29 @@ async function loadDepotProducts() {
     depotStatus.textContent = 'Hata!';
     depotStatus.style.color = '#ef4444';
     container.innerHTML = `
-      <div style="text-align:center;padding:20px;color:#ef4444;">
+      <div class="loading-container" style="color:#ef4444;">
         <p>❌ Ürünler yüklenemedi</p>
         <p style="font-size:10px;margin-top:5px;">${error.message}</p>
       </div>
     `;
   }
+}
+
+// ============= CAPTION HESAPLA =============
+function getCaption(product) {
+  const normal = parseFloat(product.normal_price) || 0;
+  const discount = parseFloat(product.discount_price) || 0;
+  
+  if (normal > 0 && discount > 0) {
+    const percent = ((normal - discount) / normal) * 100;
+    if (percent >= 30) return 'Süper Fırsat';
+    if (percent >= 20) return 'İndirim';
+    if (percent >= 10) return 'Kampanya';
+  }
+  
+  // Rastgele caption
+  const captions = ['Yeni', 'Popüler', 'Önerilen', 'Fırsat'];
+  return captions[Math.floor(Math.random() * captions.length)];
 }
 
 // ============= ÜRÜN LİSTESİ RENDER =============
@@ -99,7 +120,7 @@ function renderProductList() {
   
   if (allProducts.length === 0) {
     container.innerHTML = `
-      <div style="text-align:center;padding:20px;color:#9ca3af;">
+      <div class="loading-container">
         <p>⚠️ Depoda ürün bulunamadı</p>
         <p style="font-size:10px;margin-top:5px;">Admin panelinden ürün ekleyin.</p>
       </div>
@@ -113,18 +134,23 @@ function renderProductList() {
     const div = document.createElement("div");
     div.className = "product-card";
     div.innerHTML = `
-      <div style="display:flex;gap:8px;align-items:center;">
-        <img src="${p.image_url}" alt="${p.name}" onerror="this.src='/static/placeholder.png'">
+      <div class="row">
+        <div class="product-thumb">
+          <img src="${p.image_url}" alt="${p.name}" onerror="this.src='/static/placeholder.png'">
+        </div>
         <div style="flex:1;min-width:0;">
           <div class="product-name">${p.name}</div>
-          <div style="display:flex;gap:6px;align-items:center;">
+          <div style="display:flex;gap:6px;align-items:center;margin-top:4px;">
             <span class="product-price">${formatPrice(p.price)}</span>
             ${p.oldPrice > p.price ? `<span class="product-old-price">${formatPrice(p.oldPrice)}</span>` : ''}
           </div>
-          <div style="font-size:9px;color:#6b7280;">${p.product_group}</div>
+          <div style="display:flex;gap:6px;align-items:center;margin-top:4px;">
+            ${p.caption ? `<span class="product-caption">${p.caption}</span>` : ''}
+            <span class="product-group">${p.product_group}</span>
+          </div>
         </div>
       </div>
-      <button class="btn-ghost" style="margin-top:6px;width:100%;font-size:11px;">Canvas'a ekle</button>
+      <button class="btn btn-ghost" style="width:100%;font-size:11px;margin-top:4px;">Canvas'a ekle</button>
     `;
     div.querySelector("button").onclick = () => addProductToCanvas(p);
     container.appendChild(div);
@@ -156,23 +182,7 @@ function initPageButtons() {
   studioState.pages.forEach((page, idx) => {
     const btn = document.createElement("button");
     btn.textContent = `Sayfa ${idx + 1}`;
-    btn.style.padding = "3px 8px";
-    btn.style.fontSize = "11px";
-    btn.style.borderRadius = "999px";
-    btn.style.border = "1px solid";
-    btn.style.cursor = "pointer";
-    
-    if (idx === studioState.currentPageIndex) {
-      btn.style.borderColor = "#818cf8";
-      btn.style.background = "#6366f1";
-      btn.style.color = "#ffffff";
-    } else {
-      btn.style.borderColor = "#4b5563";
-      btn.style.background = "transparent";
-      btn.style.color = "#e5e7eb";
-      btn.onmouseenter = () => btn.style.background = "#111827";
-      btn.onmouseleave = () => btn.style.background = "transparent";
-    }
+    btn.className = idx === studioState.currentPageIndex ? 'active' : '';
     btn.onclick = () => switchPage(idx);
     container.appendChild(btn);
   });
@@ -181,11 +191,13 @@ function initPageButtons() {
     studioState.pages.push({
       id: `page-${studioState.pages.length + 1}`,
       objectsMeta: [],
-      styleProfileId: null
+      styleProfileId: null,
+      backgroundColor: "#ffffff"
     });
     studioState.currentPageIndex = studioState.pages.length - 1;
     initPageButtons();
     redrawCanvasFromState();
+    showToast('Yeni sayfa eklendi', 'success');
   };
 }
 
@@ -225,7 +237,7 @@ function initButtons() {
   document.getElementById("btn-save-template").onclick = () => {
     masterTemplate = exportMasterTemplateFromCurrentPage();
     renderTemplatePreview();
-    showToast('Bu sayfa ana tema olarak kaydedildi (demo)', 'success');
+    showToast('Bu sayfa ana tema olarak kaydedildi', 'success');
   };
 }
 
@@ -280,13 +292,14 @@ function addProductToCanvas(product) {
       product_group: product.product_group,
       price: product.price,
       oldPrice: product.oldPrice,
+      caption: product.caption,
       userEdited: false,
       lockScale: false,
       lockPosition: false
     };
 
     group.on("mousedblclick", () => {
-      showToast(`${product.name} - Büyük önizleme açılabilir`, 'success');
+      showToast(`${product.name} - Büyük önizleme`, 'success');
     });
     
     group.on("modified", () => {
@@ -323,6 +336,7 @@ function syncObjectsMetaFromCanvas() {
       productId: obj.productMeta.productId,
       barcode: obj.productMeta.barcode,
       product_group: obj.productMeta.product_group,
+      caption: obj.productMeta.caption,
       left: obj.left,
       top: obj.top,
       scaleX: obj.scaleX,
@@ -336,9 +350,10 @@ function syncObjectsMetaFromCanvas() {
 
 function redrawCanvasFromState() {
   fabricCanvas.clear();
-  fabricCanvas.setBackgroundColor("#ffffff", fabricCanvas.renderAll.bind(fabricCanvas));
-  
   const page = getCurrentPage();
+  const bgColor = page.backgroundColor || "#ffffff";
+  fabricCanvas.setBackgroundColor(bgColor, fabricCanvas.renderAll.bind(fabricCanvas));
+  
   page.objectsMeta.forEach(meta => {
     const product = allProducts.find(p => p.id === meta.productId);
     if (!product) return;
@@ -414,7 +429,8 @@ async function callAiLayout({ scope }) {
       normal_price: product ? product.oldPrice : 0,
       discount_price: product ? product.price : 0,
       product_group: meta.product_group || 'Genel',
-      barcode: meta.barcode
+      barcode: meta.barcode,
+      caption: meta.caption
     };
   });
 
@@ -428,22 +444,8 @@ async function callAiLayout({ scope }) {
     const data = await response.json();
     
     if (data.success) {
-      let message = '📊 AI Analiz Sonucu:\n\n';
-      if (data.analysis) {
-        message += `Ürün: ${data.analysis.product_count || 0}\n`;
-        if (data.analysis.categories) {
-          message += `Kategoriler: ${data.analysis.categories.map(c => c.name).join(', ')}\n`;
-        }
-      }
-      if (data.suggestion && data.suggestion.slogan) {
-        message += `\n💡 Slogan: ${data.suggestion.slogan}`;
-      }
-      if (data.suggestion && data.suggestion.greeting) {
-        message += `\n\n${data.suggestion.greeting}`;
-      }
-      
-      alert(message);
-      showToast('AI analizi tamamlandı', 'success');
+      lastAnalysisResult = data;
+      showAnalysisModal(data);
     } else {
       showToast(data.error || 'AI hatası', 'error');
     }
@@ -453,18 +455,116 @@ async function callAiLayout({ scope }) {
   }
 }
 
-// ============= DALL-E ARKA PLAN (Kırmızı Market Tarzı) =============
+// ============= ANALİZ MODAL =============
+function showAnalysisModal(data) {
+  const modal = document.getElementById('analysis-modal');
+  const body = document.getElementById('analysis-modal-body');
+  
+  const analysis = data.analysis || {};
+  const result = data.result || {};
+  
+  let layoutHtml = '';
+  if (result.layout && result.layout.pages) {
+    layoutHtml = result.layout.pages.map((page, idx) => `
+      <div class="analysis-page">
+        <span class="page-num">${idx + 1}</span>
+        <div>
+          <strong>${page.title || 'Sayfa ' + (idx + 1)}</strong>
+          ${page.products ? `<div style="font-size:10px;color:#9ca3af;">${page.products.join(', ')}</div>` : ''}
+        </div>
+      </div>
+    `).join('');
+  }
+  
+  let colorsHtml = '';
+  if (result.color_theme) {
+    const theme = result.color_theme;
+    colorsHtml = `
+      <div class="analysis-colors">
+        ${theme.primary ? `<div><div class="color-swatch" style="background:${theme.primary}"></div><div class="color-label">Ana</div></div>` : ''}
+        ${theme.secondary ? `<div><div class="color-swatch" style="background:${theme.secondary}"></div><div class="color-label">İkincil</div></div>` : ''}
+        ${theme.accent ? `<div><div class="color-swatch" style="background:${theme.accent}"></div><div class="color-label">Vurgu</div></div>` : ''}
+      </div>
+    `;
+  }
+  
+  body.innerHTML = `
+    ${result.greeting ? `<div class="analysis-greeting">${result.greeting}</div>` : ''}
+    
+    ${result.analysis ? `
+      <div class="analysis-section">
+        <h4>📊 Analiz</h4>
+        <p style="font-size:13px;color:#e5e7eb;">${result.analysis}</p>
+      </div>
+    ` : ''}
+    
+    ${result.slogan ? `
+      <div class="analysis-section">
+        <h4>💡 Önerilen Slogan</h4>
+        <div class="analysis-slogan">"${result.slogan}"</div>
+      </div>
+    ` : ''}
+    
+    ${layoutHtml ? `
+      <div class="analysis-section">
+        <h4>📑 Sayfa Düzeni</h4>
+        <div class="analysis-layout">${layoutHtml}</div>
+      </div>
+    ` : ''}
+    
+    ${colorsHtml ? `
+      <div class="analysis-section">
+        <h4>🎨 Renk Teması</h4>
+        ${colorsHtml}
+      </div>
+    ` : ''}
+    
+    ${result.suggestion ? `
+      <div class="analysis-section">
+        <h4>✨ Öneri</h4>
+        <p style="font-size:13px;color:#e5e7eb;">${result.suggestion}</p>
+      </div>
+    ` : ''}
+  `;
+  
+  modal.classList.remove('hidden');
+}
+
+function closeAnalysisModal() {
+  document.getElementById('analysis-modal').classList.add('hidden');
+}
+
+function applyAnalysisSuggestion() {
+  if (!lastAnalysisResult || !lastAnalysisResult.result) {
+    showToast('Uygulanacak öneri bulunamadı', 'error');
+    return;
+  }
+  
+  const result = lastAnalysisResult.result;
+  
+  // Renk temasını uygula
+  if (result.color_theme && result.color_theme.primary) {
+    // Arka plan rengini güncelle (hafif ton)
+    const page = getCurrentPage();
+    page.backgroundColor = result.color_theme.primary + '10'; // %10 opacity
+    fabricCanvas.setBackgroundColor(page.backgroundColor, fabricCanvas.renderAll.bind(fabricCanvas));
+  }
+  
+  closeAnalysisModal();
+  showToast('Öneriler uygulandı!', 'success');
+}
+
+// ============= DALL-E ARKA PLAN =============
 async function callKieBackground() {
   // Tema seçimi için popup göster
   const themes = [
-    { id: 'market', name: '🏪 Genel Market (Yeşil/Krem)', desc: 'Profesyonel market broşürü' },
+    { id: 'market', name: '🏪 Genel Market', desc: 'Profesyonel market broşürü' },
     { id: 'tea', name: '🍵 Çay Kampanyası', desc: 'Yeşil çay tarlası arka planı' },
     { id: 'discount', name: '🔥 Süper İndirim', desc: 'Kırmızı/Sarı patlama efekti' },
     { id: 'fresh', name: '🥬 Manav/Taze Ürünler', desc: 'Yeşil taze sebze teması' },
     { id: 'butcher', name: '🥩 Kasap/Et Ürünleri', desc: 'Bordo/Ahşap premium tema' }
   ];
   
-  const themeOptions = themes.map(t => `${t.id}: ${t.name}`).join('\n');
   const selectedTheme = prompt(
     `🎨 Arka Plan Teması Seç:\n\n${themes.map((t, i) => `${i+1}. ${t.name}\n   ${t.desc}`).join('\n\n')}\n\nNumara gir (1-5):`,
     '1'
@@ -481,7 +581,10 @@ async function callKieBackground() {
     const response = await fetch('/api/desinger/kie-background', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ purpose: theme })
+      body: JSON.stringify({ 
+        purpose: theme,
+        backgroundPrompt: `Professional Turkish supermarket ${theme} theme brochure background`
+      })
     });
     
     const data = await response.json();
@@ -510,7 +613,8 @@ function exportMasterTemplateFromCurrentPage() {
     name: "Ana Tema " + new Date().toLocaleDateString("tr-TR"),
     canvasSize: { width: 595, height: 842 },
     contentRegions: [{ id: "content-main", x: 0, y: 140, width: 595, height: 620 }],
-    styleProfile: { primaryColor: "#6366f1", secondaryColor: "#ec4899" }
+    styleProfile: { primaryColor: "#6366f1", secondaryColor: "#ec4899" },
+    logoPlacement: { x: 20, y: 12, width: 120, height: 36 }  // Yeni: Logo konumu
   };
 }
 
@@ -521,9 +625,11 @@ function renderTemplatePreview() {
     return;
   }
   const r = masterTemplate.contentRegions[0];
+  const logo = masterTemplate.logoPlacement || {};
   div.innerHTML = `
     <div><b>Ad:</b> ${masterTemplate.name}</div>
     <div><b>İç Bölge:</b> x=${r.x}, y=${r.y}, w=${r.width}, h=${r.height}</div>
+    <div><b>Logo:</b> x=${logo.x || 20}, y=${logo.y || 12}</div>
     <div><b>Renkler:</b> ${masterTemplate.styleProfile.primaryColor}, ${masterTemplate.styleProfile.secondaryColor}</div>
   `;
 }
@@ -547,8 +653,11 @@ function renderSelectedProductPanel() {
     <div style="font-weight:600;">${product ? product.name : meta.productId}</div>
     <div>Barkod: ${meta.barcode || '-'}</div>
     <div>Grup: ${meta.product_group || '-'}</div>
-    <div>lockScale: ${meta.lockScale ? "evet" : "hayır"}</div>
-    <div>lockPosition: ${meta.lockPosition ? "evet" : "hayır"}</div>
+    ${meta.caption ? `<div>Etiket: <span style="color:#ec4899;">${meta.caption}</span></div>` : ''}
+    <div style="margin-top:6px;font-size:10px;color:#6b7280;">
+      lockScale: ${meta.lockScale ? "evet" : "hayır"} | 
+      lockPosition: ${meta.lockPosition ? "evet" : "hayır"}
+    </div>
   `;
 }
 
@@ -574,4 +683,6 @@ function showToast(message, type = 'success') {
   setTimeout(() => toast.remove(), 3000);
 }
 
-
+// Global functions for modal
+window.closeAnalysisModal = closeAnalysisModal;
+window.applyAnalysisSuggestion = applyAnalysisSuggestion;
