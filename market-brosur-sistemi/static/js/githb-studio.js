@@ -1,12 +1,14 @@
 /**
  * Gıthb Test Studio - Gerçek Depo + AI Entegrasyonu
- * Yeni özellikler: caption, backgroundPrompt, logoPlacement, Analysis Modal
+ * Yeni özellikler: caption, backgroundPrompt, logoPlacement, Analysis Modal, Style Picker
  */
 
 // ============= GLOBAL STATE =============
-let allProducts = [];  // Gerçek depo ürünleri
+let allProducts = [];
 let masterTemplate = null;
-let lastAnalysisResult = null;  // Son AI analiz sonucu
+let lastAnalysisResult = null;
+let designStyles = [];
+let selectedStyleId = null;
 
 const studioState = {
   pages: [{ id: "page-1", objectsMeta: [], styleProfileId: null, backgroundColor: "#ffffff" }],
@@ -19,11 +21,25 @@ let fabricCanvas = null;
 // ============= INITIALIZATION =============
 window.addEventListener("DOMContentLoaded", () => {
   loadDepotProducts();
+  loadDesignStyles();
   initCanvas();
   initPageButtons();
   initButtons();
   renderTemplatePreview();
 });
+
+// ============= TASARIM STİLLERİNİ YÜKLE =============
+async function loadDesignStyles() {
+  try {
+    const response = await fetch('/static/templates/examples/styles.json');
+    const data = await response.json();
+    designStyles = data.styles || [];
+    console.log('Tasarım stilleri yüklendi:', designStyles.length);
+  } catch (error) {
+    console.error('Stil yükleme hatası:', error);
+    designStyles = [];
+  }
+}
 
 // ============= DEPO ÜRÜNLERİNİ YÜKLE =============
 async function loadDepotProducts() {
@@ -39,7 +55,6 @@ async function loadDepotProducts() {
   `;
   
   try {
-    // Önce admin ürünlerini dene
     let response = await fetch('/api/admin/all-products');
     let data = await response.json();
     
@@ -53,13 +68,12 @@ async function loadDepotProducts() {
         image_url: p.image_url || '/static/placeholder.png',
         product_group: p.product_group || 'Genel',
         sector: p.sector || 'supermarket',
-        caption: getCaption(p)  // Yeni: Caption hesapla
+        caption: getCaption(p)
       }));
       
       depotStatus.textContent = 'Admin Deposu';
       depotStatus.style.color = '#22c55e';
     } else {
-      // Müşteri ürünlerini dene
       response = await fetch('/api/products');
       data = await response.json();
       
@@ -109,7 +123,6 @@ function getCaption(product) {
     if (percent >= 10) return 'Kampanya';
   }
   
-  // Rastgele caption
   const captions = ['Yeni', 'Popüler', 'Önerilen', 'Fırsat'];
   return captions[Math.floor(Math.random() * captions.length)];
 }
@@ -203,14 +216,10 @@ function initPageButtons() {
 
 // ============= BUTON OLAYLARI =============
 function initButtons() {
-  // AI Layout - OpenAI
   document.getElementById("btn-ai-layout-page").onclick = () => callAiLayout({ scope: "page" });
   document.getElementById("btn-ai-layout-selection").onclick = () => callAiLayout({ scope: "selection" });
+  document.getElementById("btn-ai-soften-bg").onclick = () => openStylePicker();
   
-  // KIE.ai Arka Plan
-  document.getElementById("btn-ai-soften-bg").onclick = () => callKieBackground();
-  
-  // Kanvası temizle
   document.getElementById("btn-clear-canvas").onclick = () => {
     if (confirm('Kanvastaki tüm öğeler silinecek. Devam edilsin mi?')) {
       fabricCanvas.clear();
@@ -220,7 +229,6 @@ function initButtons() {
     }
   };
 
-  // PNG indir
   document.getElementById("btn-download-png").onclick = () => {
     if (!fabricCanvas) return;
     const dataUrl = fabricCanvas.toDataURL({ format: "png", multiplier: 2 });
@@ -233,7 +241,6 @@ function initButtons() {
     showToast('PNG indirildi', 'success');
   };
 
-  // Ana tema kaydet
   document.getElementById("btn-save-template").onclick = () => {
     masterTemplate = exportMasterTemplateFromCurrentPage();
     renderTemplatePreview();
@@ -285,7 +292,6 @@ function addProductToCanvas(product) {
       padding: 6
     });
 
-    // Ürün meta verilerini sakla
     group.productMeta = {
       productId: product.id,
       barcode: product.barcode,
@@ -409,6 +415,122 @@ function redrawCanvasFromState() {
   });
 }
 
+// ============= STİL SEÇİCİ MODAL =============
+function openStylePicker() {
+  selectedStyleId = null;
+  renderStyleGrid();
+  document.getElementById('style-picker-modal').classList.remove('hidden');
+  document.getElementById('btn-apply-style').disabled = true;
+}
+
+function closeStylePicker() {
+  document.getElementById('style-picker-modal').classList.add('hidden');
+}
+
+function renderStyleGrid() {
+  const grid = document.getElementById('style-grid');
+  
+  if (designStyles.length === 0) {
+    grid.innerHTML = `<p style="color:var(--muted);text-align:center;grid-column:1/-1;">Tasarım stilleri yüklenemedi.</p>`;
+    return;
+  }
+  
+  grid.innerHTML = designStyles.map(style => `
+    <div class="style-card" data-style-id="${style.id}" onclick="selectStyle('${style.id}')">
+      <div class="style-preview">
+        <div class="style-preview-placeholder">
+          <div class="style-preview-colors">
+            <span style="background:${style.colors.primary}"></span>
+            <span style="background:${style.colors.secondary}"></span>
+            <span style="background:${style.colors.accent}"></span>
+          </div>
+          <span style="font-size:10px;">${style.layout === 'grid' ? '▦ Grid' : '◇ Serbest'}</span>
+        </div>
+      </div>
+      <div class="style-name">${style.name}</div>
+      <div class="style-desc">${style.description}</div>
+      <div class="style-features">
+        ${style.features.slice(0, 3).map(f => `<span class="style-feature">${f}</span>`).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function selectStyle(styleId) {
+  selectedStyleId = styleId;
+  
+  // Önceki seçimi kaldır
+  document.querySelectorAll('.style-card').forEach(card => {
+    card.classList.remove('selected');
+  });
+  
+  // Yeni seçimi işaretle
+  const selectedCard = document.querySelector(`.style-card[data-style-id="${styleId}"]`);
+  if (selectedCard) {
+    selectedCard.classList.add('selected');
+  }
+  
+  document.getElementById('btn-apply-style').disabled = false;
+}
+
+async function applySelectedStyle() {
+  if (!selectedStyleId) {
+    showToast('Önce bir stil seçin', 'error');
+    return;
+  }
+  
+  const style = designStyles.find(s => s.id === selectedStyleId);
+  if (!style) {
+    showToast('Stil bulunamadı', 'error');
+    return;
+  }
+  
+  closeStylePicker();
+  showToast(`"${style.name}" stili için arka plan oluşturuluyor...`, 'success');
+  
+  try {
+    const response = await fetch('/api/desinger/kie-background', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        purpose: style.id,
+        backgroundPrompt: style.background_prompt,
+        colors: style.colors
+      })
+    });
+    
+    const data = await response.json();
+    
+    if (data.success && data.image_url) {
+      fabric.Image.fromURL(data.image_url, bgImg => {
+        fabricCanvas.setBackgroundImage(bgImg, fabricCanvas.renderAll.bind(fabricCanvas), {
+          scaleX: fabricCanvas.width / bgImg.width,
+          scaleY: fabricCanvas.height / bgImg.height
+        });
+        
+        // Stil bilgisini kaydet
+        const page = getCurrentPage();
+        page.styleProfileId = style.id;
+        
+        showToast(`✅ "${style.name}" arka planı uygulandı!`, 'success');
+      }, { crossOrigin: 'Anonymous' });
+    } else {
+      // Fallback: Basit renk arka planı
+      const bgColor = style.colors.background || '#ffffff';
+      fabricCanvas.setBackgroundColor(bgColor, fabricCanvas.renderAll.bind(fabricCanvas));
+      showToast(`⚠️ Görsel oluşturulamadı, düz renk uygulandı`, 'success');
+    }
+  } catch (e) {
+    console.error('Stil uygulama hatası:', e);
+    // Fallback
+    const style = designStyles.find(s => s.id === selectedStyleId);
+    if (style) {
+      fabricCanvas.setBackgroundColor(style.colors.background || '#ffffff', fabricCanvas.renderAll.bind(fabricCanvas));
+    }
+    showToast('⚠️ Arka plan hatası, düz renk uygulandı', 'error');
+  }
+}
+
 // ============= AI LAYOUT (OpenAI) =============
 async function callAiLayout({ scope }) {
   const page = getCurrentPage();
@@ -421,7 +543,6 @@ async function callAiLayout({ scope }) {
 
   showToast('AI analiz yapıyor...', 'success');
 
-  // Kanvastaki ürünleri topla
   const productsForAi = page.objectsMeta.map(meta => {
     const product = allProducts.find(p => p.id === meta.productId);
     return {
@@ -434,11 +555,22 @@ async function callAiLayout({ scope }) {
     };
   });
 
+  // Örnek stilleri de gönder
+  const styleExamples = designStyles.map(s => ({
+    id: s.id,
+    name: s.name,
+    description: s.description
+  }));
+
   try {
     const response = await fetch('/api/desinger/layout-suggestion', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ products: productsForAi, scope })
+      body: JSON.stringify({ 
+        products: productsForAi, 
+        scope,
+        availableStyles: styleExamples
+      })
     });
     
     const data = await response.json();
@@ -488,6 +620,29 @@ function showAnalysisModal(data) {
     `;
   }
   
+  // Önerilen stil
+  let styleHtml = '';
+  if (result.recommended_style) {
+    const recStyle = designStyles.find(s => s.id === result.recommended_style);
+    if (recStyle) {
+      styleHtml = `
+        <div class="analysis-section">
+          <h4>🎨 Önerilen Tasarım Stili</h4>
+          <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg);border-radius:8px;">
+            <div class="style-preview-colors">
+              <span style="background:${recStyle.colors.primary};width:20px;height:20px;border-radius:4px;"></span>
+              <span style="background:${recStyle.colors.secondary};width:20px;height:20px;border-radius:4px;"></span>
+            </div>
+            <div>
+              <strong>${recStyle.name}</strong>
+              <div style="font-size:10px;color:#9ca3af;">${recStyle.description}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+  }
+  
   body.innerHTML = `
     ${result.greeting ? `<div class="analysis-greeting">${result.greeting}</div>` : ''}
     
@@ -504,6 +659,8 @@ function showAnalysisModal(data) {
         <div class="analysis-slogan">"${result.slogan}"</div>
       </div>
     ` : ''}
+    
+    ${styleHtml}
     
     ${layoutHtml ? `
       <div class="analysis-section">
@@ -542,11 +699,13 @@ function applyAnalysisSuggestion() {
   
   const result = lastAnalysisResult.result;
   
-  // Renk temasını uygula
-  if (result.color_theme && result.color_theme.primary) {
-    // Arka plan rengini güncelle (hafif ton)
+  // Önerilen stili uygula
+  if (result.recommended_style) {
+    selectedStyleId = result.recommended_style;
+    applySelectedStyle();
+  } else if (result.color_theme && result.color_theme.primary) {
     const page = getCurrentPage();
-    page.backgroundColor = result.color_theme.primary + '10'; // %10 opacity
+    page.backgroundColor = result.color_theme.primary + '10';
     fabricCanvas.setBackgroundColor(page.backgroundColor, fabricCanvas.renderAll.bind(fabricCanvas));
   }
   
@@ -554,67 +713,18 @@ function applyAnalysisSuggestion() {
   showToast('Öneriler uygulandı!', 'success');
 }
 
-// ============= DALL-E ARKA PLAN =============
-async function callKieBackground() {
-  // Tema seçimi için popup göster
-  const themes = [
-    { id: 'market', name: '🏪 Genel Market', desc: 'Profesyonel market broşürü' },
-    { id: 'tea', name: '🍵 Çay Kampanyası', desc: 'Yeşil çay tarlası arka planı' },
-    { id: 'discount', name: '🔥 Süper İndirim', desc: 'Kırmızı/Sarı patlama efekti' },
-    { id: 'fresh', name: '🥬 Manav/Taze Ürünler', desc: 'Yeşil taze sebze teması' },
-    { id: 'butcher', name: '🥩 Kasap/Et Ürünleri', desc: 'Bordo/Ahşap premium tema' }
-  ];
-  
-  const selectedTheme = prompt(
-    `🎨 Arka Plan Teması Seç:\n\n${themes.map((t, i) => `${i+1}. ${t.name}\n   ${t.desc}`).join('\n\n')}\n\nNumara gir (1-5):`,
-    '1'
-  );
-  
-  if (!selectedTheme) return;
-  
-  const themeIndex = parseInt(selectedTheme) - 1;
-  const theme = themes[themeIndex] ? themes[themeIndex].id : 'market';
-  
-  showToast(`🎨 "${themes[themeIndex]?.name || 'Market'}" arka planı oluşturuluyor... (30-60 sn)`, 'success');
-
-  try {
-    const response = await fetch('/api/desinger/kie-background', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-        purpose: theme,
-        backgroundPrompt: `Professional Turkish supermarket ${theme} theme brochure background`
-      })
-    });
-    
-    const data = await response.json();
-    
-    if (data.success && data.image_url) {
-      fabric.Image.fromURL(data.image_url, bgImg => {
-        fabricCanvas.setBackgroundImage(bgImg, fabricCanvas.renderAll.bind(fabricCanvas), {
-          scaleX: fabricCanvas.width / bgImg.width,
-          scaleY: fabricCanvas.height / bgImg.height
-        });
-        showToast('✅ Profesyonel arka plan uygulandı!', 'success');
-      }, { crossOrigin: 'Anonymous' });
-    } else {
-      showToast(data.error || 'Arka plan hatası', 'error');
-    }
-  } catch (e) {
-    console.error('Background hatası:', e);
-    showToast('Sunucu hatası: ' + e.message, 'error');
-  }
-}
-
 // ============= ANA TEMA =============
 function exportMasterTemplateFromCurrentPage() {
+  const style = selectedStyleId ? designStyles.find(s => s.id === selectedStyleId) : null;
+  
   return {
     id: "template-" + Date.now(),
     name: "Ana Tema " + new Date().toLocaleDateString("tr-TR"),
     canvasSize: { width: 595, height: 842 },
     contentRegions: [{ id: "content-main", x: 0, y: 140, width: 595, height: 620 }],
-    styleProfile: { primaryColor: "#6366f1", secondaryColor: "#ec4899" },
-    logoPlacement: { x: 20, y: 12, width: 120, height: 36 }  // Yeni: Logo konumu
+    styleProfile: style ? style.colors : { primaryColor: "#6366f1", secondaryColor: "#ec4899" },
+    styleId: selectedStyleId,
+    logoPlacement: { x: 20, y: 12, width: 120, height: 36 }
   };
 }
 
@@ -626,11 +736,14 @@ function renderTemplatePreview() {
   }
   const r = masterTemplate.contentRegions[0];
   const logo = masterTemplate.logoPlacement || {};
+  const styleName = masterTemplate.styleId ? 
+    (designStyles.find(s => s.id === masterTemplate.styleId)?.name || masterTemplate.styleId) : 
+    'Özel';
+  
   div.innerHTML = `
     <div><b>Ad:</b> ${masterTemplate.name}</div>
-    <div><b>İç Bölge:</b> x=${r.x}, y=${r.y}, w=${r.width}, h=${r.height}</div>
+    <div><b>Stil:</b> ${styleName}</div>
     <div><b>Logo:</b> x=${logo.x || 20}, y=${logo.y || 12}</div>
-    <div><b>Renkler:</b> ${masterTemplate.styleProfile.primaryColor}, ${masterTemplate.styleProfile.secondaryColor}</div>
   `;
 }
 
@@ -668,7 +781,6 @@ function formatPrice(v) {
 }
 
 function showToast(message, type = 'success') {
-  // Önceki toast varsa kaldır
   const existingToast = document.querySelector('.toast');
   if (existingToast) existingToast.remove();
   
@@ -683,6 +795,9 @@ function showToast(message, type = 'success') {
   setTimeout(() => toast.remove(), 3000);
 }
 
-// Global functions for modal
+// Global functions
 window.closeAnalysisModal = closeAnalysisModal;
 window.applyAnalysisSuggestion = applyAnalysisSuggestion;
+window.closeStylePicker = closeStylePicker;
+window.selectStyle = selectStyle;
+window.applySelectedStyle = applySelectedStyle;

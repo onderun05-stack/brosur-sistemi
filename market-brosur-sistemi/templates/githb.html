@@ -119,6 +119,27 @@
     </div>
   </div>
 
+  <!-- Style Picker Modal (Örnek Tasarımlar) -->
+  <div id="style-picker-modal" class="modal hidden">
+    <div class="modal-backdrop" onclick="closeStylePicker()"></div>
+    <div class="modal-content modal-wide">
+      <div class="modal-header">
+        <h2>🎨 Tasarım Stili Seç</h2>
+        <button class="modal-close" onclick="closeStylePicker()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="help" style="margin-bottom:16px;">Broşürünüz için bir tasarım stili seçin. Bu stil arka plan ve renk temasını belirleyecek.</p>
+        <div id="style-grid" class="style-grid">
+          <!-- JS dolduracak -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeStylePicker()">İptal</button>
+        <button class="btn btn-primary" onclick="applySelectedStyle()" id="btn-apply-style" disabled>✓ Bu Stili Uygula</button>
+      </div>
+    </div>
+  </div>
+
   <script src="/static/js/githb-studio.js"></script>
 </body>
 </html>
