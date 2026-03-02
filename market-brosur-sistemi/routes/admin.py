@@ -118,31 +118,6 @@ def admin_dashboard():
         return redirect('/dashboard')
 
 
-@admin_bp.route('/admin/desinger')
-def admin_desinger_test():
-    """Standalone Desınger test sayfası (sadece admin için, canlı akışı etkilemez)."""
-    try:
-        user = get_current_user()
-        if not user or user.get('role') != 'admin':
-            return redirect('/dashboard')
-        return render_template('desinger.html')
-    except Exception as e:
-        logging.error(f"❌ Desinger test sayfası hatası: {str(e)}")
-        return redirect('/admin/dashboard')
-
-
-@admin_bp.route('/admin/githb')
-def admin_githb_test():
-    """Gıthb Test 2 sayfası (sadece admin için, canlı akışı etkilemez)."""
-    try:
-        user = get_current_user()
-        if not user or user.get('role') != 'admin':
-            return redirect('/dashboard')
-        return render_template('githb.html')
-    except Exception as e:
-        logging.error(f"❌ Githb test sayfası hatası: {str(e)}")
-        return redirect('/admin/dashboard')
-
 
 @admin_bp.route('/admin/partial/<section>')
 def admin_partial(section):

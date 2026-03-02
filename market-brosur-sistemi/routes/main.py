@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Main routes - Home, dashboard, editor and other page routes
+Main routes - Core page routes (temizlenmiş)
 """
 
 from flask import Blueprint, render_template, redirect, session, send_file, request, abort, make_response
@@ -35,7 +35,6 @@ def dashboard():
     if not user:
         return redirect('/login')
     
-    # Get user data for template
     user_data = {
         'id': user.get('id'),
         'name': user.get('name', 'Kullanıcı'),
@@ -46,25 +45,6 @@ def dashboard():
     }
     
     return render_template('index.html', user=user_data)
-
-
-@main_bp.route('/editor')
-def editor():
-    """Brochure editor page"""
-    user = get_current_user()
-    if not user:
-        return redirect('/login')
-    
-    user_data = {
-        'id': user.get('id'),
-        'name': user.get('name', 'Kullanıcı'),
-        'email': user.get('email', ''),
-        'role': user.get('role', 'customer'),
-        'sector': user.get('sector', 'supermarket'),
-        'credits': user.get('credits', 0)
-    }
-    
-    return render_template('editor.html', user=user_data)
 
 
 @main_bp.route('/home')
@@ -89,12 +69,6 @@ def pre_approval():
     return render_template('pre_approval.html', user=user)
 
 
-@main_bp.route('/canvas-test')
-def canvas_test():
-    """Canvas test page - sıfırdan inşa"""
-    return render_template('canvas_test.html')
-
-
 @main_bp.route('/market')
 def market_redirect():
     """Market panel redirect"""
@@ -117,7 +91,7 @@ def download_csv_template():
 
 @main_bp.route('/modul/urun-yukle-formu')
 def view_urun_yukle_formu():
-    """View standalone product upload form in browser (opens in new tab)"""
+    """View standalone product upload form"""
     return send_file(
         'static/moduller/urun-yukle-formu/index.html',
         mimetype='text/html'
@@ -126,7 +100,7 @@ def view_urun_yukle_formu():
 
 @main_bp.route('/download/modul/urun-yukle-formu')
 def download_urun_yukle_formu():
-    """Download standalone product upload form module (saves as file)"""
+    """Download standalone product upload form"""
     return send_file(
         'static/moduller/urun-yukle-formu/index.html',
         as_attachment=True,
@@ -137,7 +111,7 @@ def download_urun_yukle_formu():
 
 @main_bp.route('/proxy-image')
 def proxy_image():
-    """Proxy external images to avoid CORS issues on canvas exports"""
+    """Proxy external images to avoid CORS issues"""
     image_url = request.args.get('url')
     if not image_url:
         abort(400, description='Missing url parameter')
@@ -156,4 +130,3 @@ def proxy_image():
     response.headers['Cache-Control'] = 'public, max-age=86400'
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
-

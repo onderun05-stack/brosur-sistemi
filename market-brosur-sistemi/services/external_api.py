@@ -811,7 +811,7 @@ def download_and_process_image(image_url, barcode, user_id, sector='supermarket'
 
 # ============= MAIN LOOKUP FUNCTION =============
 
-def full_barcode_lookup(barcode, user_id, sector='supermarket', auto_download=True, search_google_image=True):
+def full_barcode_lookup(barcode, user_id, sector='supermarket', auto_download=True, search_google_image=False):
     """
     Complete barcode lookup:
     1. Check local depots (customer → admin) for IMAGES

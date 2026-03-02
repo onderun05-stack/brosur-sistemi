@@ -27,14 +27,12 @@ from services.external_api import (
     get_market_price_comparison
 )
 from services.image_bank import search_image_hierarchy
-from services.ai_categorizer import AIProductCategorizer
 
 products_bp = Blueprint('products', __name__)
 
 STAGE_ONE_MAX_PRODUCTS = 500
 STAGE_ONE_PAGE_CAPACITY = 12
 PENDING_ROOT = Path('static') / 'uploads' / 'pending'
-_stage_one_categorizer = AIProductCategorizer()
 DEPOT_SOURCES = {'customer_depot', 'admin_depot'}
 
 
@@ -153,16 +151,11 @@ def _assign_pages(products, explicit_assignments, selected_ids, auto_fill_ok):
 
 
 def _categorize_external_product(product, sector):
+    """Ürün grubunu belirle - sadece whitelist validasyonu"""
     current_group = product.get('product_group') or ''
     validated = validate_and_fix_product_group(current_group, sector)
     if validated and validated != 'Genel':
         return validated
-
-    ai_result = _stage_one_categorizer.categorize(product.get('name', ''))
-    if ai_result:
-        validated = validate_and_fix_product_group(ai_result.get('category_name'), sector)
-        if validated:
-            return validated
     return 'Genel'
 
 
@@ -1086,12 +1079,13 @@ def api_barkod_sorgula():
         if not barcode:
             return jsonify({'success': False, 'error': 'Barcode required'}), 400
         
-        # Use external_api service for full lookup
+        # Use external_api service for full lookup (sadece CAMGOZ, Google arama kapalı)
         result = full_barcode_lookup(
             barcode=barcode,
             user_id=user['id'],
             sector=sector,
-            auto_download=True
+            auto_download=True,
+            search_google_image=False
         )
         
         # Format response
@@ -1167,130 +1161,6 @@ def api_barkod_sorgula_batch():
         return jsonify({'success': False, 'error': str(e)}), 500
 
 
-def verify_images_with_openai(images, barcode, product_name):
-    """
-    OpenAI Vision ile resimleri doğrula.
-    Hangisi gerçek ürün resmi?
-    """
-    import openai
-    import os
-    
-    api_key = os.environ.get('OPENAI_API_KEY')
-    if not api_key:
-        logging.warning("OpenAI API key not set, skipping verification")
-        return None
-    
-    try:
-        client = openai.OpenAI(api_key=api_key)
-        
-        # Resimleri mesaja ekle
-        content = [
-            {
-                "type": "text",
-                "text": f"""Bu resimlere bak. Hangisi "{product_name}" (barkod: {barcode}) ürününün GERÇEK ambalaj/ürün fotoğrafı?
-
-Sadece numara döndür (1, 2 veya 3). Hiçbiri uygun değilse "0" döndür.
-Açıklama yazma, sadece numara."""
-            }
-        ]
-        
-        for i, img in enumerate(images[:3]):
-            content.append({
-                "type": "image_url",
-                "image_url": {"url": img['url'], "detail": "low"}
-            })
-        
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[{"role": "user", "content": content}],
-            max_tokens=10
-        )
-        
-        answer = response.choices[0].message.content.strip()
-        
-        # Sadece sayı al
-        for char in answer:
-            if char.isdigit():
-                idx = int(char)
-                if 1 <= idx <= len(images):
-                    return idx - 1  # 0-indexed
-                elif idx == 0:
-                    return None
-        
-        return None
-        
-    except Exception as e:
-        logging.error(f"OpenAI verification error: {e}")
-        return None
-
-
-@products_bp.route('/api/google-image-search', methods=['POST'])
-def api_google_image_search():
-    """
-    Manuel Google Image Search - Image butonundan çağrılır
-    Barkod + ürün adı ile Google'da resim arar, 3 öneri döner
-    """
-    user = get_current_user()
-    if not user:
-        return jsonify({'success': False, 'error': 'Not authenticated'}), 401
-    
-    try:
-        data = request.json or {}
-        query = data.get('query', '').strip()
-        barcode = data.get('barcode', '').strip()
-        num_results = min(data.get('num_results', 3), 6)  # Max 6
-        
-        if not query and not barcode:
-            return jsonify({'success': False, 'error': 'Query veya barcode gerekli'}), 400
-        
-        # Arama sorgusu oluştur
-        search_query = query if query else barcode
-        
-        # Google'da ara
-        from services.external_api import search_with_google
-        results = search_with_google(search_query, max_results=num_results)
-        
-        if results:
-            images = []
-            for r in results[:num_results]:
-                images.append({
-                    'url': r.get('image_url', ''),
-                    'thumbnail': r.get('thumbnail_url', ''),
-                    'title': r.get('title', ''),
-                    'source': r.get('source', 'Google'),
-                    'width': r.get('width', 0),
-                    'height': r.get('height', 0)
-                })
-            
-            # OpenAI Vision doğrulaması (opsiyonel)
-            verify = data.get('verify', False)
-            verified_index = None
-            
-            if verify and images:
-                try:
-                    verified_index = verify_images_with_openai(images, barcode, query)
-                except Exception as e:
-                    logging.warning(f"OpenAI verification failed: {e}")
-            
-            return jsonify({
-                'success': True,
-                'images': images,
-                'query': search_query,
-                'count': len(images),
-                'verified_index': verified_index
-            })
-        else:
-            return jsonify({
-                'success': False,
-                'error': 'Resim bulunamadı',
-                'query': search_query
-            })
-        
-    except Exception as e:
-        logging.error(f"Google image search error: {str(e)}")
-        return jsonify({'success': False, 'error': str(e)}), 500
-
-
 @products_bp.route('/api/price-comparison', methods=['POST'])
 def api_price_comparison():
     """
@@ -1321,44 +1191,6 @@ def api_price_comparison():
         
     except Exception as e:
         logging.error(f"Price comparison error: {str(e)}")
-        return jsonify({'success': False, 'error': str(e)}), 500
-
-
-@products_bp.route('/api/product-intel/search', methods=['POST'])
-def api_product_intel_search():
-    """Search product intelligence"""
-    user = get_current_user()
-    if not user:
-        return jsonify({'success': False, 'error': 'Not authenticated'}), 401
-    
-    try:
-        data = request.json
-        barcode = data.get('barcode', '')
-        
-        if not barcode:
-            return jsonify({'success': False, 'error': 'Barcode required'}), 400
-        
-        conn = sqlite3.connect('brosur.db')
-        c = conn.cursor()
-        c.execute("SELECT * FROM admin_images WHERE barcode=?", (barcode,))
-        row = c.fetchone()
-        conn.close()
-        
-        if row:
-            return jsonify({
-                'success': True,
-                'found': True,
-                'product': {
-                    'barcode': row[1],
-                    'name': row[2],
-                    'image_url': row[3]
-                }
-            })
-        
-        return jsonify({'success': True, 'found': False})
-        
-    except Exception as e:
-        logging.error(f"Product intel search error: {str(e)}")
         return jsonify({'success': False, 'error': str(e)}), 500
 
 
@@ -1469,7 +1301,6 @@ def api_products_save():
     ID'leme: Her ürün barcode ile benzersiz tanımlanır
     Canvas: barcode ile çağrılır
     """
-    from services.openai_categorizer import categorize_with_vision, categorize_with_openai, is_openai_available
     from services.image_bank import save_to_customer_depot
     from services.image_processor import process_product_image
     
@@ -1549,35 +1380,16 @@ def api_products_save():
         
         # ============= AŞAMA 2: KATEGORİLEME =============
         product_group = 'Genel'
-        ai_source = 'fallback'
+        ai_source = 'validation'
         
         try:
             logging.info(f"[{barcode}] AŞAMA 2: Kategorileme...")
-            
-            if processed_image and is_openai_available():
-                # Vision API ile resim + isim analiz
-                ai_result = categorize_with_vision(
-                    product_name=name,
-                    image_data=processed_image,
-                    sector=sector,
-                    existing_group=existing_group
-                )
-                product_group = ai_result.get('group', 'Genel')
-                ai_source = ai_result.get('source', 'vision')
-                logging.info(f"[{barcode}] Vision kategorileme: '{name}' → '{product_group}'")
-            else:
-                # Fallback: sadece isimle kategorileme
-                ai_result = categorize_with_openai(name, sector)
-                product_group = ai_result.get('group', 'Genel')
-                short_name = ai_result.get('short_name', name[:30])  # Kısaltılmış isim
-                ai_source = ai_result.get('source', 'text')
-                logging.info(f"[{barcode}] Text kategorileme: '{name}' → Grup: '{product_group}', Kısa: '{short_name}'")
+            product_group = _categorize_external_product({'name': name, 'product_group': existing_group}, sector)
+            logging.info(f"[{barcode}] Kategorileme: '{name}' → '{product_group}'")
                 
         except Exception as e:
             logging.error(f"[{barcode}] Kategorileme hatası: {e}")
             product_group = 'Genel'
-            short_name = name[:30]  # Hata durumunda basit kısaltma
-            ai_source = 'error'
         
         # ============= DEPOYA KAYDET =============
         image_saved = False
@@ -1683,7 +1495,7 @@ def api_products_save():
         'depot_updates': depot_updates,
         'errors': errors,
         'message': ', '.join(msg_parts) if msg_parts else 'İşlem yok',
-        'ai_enabled': is_openai_available(),
+        'ai_enabled': False,  # AI kategorileme kaldırıldı
         'requires_approval': len(saved_products) > 0,
         'stage1_enabled': True,  # Resim işleme aktif
         'stage2_enabled': True   # Vision kategorileme aktif
