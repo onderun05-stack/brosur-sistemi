@@ -78,6 +78,25 @@ def market_redirect():
     return redirect('/login')
 
 
+@main_bp.route('/brochure-builder')
+def brochure_builder():
+    """Broşür oluşturma sayfası"""
+    user = get_current_user()
+    if not user:
+        return redirect('/login')
+    
+    user_data = {
+        'id': user.get('id'),
+        'name': user.get('name', 'Kullanıcı'),
+        'email': user.get('email', ''),
+        'role': user.get('role', 'customer'),
+        'sector': user.get('sector', 'supermarket'),
+        'credits': user.get('credits', 0)
+    }
+    
+    return render_template('brochure_builder.html', user=user_data)
+
+
 # ============= DOWNLOAD ROUTES =============
 
 @main_bp.route('/download/csv-template')
